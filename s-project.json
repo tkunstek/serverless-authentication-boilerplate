@@ -1,0 +1,13 @@
+{
+  "name": "serverless-authentication-boilerplate",
+  "version": "0.1.0",
+  "profile": "serverless-v0.4.2",
+  "location": "https://github.com/laardee/serverless-authentication-boilerplate",
+  "author": "",
+  "description": "Boilerplate for Serverless Authentication",
+  "custom": {},
+  "plugins": [
+    "serverless-cors-plugin",
+    "serverless-plugin-autoprune"
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "name": "serverless-authentication-module",
+  "version": "0.1.0",
+  "description": "Serverless module dependencies",
+  "author": "me",
+  "license": "MIT",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/"
+  },
+  "keywords": [],
+  "devDependencies": {},
+  "dependencies": {
+    "async": "^1.5.2",
+    "jsonwebtoken": "^5.7.0",
+    "lodash": "^4.6.0",
+    "request": "^2.69.0",
+    "serverless-authentication": "^0.1.0",
+    "serverless-authentication-facebook": "^0.1.0",
+    "serverless-authentication-google": "^0.1.1",
+    "serverless-authentication-microsoft": "^0.1.0",
+    "serverless-helpers-js": "~0.1.0"
+  }
+}

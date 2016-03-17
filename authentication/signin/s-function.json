@@ -1,0 +1,41 @@
+{
+  "name": "signin",
+  "customName": false,
+  "customRole": false,
+  "handler": "signin/handler.handler",
+  "timeout": 30,
+  "memorySize": 512,
+  "custom": {
+    "excludePatterns": [],
+    "envVars": []
+  },
+  "endpoints": [
+    {
+      "path": "signin/{provider}",
+      "method": "GET",
+      "type": "AWS",
+      "authorizationType": "none",
+      "apiKeyRequired": false,
+      "requestParameters": {},
+      "requestTemplates": {
+        "application/json": "{\"provider\":\"$input.params('provider')\",\"host\":\"$input.params().header.get('host')\",\"path\":\"$context.resourcePath\"}"
+      },
+      "responses": {
+        "400": {
+          "statusCode": "400"
+        },
+        "default": {
+          "statusCode": "302",
+          "responseParameters": {
+            "method.response.header.Location": "integration.response.body.url"
+          },
+          "responseModels": {},
+          "responseTemplates": {
+            "application/json": ""
+          }
+        }
+      }
+    }
+  ],
+  "events": []
+}

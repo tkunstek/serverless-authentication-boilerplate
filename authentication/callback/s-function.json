@@ -1,0 +1,41 @@
+{
+  "name": "callback",
+  "customName": false,
+  "customRole": false,
+  "handler": "callback/handler.handler",
+  "timeout": 30,
+  "memorySize": 512,
+  "custom": {
+    "excludePatterns": [],
+    "envVars": []
+  },
+  "endpoints": [
+    {
+      "path": "callback/{provider}",
+      "method": "GET",
+      "type": "AWS",
+      "authorizationType": "none",
+      "apiKeyRequired": false,
+      "requestParameters": {},
+      "requestTemplates": {
+        "application/json": "{\"provider\":\"$input.params('provider')\",\"code\":\"$input.params('code')\",\"host\":\"$input.params().header.get('host')\",\"path\":\"$context.resourcePath\"}"
+      },
+      "responses": {
+        "401": {
+          "statusCode": "401"
+        },
+        "default": {
+          "statusCode": "302",
+          "responseParameters": {
+            "method.response.header.Location": "integration.response.body.url"
+          },
+          "responseModels": {},
+          "responseTemplates": {
+            "application/json": ""
+          }
+        }
+      }
+    }
+  ],
+  "events": []
+}
