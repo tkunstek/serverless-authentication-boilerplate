@@ -49,9 +49,11 @@ function callback(event, callback) {
     }else {
       var testing = false;
       var id = profile.provider + '-' +profile.id;
+      // sets 1 minute expiration time as an example
       var expires = (new Date()).getTime()+(60*1000);
-      // check if user exist in db if not create new then return token
-      //callback(err, profile);
+
+      // here can be checked if user exist in db if not create new etc.
+
       utils.tokenResponse({id: id, expires: expires}, providerConfig, callback);
     }
   }
@@ -61,6 +63,7 @@ function callback(event, callback) {
 function authorize(event, callback) {
   var providerConfig = config(event.provider);
   var error = false;
+  // this example uses simple expiration time validation
   try {
     var data = utils.readToken(event.authorizationToken, providerConfig.token_secret);
     var now = (new Date()).getTime();

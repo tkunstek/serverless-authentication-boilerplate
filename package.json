@@ -12,5 +12,14 @@
   "dependencies": {
     "serverless-cors-plugin": "^0.3.2",
     "serverless-plugin-autoprune": "^0.1.1"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^2.4.5",
+    "sinon": "^1.17.3"
+  },
+  "scripts": {
+    "prepublish": "npm run test",
+    "test": "./node_modules/.bin/mocha specs/"
   }
 }
