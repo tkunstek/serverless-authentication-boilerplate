@@ -68,4 +68,17 @@ describe('Authentication', () => {
       });
     });
   });
+
+  describe('Callback', () => {
+    it('should fail', () => {
+      let event = {
+        provider: 'crappyauth',
+        code: 'code'
+      };
+
+      lib.callback(event, (error, data) => {
+        expect(error).not.to.be.null;
+      });
+    });
+  });
 });
