@@ -16,6 +16,7 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "mocha": "^2.4.5",
+    "serverless-authentication": "^0.1.1",
     "sinon": "^1.17.3"
   },
   "scripts": {
