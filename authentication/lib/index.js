@@ -11,7 +11,7 @@ var microsoft = require('serverless-authentication-microsoft');
 // Signin switch
 function signin(event, callback) {
   var providerConfig = config(event.provider);
-  switch(event.provider) {
+  switch (event.provider) {
     case 'facebook':
       facebook.signin(providerConfig, {scope: 'email'}, callback);
       break;
@@ -29,7 +29,7 @@ function signin(event, callback) {
 // Callback switch
 function callback(event, callback) {
   var providerConfig = config(event.provider);
-  switch(event.provider) {
+  switch (event.provider) {
     case 'facebook':
       facebook.callback(event, providerConfig, handleResponse);
       break;
@@ -42,14 +42,14 @@ function callback(event, callback) {
     default:
       callback('Invalid provider');
   }
-  
+
   function handleResponse(err, profile) {
-    if(err){
+    if (err) {
       callback(err);
-    }else {
-      var id = profile.provider + '-' +profile.id;
+    } else {
+      var id = profile.provider + '-' + profile.id;
       // sets 1 minute expiration time as an example
-      var expires = (new Date()).getTime()+(60*1000);
+      var expires = (new Date()).getTime() + (60 * 1000);
 
       // here can be checked if user exist in db if not create new etc.
 
@@ -66,12 +66,13 @@ function authorize(event, callback) {
   try {
     var data = utils.readToken(event.authorizationToken, providerConfig.token_secret);
     var now = (new Date()).getTime();
-    if(data.expires < now) {
+    if (data.expires < now) {
       error = true; //Token expired;
     }
-  } catch(err) {
+  } catch (err) {
     error = true; //Invalid token;
   }
+
   if (!error) {
     callback(null, utils.generatePolicy(data.id, 'Allow', event.methodArn));
   } else {
@@ -83,4 +84,4 @@ exports = module.exports = {
   signin: signin,
   callback: callback,
   authorize: authorize
-}
+};
