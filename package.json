@@ -16,10 +16,11 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "mocha": "^2.4.5",
-    "serverless-authentication": "^0.1.2",
+    "serverless-authentication": "^0.1.3",
     "sinon": "^1.17.3"
   },
   "scripts": {
+    "install": "cd authentication && npm install",
     "prepublish": "npm run test",
     "test": "./node_modules/.bin/mocha specs/"
   }
