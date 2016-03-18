@@ -47,7 +47,6 @@ function callback(event, callback) {
     if(err){
       callback(err);
     }else {
-      var testing = false;
       var id = profile.provider + '-' +profile.id;
       // sets 1 minute expiration time as an example
       var expires = (new Date()).getTime()+(60*1000);
