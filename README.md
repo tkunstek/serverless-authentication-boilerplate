@@ -2,7 +2,7 @@
 
 This project is aimed to be generic authentication library for serverless (http://www.serverless.com) and is still very much work-in-progress state.
 
-test page: http://laardee.github.io/serverless-authentication-gh-pages
+Test page: http://laardee.github.io/serverless-authentication-gh-pages
 
 Provider repositories:
 
@@ -13,7 +13,7 @@ Provider repositories:
 ## Installation (TBD)
 
 1. First install Serverless framework `npm install -g serverless` if not yes installed. Version 4.2. works ok.
-2. Then create a new project based on this boilerplate sls project install -n="myProject" serverless-authentication-boilerplate`
+2. Then create a new project based on this boilerplate `sls project install -n="myProject" serverless-authentication-boilerplate`
 3. Go to created directory `cd myProject` and install dependencies with `npm install`
 
 ## How this works
