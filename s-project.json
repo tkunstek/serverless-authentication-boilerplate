@@ -1,6 +1,6 @@
 {
   "name": "serverless-authentication-boilerplate",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "profile": "serverless-v0.4.2",
   "location": "https://github.com/laardee/serverless-authentication-boilerplate",
   "author": "Eetu Tuomala <eetu.tuomala@sc5.io>",
