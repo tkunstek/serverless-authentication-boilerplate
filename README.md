@@ -12,7 +12,7 @@ Provider repositories:
 
 ## Installation (TBD)
 
-1. First install Serverless framework `npm install -g serverless` if not yes installed. Version 4.2. works ok.
+1. First install Serverless framework `npm install -g serverless`, if not yet installed. Version 4.2. works ok.
 2. Then create a new project based on this boilerplate `sls project install -n="myProject" serverless-authentication-boilerplate`
 3. Go to created directory `cd myProject` and install dependencies with `npm install`
 
@@ -23,6 +23,8 @@ This boilerplate contains authentication module that has four lambda functions
 2. callback function is called by oauth provider with `code` parameter
 3. authorize function is used by Api Gateway custom authorizer
 4. test-token function can be used to test custom authorizer, it returns principalId of custom authorizer policy. It is mapped as username in request template.
+
+To use Custom Authorized with Api Gateway, is has to be defined manually in AWS console, version 4.2. of Serverless frameworks doesn't support it.
 
 set environmental variables for config
 
