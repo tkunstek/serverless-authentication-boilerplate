@@ -1,14 +1,14 @@
 # serverless-authentication-boilerplate
 
-This project is aimed to be generic authentication library for serverless (http://www.serverless.com) and is still very much work-in-progress state.
+Work in progress. This project is aimed to be generic authentication boilerplate / component for serverless (http://www.serverless.com).
 
-Test page: http://laardee.github.io/serverless-authentication-gh-pages
+Test page that uses this boilerplate in backend: http://laardee.github.io/serverless-authentication-gh-pages
 
-Provider repositories:
+Provider packages:
 
-* facebook https://github.com/laardee/serverless-authentication-facebook
-* google https://github.com/laardee/serverless-authentication-google
-* windows live https://github.com/laardee/serverless-authentication-microsoft
+* facebook https://www.npmjs.com/package/serverless-authentication-facebook
+* google https://www.npmjs.com/package/serverless-authentication-google
+* windows live https://www.npmjs.com/package/serverless-authentication-microsoft
 
 ## Installation (TBD)
 
@@ -24,7 +24,6 @@ sls env set -k PROVIDER_FACEBOOK_SECRET -v NNNNN
 ```
 
 Google app id and secret
-
 ```
 sls env set -k PROVIDER_GOOGLE_ID -v NNNNN
 sls env set -k PROVIDER_GOOGLE_SECRET -v NNNNN
@@ -62,6 +61,8 @@ To use Custom Authorized with Api Gateway, is has to be defined manually in AWS 
 
 
 -------------------
+
+
 
 
 Notice
