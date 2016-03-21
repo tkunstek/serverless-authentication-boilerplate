@@ -1,6 +1,6 @@
-# serverless-authentication-boilerplate
+# Serverless Authentication
 
-Work in progress. This project is aimed to be generic authentication boilerplate / component for serverless (http://www.serverless.com).
+**Work in progress.** This project is aimed to be generic authentication boilerplate / component for serverless (http://www.serverless.com).
 
 Test page that uses this boilerplate in backend: http://laardee.github.io/serverless-authentication-gh-pages
 
@@ -9,13 +9,13 @@ Provider packages:
 * facebook https://www.npmjs.com/package/serverless-authentication-facebook
 * google https://www.npmjs.com/package/serverless-authentication-google
 * windows live https://www.npmjs.com/package/serverless-authentication-microsoft
+* more to come
 
-## Installation (TBD)
+## Installation
 
-1. First install Serverless framework `npm install -g serverless`, if not yet installed. Version 0.4.2 works ok.
+1. First install Serverless framework `npm install -g serverless`. Version 0.4.2 works ok.
 2. Then create a new project based on this boilerplate `sls project install -n="myProject" serverless-authentication-boilerplate`
-(If needed go to created directory `cd myProject` and install dependencies with `npm install`)
-3. Set environmental variables for config
+3. Change directory to one that was created in previous step `cd myProject` and set environmental variables for config
 
 Facebook app id and secret
 ```
@@ -47,23 +47,24 @@ sls env set -k REDIRECT_URI -v https://*API-ID*.execute-api.eu-west-1.amazonaws.
 sls env set -k TOKEN_SECRET -v token-secret
 ```
 
-4.
+## The structure of authentication component
 
-## How this works
+* signin
+  * endpoint: authentication/signin/{provider}
+  * handler: signin function creates redirect url to oauth provider
+* callback
+  * endpoint: authentication/callback/{provider}
+  * handler: function is called by oauth provider with `code` parameter
+* authorize
+  * endpoint: no end point
+  * handler: is used by Api Gateway custom authorizer
+* test-token
+  * endpoint: authentication/test-token
+  * handler: test-token function can be used to test custom authorizer, it returns principalId of custom authorizer policy. It is mapped as username in request template.
 
-This boilerplate contains authentication module that has four lambda functions
-1. signin function creates redirect url to oauth provider
-2. callback function is called by oauth provider with `code` parameter
-3. authorize function is used by Api Gateway custom authorizer
-4. test-token function can be used to test custom authorizer, it returns principalId of custom authorizer policy. It is mapped as username in request template.
+## Custom Authorizer (TBD)
 
-To use Custom Authorized with Api Gateway, is has to be defined manually in AWS console, current version (0.4.2) of Serverless frameworks doesn't support it.
-
-
--------------------
-
-
-
+To use Custom Authorized with Api Gateway, is has to be defined manually in AWS console, current version (0.4.2) of Serverless frameworks doesn't support it, but as it comes available it is added to this boilerplate.
 
 Notice
 ```
