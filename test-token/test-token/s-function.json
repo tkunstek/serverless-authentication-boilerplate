@@ -1,0 +1,51 @@
+{
+  "name": "test-token",
+  "runtime": "nodejs",
+  "description": "test-token - serverless-authentication-boilerplate",
+  "customName": false,
+  "customRole": false,
+  "handler": "handler.handler",
+  "timeout": 60,
+  "memorySize": 512,
+  "authorizer": {},
+  "custom": {
+    "excludePatterns": []
+  },
+  "endpoints": [
+    {
+      "path": "test-token",
+      "method": "GET",
+      "type": "AWS",
+      "authorizationType": "CUSTOM",
+      "authorizerFunction": "authorize",
+      "apiKeyRequired": false,
+      "requestParameters": {},
+      "requestTemplates": {
+        "application/json": "{\"username\": \"$context.authorizer.principalId\"}"
+      },
+      "responses": {
+        "400": {
+          "statusCode": "400"
+        },
+        "default": {
+          "statusCode": "200",
+          "responseParameters": {},
+          "responseModels": {},
+          "responseTemplates": {
+            "application/json": ""
+          }
+        }
+      }
+    }
+  ],
+  "events": [],
+  "environment": {
+    "SERVERLESS_PROJECT": "serverless-authentication-boilerplate",
+    "SERVERLESS_STAGE": "${stage}",
+    "SERVERLESS_REGION": "${region}"
+  },
+  "vpc": {
+    "securityGroupIds": [],
+    "subnetIds": []
+  }
+}

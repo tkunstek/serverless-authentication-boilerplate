@@ -1,0 +1,53 @@
+{
+  "name": "signin",
+  "runtime": "nodejs",
+  "description": "sls-auth-boilerplate: signin",
+  "customName": false,
+  "customRole": false,
+  "handler": "handler.handler",
+  "timeout": 60,
+  "memorySize": 512,
+  "authorizer": {},
+  "custom": {
+    "excludePatterns": []
+  },
+  "endpoints": [
+    {
+      "path": "authentication/signin/{provider}",
+      "method": "GET",
+      "type": "AWS",
+      "authorizationType": "none",
+      "authorizerFunction": false,
+      "apiKeyRequired": false,
+      "requestParameters": {},
+      "requestTemplates": {
+        "application/json": "{\"provider\":\"$input.params('provider')\",\"host\":\"$input.params().header.get('host')\",\"stage\":\"$context.stage\"}"
+      },
+      "responses": {
+        "400": {
+          "statusCode": "400"
+        },
+        "default": {
+          "statusCode": "302",
+          "responseParameters": {
+            "method.response.header.Location": "integration.response.body.url"
+          },
+          "responseModels": {},
+          "responseTemplates": {
+            "application/json": ""
+          }
+        }
+      }
+    }
+  ],
+  "events": [],
+  "environment": {
+    "SERVERLESS_PROJECT": "serverless-authentication-boilerplate",
+    "SERVERLESS_STAGE": "${stage}",
+    "SERVERLESS_REGION": "${region}"
+  },
+  "vpc": {
+    "securityGroupIds": [],
+    "subnetIds": []
+  }
+}

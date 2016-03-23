@@ -1,0 +1,5 @@
+{
+  "provider": "facebook",
+  "host": "laardee.com",
+  "stage": "dev"
+}

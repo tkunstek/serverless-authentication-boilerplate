@@ -1,0 +1,29 @@
+{
+  "name": "authorize",
+  "authorizer": {
+    "type": "TOKEN",
+    "identitySource": "method.request.header.Authorization"
+  },
+  "runtime": "nodejs",
+  "description": "sls-auth-boilerplate: authorize",
+  "customName": false,
+  "customRole": false,
+  "handler": "handler.handler",
+  "timeout": 60,
+  "memorySize": 512,
+  "authorizer": {},
+  "custom": {
+    "excludePatterns": []
+  },
+  "endpoints": [],
+  "events": [],
+  "environment": {
+    "SERVERLESS_PROJECT": "serverless-authentication-boilerplate",
+    "SERVERLESS_STAGE": "${stage}",
+    "SERVERLESS_REGION": "${region}"
+  },
+  "vpc": {
+    "securityGroupIds": [],
+    "subnetIds": []
+  }
+}
