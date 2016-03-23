@@ -1,10 +1,31 @@
 # Serverless Authentication
 
-## README IS STILL FOR SERVERLESS v.0.4.2 BOILERPLATE IS FOR v.0.5
-
 **Work in progress.** This project is aimed to be generic authentication boilerplate / component for serverless (http://www.serverless.com).
 
+## Boilerplate is updated for serverless v.0.5 but the readme is still for 0.4.2
+
 Test page that uses this boilerplate in backend: http://laardee.github.io/serverless-authentication-gh-pages
+
+Custom Authorizer & CORS needs to be set by hand in AWS Console.
+
+Custom Authorizer is deployed but it is lacking some of the settings, these settings should be added.
+
+1. Select deployed API
+2. Select _Custom Authorizers_from top menu that has _Resourses_ selected by default. Then select _Create_
+3. Fill in the form
+  * Name: CustomAuthorizer or what ever you wish to call your authorizer.
+  * Lambda region: Select the region where your Authorization function is deployed
+  * Lambda function: This is the _authorize_ function in authentication component
+  * Execution role: this is optional and can be left empty
+  * Identity token source: _method.request.header.Authorization_
+  * Token validation expression: _.*_
+  * Result TTL in seconds: 0
+
+Click _Update_.
+
+
+--------------------------
+
 
 Provider packages:
 
