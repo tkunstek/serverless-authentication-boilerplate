@@ -91,6 +91,6 @@ How to create custom authorizer in AWS console. You need to have deployed this b
 
 ## Using the authentication
 
-1. Create button or link to signin endpoint, for example <a href="https://ijgrniyi74.execute-api.eu-west-1.amazonaws.com/dev/authentication/signin/facebook">Facebook login</a>
-2. After signing in with facebook credentials the token is passed as url paramenter to uri defined in REDIRECT_CLIENT_URI environmental variable
-3. Stash the token and use it in Authentication header field
+1. Create button or link to signin endpoint, for example &lt;a href="https://ijgrniyi74.execute-api.eu-west-1.amazonaws.com/dev/authentication/signin/facebook"&gt;Facebook login&lt;/a&gt;
+2. After signing in with facebook credentials the token is passed as url parameter to uri defined in REDIRECT_CLIENT_URI environmental variable
+3. Stash the token and use it in Authentication header field on api requests
