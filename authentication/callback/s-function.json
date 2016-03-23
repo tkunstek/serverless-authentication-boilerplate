@@ -18,7 +18,7 @@
       "apiKeyRequired": false,
       "requestParameters": {},
       "requestTemplates": {
-        "application/json": "{\"provider\":\"$input.params('provider')\",\"code\":\"$input.params('code')\",\"host\":\"$input.params().header.get('host')\",\"path\":\"$context.resourcePath\"}"
+        "application/json": "{\"provider\":\"$input.params('provider')\",\"code\":\"$input.params('code')\",\"host\":\"$input.params().header.get('host')\",\"stage\":\"$context.stage\"}"
       },
       "responses": {
         "401": {

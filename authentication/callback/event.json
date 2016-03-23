@@ -1,3 +1,5 @@
 {
-  "provider": "facebook"
+  "provider": "facebook",
+  "host": "laardee.com",
+  "stage": "dev"
 }

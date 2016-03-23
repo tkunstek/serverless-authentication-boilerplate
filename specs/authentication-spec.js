@@ -10,7 +10,7 @@ describe('Authentication', () => {
   describe('Authorize', () => {
     it('should return policy', () => {
       let payload = {id: 'username-123'};
-      let providerConfig = config('facebook');
+      let providerConfig = config({provider: 'facebook'});
       let authorizationToken = utils.createToken(payload, providerConfig.token_secret);
       let event = {
         provider: 'facebook',

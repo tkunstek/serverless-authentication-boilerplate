@@ -10,7 +10,7 @@ var microsoft = require('serverless-authentication-microsoft');
 
 // Signin switch
 function signin(event, callback) {
-  var providerConfig = config(event.provider);
+  var providerConfig = config(event);
   switch (event.provider) {
     case 'facebook':
       facebook.signin(providerConfig, {scope: 'email'}, callback);
@@ -28,7 +28,7 @@ function signin(event, callback) {
 
 // Callback switch
 function callback(event, callback) {
-  var providerConfig = config(event.provider);
+  var providerConfig = config(event);
   switch (event.provider) {
     case 'facebook':
       facebook.callback(event, providerConfig, handleResponse);
@@ -68,7 +68,7 @@ function callback(event, callback) {
 
 // Authorize
 function authorize(event, callback) {
-  var providerConfig = config(event.provider);
+  var providerConfig = config(event);
   // this example uses simple expiration time validation
   try {
     var data = utils.readToken(event.authorizationToken, providerConfig.token_secret);

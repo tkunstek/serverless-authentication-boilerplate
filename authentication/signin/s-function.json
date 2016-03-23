@@ -18,7 +18,7 @@
       "apiKeyRequired": false,
       "requestParameters": {},
       "requestTemplates": {
-        "application/json": "{\"provider\":\"$input.params('provider')\",\"host\":\"$input.params().header.get('host')\",\"path\":\"$context.resourcePath\"}"
+        "application/json": "{\"provider\":\"$input.params('provider')\",\"host\":\"$input.params().header.get('host')\",\"stage\":\"$context.stage\"}"
       },
       "responses": {
         "400": {
