@@ -1,7 +1,7 @@
 {
-  "name": "signin",
+  "name": "test-token",
   "runtime": "nodejs",
-  "description": "sls-auth-boilerplate: signin",
+  "description": "test-token - serverless-authentication-boilerplate",
   "customName": false,
   "customRole": false,
   "handler": "handler.handler",
@@ -13,25 +13,23 @@
   },
   "endpoints": [
     {
-      "path": "authentication/signin/{provider}",
+      "path": "test-token",
       "method": "GET",
       "type": "AWS",
-      "authorizationType": "none",
-      "authorizerFunction": false,
+      "authorizationType": "CUSTOM",
+      "authorizerFunction": "authorize",
       "apiKeyRequired": false,
       "requestParameters": {},
       "requestTemplates": {
-        "application/json": "{\"provider\":\"$input.params('provider')\",\"host\":\"$input.params().header.get('host')\",\"stage\":\"$context.stage\"}"
+        "application/json": "{\"username\": \"$context.authorizer.principalId\"}"
       },
       "responses": {
         "400": {
           "statusCode": "400"
         },
         "default": {
-          "statusCode": "302",
-          "responseParameters": {
-            "method.response.header.Location": "integration.response.body.url"
-          },
+          "statusCode": "200",
+          "responseParameters": {},
           "responseModels": {},
           "responseTemplates": {
             "application/json": ""

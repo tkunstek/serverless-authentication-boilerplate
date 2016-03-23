@@ -55,16 +55,16 @@ sls env set -k REDIRECT_URI -v https://*API-ID*.execute-api.eu-west-1.amazonaws.
 ## The structure of authentication component
 
 * signin
-  * endpoint: authentication/signin/{provider}
+  * endpoint: /authentication/signin/{provider}
   * handler: signin function creates redirect url to oauth provider
 * callback
-  * endpoint: authentication/callback/{provider}
+  * endpoint: /authentication/callback/{provider}
   * handler: function is called by oauth provider with `code` parameter
 * authorize
   * endpoint: no end point
   * handler: is used by Api Gateway custom authorizer
 * test-token
-  * endpoint: authentication/test-token
+  * endpoint: /test-token
   * handler: test-token function can be used to test custom authorizer, it returns principalId of custom authorizer policy. It is mapped as username in request template.
 
 ## Custom Authorizer creation in AWS console

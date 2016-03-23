@@ -1,13 +1,4 @@
 {
   "name": "serverless-authentication-boilerplate",
-  "version": "0.1.9",
-  "profile": "serverless-v0.4.2",
-  "location": "https://github.com/laardee/serverless-authentication-boilerplate",
-  "author": "Eetu Tuomala <eetu.tuomala@sc5.io>",
-  "description": "Boilerplate for Serverless Authentication",
-  "custom": {},
-  "plugins": [
-    "serverless-cors-plugin",
-    "serverless-plugin-autoprune"
-  ]
+  "custom": {}
 }

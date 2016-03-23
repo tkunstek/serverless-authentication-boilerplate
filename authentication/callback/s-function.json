@@ -1,13 +1,15 @@
 {
   "name": "callback",
+  "runtime": "nodejs",
+  "description": "sls-auth-boilerplate: callback",
   "customName": false,
   "customRole": false,
-  "handler": "callback/handler.handler",
-  "timeout": 30,
+  "handler": "handler.handler",
+  "timeout": 60,
   "memorySize": 512,
+  "authorizer": {},
   "custom": {
-    "excludePatterns": [],
-    "envVars": []
+    "excludePatterns": []
   },
   "endpoints": [
     {
@@ -15,14 +17,15 @@
       "method": "GET",
       "type": "AWS",
       "authorizationType": "none",
+      "authorizerFunction": false,
       "apiKeyRequired": false,
       "requestParameters": {},
       "requestTemplates": {
         "application/json": "{\"provider\":\"$input.params('provider')\",\"code\":\"$input.params('code')\",\"host\":\"$input.params().header.get('host')\",\"stage\":\"$context.stage\"}"
       },
       "responses": {
-        "401": {
-          "statusCode": "401"
+        "400": {
+          "statusCode": "400"
         },
         "default": {
           "statusCode": "302",
@@ -37,5 +40,14 @@
       }
     }
   ],
-  "events": []
+  "events": [],
+  "environment": {
+    "SERVERLESS_PROJECT": "serverless-authentication-boilerplate",
+    "SERVERLESS_STAGE": "${stage}",
+    "SERVERLESS_REGION": "${region}"
+  },
+  "vpc": {
+    "securityGroupIds": [],
+    "subnetIds": []
+  }
 }

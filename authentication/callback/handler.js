@@ -1,8 +1,5 @@
 'use strict';
 
-// Require Serverless ENV vars
-var ServerlessHelpers = require('serverless-helpers-js').loadEnv();
-
 // Authentication logic
 var lib = require('../lib');
 
