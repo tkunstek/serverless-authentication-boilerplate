@@ -1,4 +1,6 @@
 {
   "name": "serverless-authentication-boilerplate",
-  "custom": {}
+  "custom": {},
+  "plugins": [
+  ]
 }

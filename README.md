@@ -1,5 +1,7 @@
 # Serverless Authentication
 
+## README IS STILL FOR SERVERLESS v.0.4.2 BOILERPLATE IS FOR v.0.5
+
 **Work in progress.** This project is aimed to be generic authentication boilerplate / component for serverless (http://www.serverless.com).
 
 Test page that uses this boilerplate in backend: http://laardee.github.io/serverless-authentication-gh-pages

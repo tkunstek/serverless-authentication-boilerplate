@@ -20,11 +20,13 @@
     "jsonwebtoken": "^5.7.0",
     "lodash": "^4.6.0",
     "request": "^2.69.0",
-    "serverless-authentication": "^0.1.7",
+    "serverless-authentication": "https://github.com/laardee/serverless-authentication.git#develop",
     "serverless-authentication-facebook": "^0.1.4",
     "serverless-authentication-google": "^0.1.5",
     "serverless-authentication-microsoft": "^0.1.4",
-    "serverless-helpers-js": "~0.1.0"
+    "serverless-cors-plugin": "^0.3.2",
+    "serverless-helpers-js": "~0.1.0",
+    "serverless-plugin-autoprune": "^0.1.2"
   },
   "devDependencies": {
     "chai": "^3.5.0",

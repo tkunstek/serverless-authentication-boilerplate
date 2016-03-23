@@ -1,17 +1,16 @@
 {
   "name": "authorize",
-  "authorizer": {
-    "type": "TOKEN",
-    "identitySource": "method.request.header.Authorization"
-  },
   "runtime": "nodejs",
   "description": "sls-auth-boilerplate: authorize",
   "customName": false,
   "customRole": false,
-  "handler": "handler.handler",
+  "handler": "authentication/authorize/handler.handler",
   "timeout": 60,
   "memorySize": 512,
-  "authorizer": {},
+  "authorizer": {
+    "type": "TOKEN",
+    "identitySource": "method.request.header.Authorization"
+  },
   "custom": {
     "excludePatterns": []
   },
@@ -20,7 +19,15 @@
   "environment": {
     "SERVERLESS_PROJECT": "serverless-authentication-boilerplate",
     "SERVERLESS_STAGE": "${stage}",
-    "SERVERLESS_REGION": "${region}"
+    "SERVERLESS_REGION": "${region}",
+    "TOKEN_SECRET": "${tokenSecret}",
+    "REDIRECT_CLIENT_URI": "${redirectClientURI}",
+    "PROVIDER_FACEBOOK_ID": "${providerFacebookId}",
+    "PROVIDER_FACEBOOK_SECRET": "${providerFacebookSecret}",
+    "PROVIDER_GOOGLE_ID": "${providerGoogleId}",
+    "PROVIDER_GOOGLE_SECRET": "${providerGoogleSecret}",
+    "PROVIDER_MICROSOFT_ID": "${providerMicrosoftId}",
+    "PROVIDER_MICROSOFT_SECRET": "${providerMicrosoftSecret}"
   },
   "vpc": {
     "securityGroupIds": [],

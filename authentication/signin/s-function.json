@@ -4,7 +4,7 @@
   "description": "sls-auth-boilerplate: signin",
   "customName": false,
   "customRole": false,
-  "handler": "handler.handler",
+  "handler": "authentication/signin/handler.handler",
   "timeout": 60,
   "memorySize": 512,
   "authorizer": {},
@@ -44,7 +44,15 @@
   "environment": {
     "SERVERLESS_PROJECT": "serverless-authentication-boilerplate",
     "SERVERLESS_STAGE": "${stage}",
-    "SERVERLESS_REGION": "${region}"
+    "SERVERLESS_REGION": "${region}",
+    "REDIRECT_CLIENT_URI": "${redirectClientURI}",
+    "TOKEN_SECRET": "${tokenSecret}",
+    "PROVIDER_FACEBOOK_ID": "${providerFacebookId}",
+    "PROVIDER_FACEBOOK_SECRET": "${providerFacebookSecret}",
+    "PROVIDER_GOOGLE_ID": "${providerGoogleId}",
+    "PROVIDER_GOOGLE_SECRET": "${providerGoogleSecret}",
+    "PROVIDER_MICROSOFT_ID": "${providerMicrosoftId}",
+    "PROVIDER_MICROSOFT_SECRET": "${providerMicrosoftSecret}"
   },
   "vpc": {
     "securityGroupIds": [],

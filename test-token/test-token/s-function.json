@@ -4,12 +4,16 @@
   "description": "test-token - serverless-authentication-boilerplate",
   "customName": false,
   "customRole": false,
-  "handler": "handler.handler",
+  "handler": "test-token/test-token/handler.handler",
   "timeout": 60,
   "memorySize": 512,
   "authorizer": {},
   "custom": {
-    "excludePatterns": []
+    "excludePatterns": [],
+    "cors": {
+      "allowOrigin": "*",
+      "allowHeaders": ["Content-Type", "X-Amz-Date", "Authorization", "X-Api-Key"]
+    }
   },
   "endpoints": [
     {
@@ -42,7 +46,8 @@
   "environment": {
     "SERVERLESS_PROJECT": "serverless-authentication-boilerplate",
     "SERVERLESS_STAGE": "${stage}",
-    "SERVERLESS_REGION": "${region}"
+    "SERVERLESS_REGION": "${region}",
+    "TOKEN_SECRET": "${tokenSecret}"
   },
   "vpc": {
     "securityGroupIds": [],
