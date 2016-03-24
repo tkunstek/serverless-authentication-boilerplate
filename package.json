@@ -1,6 +1,6 @@
 {
   "name": "serverless-authentication-boilerplate",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Boilerplate for Serverless Authentication",
   "author": "Eetu Tuomala <eetu.tuomala@sc5.io>",
   "license": "MIT",
@@ -20,7 +20,7 @@
     "jsonwebtoken": "^5.7.0",
     "lodash": "^4.6.0",
     "request": "^2.69.0",
-    "serverless-authentication": "https://github.com/laardee/serverless-authentication.git#develop",
+    "serverless-authentication": "^0.1.8",
     "serverless-authentication-facebook": "^0.1.4",
     "serverless-authentication-google": "^0.1.5",
     "serverless-authentication-microsoft": "^0.1.4",
