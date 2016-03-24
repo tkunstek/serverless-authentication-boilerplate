@@ -1,12 +1,14 @@
 # Serverless Authentication
 
-**Work in progress.** This project is aimed to be generic authentication boilerplate / component for Serverless framework (http://www.serverless.com).
-
-## Boilerplate is updated for Serverless v.0.5 but not yet fully tested
+This project is aimed to be generic authentication boilerplate for Serverless framework (http://www.serverless.com).
 
 Test page that uses this boilerplate in backend: http://laardee.github.io/serverless-authentication-gh-pages
 
-For now you need to do some manual adjustment with Custom Authorizer and CORS in AWS Console.
+## Boilerplate is updated for Serverless v.0.5
+
+**Issues with Serverless v.0.5**
+
+For now you need to do some manual adjustment with Custom Authorizer and CORS in AWS Console. Project install with name parameter doesn't seem to work either, so boilerplate is installed with default name 'serverless-authentication-boilerplate'.
 
 ## Installation
 
@@ -22,7 +24,8 @@ For now you need to do some manual adjustment with Custom Authorizer and CORS in
 
 Open _meta/variables/s-variables-STAGE.json where STAGE is the stage you are using e.g. s-variables-dev.json in "dev" stage.
 
-Append following variables:
+Add following variables to file:
+
 ```
 "redirectClientURI": "http://url-to-frontend-webapp/",
 "tokenSecret": "secret-for-json-web-token",
