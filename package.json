@@ -1,6 +1,6 @@
 {
   "name": "serverless-authentication-boilerplate",
-  "version": "0.2.6",
+  "version": "0.2.8",
   "description": "Boilerplate for Serverless Authentication",
   "author": "Eetu Tuomala <eetu.tuomala@sc5.io>",
   "license": "MIT",
@@ -16,16 +16,8 @@
     "lambda"
   ],
   "dependencies": {
-    "async": "^1.5.2",
-    "jsonwebtoken": "^5.7.0",
-    "lodash": "^4.6.0",
-    "request": "^2.69.0",
     "serverless-authentication": "^0.1.8",
-    "serverless-authentication-facebook": "^0.1.4",
-    "serverless-authentication-google": "^0.1.5",
-    "serverless-authentication-microsoft": "^0.1.4",
     "serverless-cors-plugin": "^0.3.2",
-    "serverless-helpers-js": "~0.1.0",
     "serverless-plugin-autoprune": "^0.1.2"
   },
   "devDependencies": {
@@ -35,6 +27,7 @@
     "sinon": "^1.17.3"
   },
   "scripts": {
+    "install": "cd authentication && npm install",
     "prepublish": "npm run test",
     "test": "./node_modules/.bin/mocha specs/"
   }
