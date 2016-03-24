@@ -1,6 +1,6 @@
 {
   "name": "serverless-authentication-boilerplate",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Boilerplate for Serverless Authentication",
   "author": "Eetu Tuomala <eetu.tuomala@sc5.io>",
   "license": "MIT",
