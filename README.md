@@ -4,23 +4,23 @@ This project is aimed to be generic authentication boilerplate for Serverless fr
 
 Test page that uses this boilerplate in backend: http://laardee.github.io/serverless-authentication-gh-pages
 
-## Boilerplate is updated for Serverless v.0.5
+## Boilerplate is now compatible with Serverless v.0.5.
 
-**Issues with Serverless v.0.5**
+**Issues with Serverless v.0.5.**
 
 For now you need to do some manual adjustment with Custom Authorizer and CORS in AWS Console. Project install with name parameter doesn't seem to work either, so boilerplate is installed with default name 'serverless-authentication-boilerplate'.
 
 ## Installation
 
-1. First install Serverless framework `npm install -g serverless`. Version 0.5 works ok.
-2. Then create a new project based on this boilerplate `serverless project install -n myProject serverless-authentication-boilerplate` (-n or --name doesn't seem to work in Serverless v.0.5)
-3. Change directory to one that was created in previous step
-4. Run `npm install`
-5. Set environmental variables
+1. Install Serverless framework with `npm install -g serverless`.
+2. Create a new project based on this boilerplate `serverless project install -n myProject serverless-authentication-boilerplate` (-n or --name doesn't seem to work in Serverless v.0.5)
+3. Change directory to one that was created in previous step.
+4. Run `npm install`.
+5. Set [environmental variables](#env-vars).
 6. Run `serverless dash deploy` on project root folder. Select all and `Deploy`.
-7. Fine-tune Custom Authorizer and CORS in AWS Console.
+7. Fine-tune [Custom Authorizer](#custom-authorizer) and [CORS](#cors) in AWS Console.
 
-## Environmental variables
+## <a id="env-vars"></a>Environmental variables
 
 Open _meta/variables/s-variables-STAGE.json where STAGE is the stage you are using e.g. s-variables-dev.json in "dev" stage.
 
@@ -39,7 +39,7 @@ Add following variables to file:
 
 Environmental variables are mapped in s-function.json files, for example in authentication/signin/s-function.json.
 
-## Custom Authorizer
+## <a id="custom-authorizer"></a>Custom Authorizer
 
 Custom Authorizer is deployed but it is lacking some of the settings, these settings should be added.
 
@@ -55,7 +55,7 @@ Custom Authorizer is deployed but it is lacking some of the settings, these sett
 
 Click _Update_.
 
-## Cross-origin resource sharing (CORS)
+## <a id="cors"></a>Cross-origin resource sharing (CORS)
 
 CORS plugin (https://github.com/joostfarla/serverless-cors-plugin) is not yet compatible with Serverless 0.5, so you need to manually enable cors to test-token resource in AWS Console.
 
