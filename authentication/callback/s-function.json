@@ -4,7 +4,7 @@
   "description": "${project} - ${stage}: callback",
   "customName": false,
   "customRole": false,
-  "handler": "authentication/callback/handler.handler",
+  "handler": "callback/handler.handler",
   "timeout": 60,
   "memorySize": 512,
   "authorizer": {},

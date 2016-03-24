@@ -4,12 +4,13 @@
   "description": "${project} - ${stage}: authorize",
   "customName": false,
   "customRole": false,
-  "handler": "authentication/authorize/handler.handler",
+  "handler": "authorize/handler.handler",
   "timeout": 60,
   "memorySize": 512,
   "authorizer": {
     "type": "TOKEN",
-    "identitySource": "method.request.header.Authorization"
+    "identitySource": "method.request.header.Authorization",
+    "resultTtlInSeconds": 0
   },
   "custom": {
     "excludePatterns": []

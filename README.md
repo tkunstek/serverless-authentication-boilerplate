@@ -6,7 +6,7 @@ Test page that uses this boilerplate in backend: http://laardee.github.io/server
 
 ## Boilerplate is now compatible with Serverless v.0.5.
 
-**Issues with Serverless v.0.5.**
+**Few small issues with Serverless v.0.5.**
 
 For now you need to do some manual adjustment with Custom Authorizer and CORS in AWS Console. Project install with name parameter doesn't seem to work either, so boilerplate is installed with default name 'serverless-authentication-boilerplate'.
 
@@ -19,6 +19,8 @@ For now you need to do some manual adjustment with Custom Authorizer and CORS in
 5. Set [environmental variables](#env-vars).
 6. Run `serverless dash deploy` on project root folder. Select all and `Deploy`.
 7. Fine-tune [Custom Authorizer](#custom-authorizer) and [CORS](#cors) in AWS Console.
+
+You need to deploy the API by hand after the changes.
 
 ## <a id="env-vars"></a>Environmental variables
 
