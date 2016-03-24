@@ -1,7 +1,7 @@
 {
   "name": "test-token",
   "runtime": "nodejs",
-  "description": "test-token - serverless-authentication-boilerplate",
+  "description": "${project} - ${stage}: test-token",
   "customName": false,
   "customRole": false,
   "handler": "test-token/test-token/handler.handler",

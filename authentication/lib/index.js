@@ -48,10 +48,10 @@ function callback(event, callback) {
       callback(err);
     } else {
       var id = profile.provider + '-' + profile.id;
+
+      // here can be checked if user exist in db and update properties pr if not, create new etc.
+
       // sets 1 minute expiration time as an example
-
-      // here can be checked if user exist in db if not create new etc.
-
       var tokenData = {
         payload: {
           id: id

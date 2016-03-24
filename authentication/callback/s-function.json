@@ -1,7 +1,7 @@
 {
   "name": "callback",
   "runtime": "nodejs",
-  "description": "sls-auth-boilerplate: callback",
+  "description": "${project} - ${stage}: callback",
   "customName": false,
   "customRole": false,
   "handler": "authentication/callback/handler.handler",

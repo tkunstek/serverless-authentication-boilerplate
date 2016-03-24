@@ -1,7 +1,7 @@
 {
   "name": "authorize",
   "runtime": "nodejs",
-  "description": "sls-auth-boilerplate: authorize",
+  "description": "${project} - ${stage}: authorize",
   "customName": false,
   "customRole": false,
   "handler": "authentication/authorize/handler.handler",

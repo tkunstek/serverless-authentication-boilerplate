@@ -1,7 +1,7 @@
 {
   "name": "signin",
   "runtime": "nodejs",
-  "description": "sls-auth-boilerplate: signin",
+  "description": "${project} - ${stage}: signin",
   "customName": false,
   "customRole": false,
   "handler": "authentication/signin/handler.handler",
