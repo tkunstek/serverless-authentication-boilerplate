@@ -2,7 +2,7 @@
 
 This project is aimed to be generic authentication boilerplate for Serverless framework (http://www.serverless.com).
 
-Test page that uses this boilerplate in backend: http://laardee.github.io/serverless-authentication-gh-pages
+Webapp demo that uses this boilerplate: http://laardee.github.io/serverless-authentication-gh-pages
 
 ## Boilerplate is now compatible with Serverless v.0.5.
 
