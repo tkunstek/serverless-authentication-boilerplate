@@ -51,6 +51,8 @@ function callback(event, callback) {
 
       // here can be checked if user exist in db and update properties pr if not, create new etc.
 
+      // profile class: https://github.com/laardee/serverless-authentication/blob/master/src/profile.js
+
       // sets 1 minute expiration time as an example
       var tokenData = {
         payload: {

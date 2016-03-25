@@ -1,6 +1,6 @@
 {
   "name": "serverless-authentication-boilerplate",
-  "version": "0.2.9",
+  "version": "0.2.10",
   "description": "Boilerplate for Serverless Authentication",
   "author": "Eetu Tuomala <eetu.tuomala@sc5.io>",
   "license": "MIT",
@@ -17,7 +17,7 @@
   ],
   "dependencies": {
     "serverless-authentication": "^0.1.8",
-    "serverless-cors-plugin": "^0.3.2",
+    "serverless-cors-plugin": "^0.4.0",
     "serverless-plugin-autoprune": "^0.1.2"
   },
   "devDependencies": {

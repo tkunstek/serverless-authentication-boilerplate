@@ -8,7 +8,7 @@ Webapp demo that uses this boilerplate: http://laardee.github.io/serverless-auth
 
 **Few small issues with Serverless v.0.5.**
 
-For now you need to do some manual adjustment with Custom Authorizer and CORS in AWS Console. Project install with name parameter doesn't seem to work either, so boilerplate is installed with default name 'serverless-authentication-boilerplate'.
+For now you need to do some manual adjustment with Custom Authorizer in AWS Console. Project install with name parameter doesn't seem to work either, so boilerplate is installed with default name 'serverless-authentication-boilerplate'.
 
 ## Installation
 
@@ -17,10 +17,8 @@ For now you need to do some manual adjustment with Custom Authorizer and CORS in
 3. Change directory to one that was created in previous step.
 4. Run `npm install`.
 5. Set [environmental variables](#env-vars).
-6. Run `serverless dash deploy` on project root folder. Select all and `Deploy`.
-7. Fine-tune [Custom Authorizer](#custom-authorizer) and [CORS](#cors) in AWS Console.
-
-You need to deploy the API by hand after the changes.
+6. On project root folder, first run `serverless function deploy` to deploy functions and then run `serverless endpoint deploy --all` to deploy endpoints. `--all` parameter adds OPTIONS method to get cross-domain access working in test-token.
+7. Fine-tune [Custom Authorizer](#custom-authorizer).
 
 The redirect URI that needs to be defined in oauth provider's application settings is the callback endpoint of the API. For example if you use facebook login, the redirect URI is _https://API-ID.execute-api.us-east-1.amazonaws.com/dev/authentication/callback/facebook_ and for google _https://API-ID.execute-api.us-east-1.amazonaws.com/dev/authentication/callback/google_.
 
@@ -41,7 +39,7 @@ Add following variables to file:
 "providerMicrosoftSecret": "microsoft-app-secret"
 ```
 
-Environmental variables are mapped in s-function.json files, for example in authentication/signin/s-function.json.
+Environmental variables are now mapped in s-function.json files, for example in authentication/signin/s-function.json.
 
 ## <a id="custom-authorizer"></a>Custom Authorizer
 
@@ -58,12 +56,6 @@ Custom Authorizer is deployed but it is lacking some of the settings, these sett
   * Result TTL in seconds: 0
 
 Click _Update_.
-
-## <a id="cors"></a>Cross-origin resource sharing (CORS)
-
-CORS plugin (https://github.com/joostfarla/serverless-cors-plugin) is not yet compatible with Serverless 0.5, so you need to manually enable cors to test-token resource in AWS Console.
-
-Instructions in AWS docs http://docs.aws.amazon.com/apigateway/latest/developerguide/how-to-cors.html
 
 ## The structure
 
