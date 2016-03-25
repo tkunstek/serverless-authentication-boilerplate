@@ -22,7 +22,7 @@ For now you need to do some manual adjustment with Custom Authorizer and CORS in
 
 You need to deploy the API by hand after the changes.
 
-The redirect URI that needs to be defined in oauth provider's application settings is the callback endpoint of the API. For example if you use facebook login, the redirect URI is https://*API-ID*.execute-api.us-east-1.amazonaws.com/dev/authentication/callback/facebook and for google https://*API-ID*.execute-api.us-east-1.amazonaws.com/dev/authentication/callback/google.
+The redirect URI that needs to be defined in oauth provider's application settings is the callback endpoint of the API. For example if you use facebook login, the redirect URI is _https://API-ID.execute-api.us-east-1.amazonaws.com/dev/authentication/callback/facebook_ and for google _https://API-ID.execute-api.us-east-1.amazonaws.com/dev/authentication/callback/google_.
 
 ## <a id="env-vars"></a>Environmental variables
 
