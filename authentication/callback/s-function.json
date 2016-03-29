@@ -21,11 +21,14 @@
       "apiKeyRequired": false,
       "requestParameters": {},
       "requestTemplates": {
-        "application/json": "{\"provider\":\"$input.params('provider')\",\"code\":\"$input.params('code')\",\"host\":\"$input.params().header.get('host')\",\"stage\":\"$context.stage\"}"
+        "application/json": "{\"provider\":\"$input.params('provider')\",\"code\":\"$input.params('code')\",\"state\":\"$input.params('state')\",\"host\":\"$input.params().header.get('host')\",\"stage\":\"$context.stage\"}"
       },
       "responses": {
         "400": {
           "statusCode": "400"
+        },
+        "401": {
+          "statusCode": "401"
         },
         "default": {
           "statusCode": "302",

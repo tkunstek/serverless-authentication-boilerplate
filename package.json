@@ -1,6 +1,6 @@
 {
   "name": "serverless-authentication-boilerplate",
-  "version": "0.2.11",
+  "version": "0.2.12",
   "description": "Boilerplate for Serverless Authentication",
   "author": "Eetu Tuomala <eetu.tuomala@sc5.io>",
   "license": "MIT",
@@ -23,7 +23,7 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "mocha": "^2.4.5",
-    "serverless-authentication": "^0.1.7",
+    "serverless-authentication": "^0.1.9",
     "sinon": "^1.17.3"
   },
   "scripts": {

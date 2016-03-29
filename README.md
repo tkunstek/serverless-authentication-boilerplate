@@ -17,8 +17,8 @@ For now you need to do some manual adjustment with Custom Authorizer and CORS in
 3. Change directory to one that was created in previous step.
 4. Run `npm install`.
 5. Set [environmental variables](#env-vars).
-6. Run `serverless dash deploy` on project root folder. Select all and `Deploy`.
-7. Fine-tune [Custom Authorizer](#custom-authorizer) and [CORS](#cors) in AWS Console.
+6. Run `serverless function deploy` on project root folder. Select all and `Deploy`. Or you can enable serverless-cors-plugin and first deploy functions `serverless function deploy` and then deploy endpoints with parameter --all `serverless endpoint deploy --all`.
+7. Fine-tune [Custom Authorizer](#custom-authorizer) (and [CORS](#cors) if you choose not to use CORS plugin) in AWS Console.
 
 You need to deploy the API by hand after the changes.
 

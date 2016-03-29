@@ -1,3 +1,5 @@
+'use strict';
+
 // Config
 var slsAuth = require('serverless-authentication');
 var config = slsAuth.config;
@@ -11,18 +13,22 @@ var microsoft = require('serverless-authentication-microsoft');
 // Signin switch
 function signin(event, callback) {
   var providerConfig = config(event);
+  // This is just a demo state, in real application you could
+  // create a hash and save it to dynamo db and then compare it
+  // in the callback
+  var state = 'state-'+event.provider;
   switch (event.provider) {
     case 'facebook':
-      facebook.signin(providerConfig, {scope: 'email'}, callback);
+      facebook.signin(providerConfig, {scope: 'email', state: state}, callback);
       break;
     case 'google':
-      google.signin(providerConfig, {scope: 'profile email'}, callback);
+      google.signin(providerConfig, {scope: 'profile email', state: state}, callback);
       break;
     case 'microsoft':
-      microsoft.signin(providerConfig, {scope: 'wl.basic wl.emails'}, callback);
+      microsoft.signin(providerConfig, {scope: 'wl.basic wl.emails', state: state}, callback);
       break;
     default:
-      callback('Invalid provider');
+      utils.errorResponse({error: 'Invalid provider'}, providerConfig, callback);
   }
 }
 
@@ -40,12 +46,16 @@ function callback(event, callback) {
       microsoft.callback(event, providerConfig, handleResponse);
       break;
     default:
-      callback('Invalid provider');
+      utils.errorResponse({error: 'Invalid provider'}, providerConfig, callback);
   }
 
-  function handleResponse(err, profile) {
+  function handleResponse(err, profile, state) {
     if (err) {
-      callback(err);
+      utils.errorResponse({error: 'Unauthorized'}, providerConfig, callback);
+    } else if(state !== 'state-'+profile.provider) {
+      // here you should compare if the state returned from provider exist in dynamo db
+      // and then expire it
+      utils.errorResponse({error: 'State mismatch'}, providerConfig, callback);
     } else {
       var id = profile.provider + '-' + profile.id;
 

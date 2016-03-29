@@ -32,7 +32,7 @@ describe('Authentication', () => {
 
       lib.signin(event, (error, data) => {
         expect(error).to.be.null;
-        expect(data.url).to.be.equal('https://www.facebook.com/dialog/oauth?client_id=fb-mock-id&redirect_uri=https://api-id.execute-api.eu-west-1.amazonaws.com/dev/callback/facebook&scope=email');
+        expect(data.url).to.be.equal('https://www.facebook.com/dialog/oauth?client_id=fb-mock-id&redirect_uri=https://api-id.execute-api.eu-west-1.amazonaws.com/dev/callback/facebook&scope=email&state=state-facebook');
       });
     });
 
@@ -43,7 +43,7 @@ describe('Authentication', () => {
 
       lib.signin(event, (error, data) => {
         expect(error).to.be.null;
-        expect(data.url).to.be.equal('https://accounts.google.com/o/oauth2/v2/auth?client_id=undefined&redirect_uri=https://api-id.execute-api.eu-west-1.amazonaws.com/dev/callback/google&scope=profile email&response_type=code');
+        expect(data.url).to.be.equal('https://accounts.google.com/o/oauth2/v2/auth?client_id=undefined&redirect_uri=https://api-id.execute-api.eu-west-1.amazonaws.com/dev/callback/google&scope=profile email&response_type=code&state=state-google');
       });
     });
 
@@ -54,30 +54,18 @@ describe('Authentication', () => {
 
       lib.signin(event, (error, data) => {
         expect(error).to.be.null;
-        expect(data.url).to.be.equal('https://login.live.com/oauth20_authorize.srf?client_id=undefined&redirect_uri=https://api-id.execute-api.eu-west-1.amazonaws.com/dev/callback/microsoft&scope=wl.basic wl.emails&response_type=code');
+        expect(data.url).to.be.equal('https://login.live.com/oauth20_authorize.srf?client_id=undefined&redirect_uri=https://api-id.execute-api.eu-west-1.amazonaws.com/dev/callback/microsoft&scope=wl.basic wl.emails&response_type=code&state=state-microsoft');
       });
     });
 
-    it('should fail to return oauth signin url for crappyauth', () => {
+    it('should fail to return token for crappyauth', () => {
       let event = {
         provider: 'crappyauth'
       };
 
       lib.signin(event, (error, data) => {
-        expect(error).to.be.equal('Invalid provider');
-      });
-    });
-  });
-
-  describe('Callback', () => {
-    it('should fail', () => {
-      let event = {
-        provider: 'crappyauth',
-        code: 'code'
-      };
-
-      lib.callback(event, (error, data) => {
-        expect(error).not.to.be.null;
+        expect(error).to.be.null;
+        expect(data.url).to.be.equal('http://localhost:3000/auth/crappyauth/?error=Invalid provider');
       });
     });
   });
