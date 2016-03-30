@@ -1,4 +1,5 @@
 # Serverless Authentication
+[![serverless](http://public.serverless.com/badges/v3.svg)](http://www.serverless.com)
 
 This project is aimed to be generic authentication boilerplate for Serverless framework (http://www.serverless.com).
 
