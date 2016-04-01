@@ -9,23 +9,28 @@ Webapp demo that uses this boilerplate: http://laardee.github.io/serverless-auth
 
 **Few small issues with Serverless v.0.5.**
 
-For now you need to do some manual adjustment with Custom Authorizer and CORS in AWS Console. Project install with name parameter doesn't seem to work either, so boilerplate is installed with default name 'serverless-authentication-boilerplate'.
+For now, you need to do some manual adjustment with Custom Authorizer AWS Console. Also Serverless v.0.5 fails to install if plugins are listed in s-project.json, see Installation [step 6](#step-6).
 
 ## Installation
 
 1. Install Serverless framework with `npm install -g serverless`.
-2. Create a new project based on this boilerplate `serverless project install -n myProject serverless-authentication-boilerplate` (-n or --name doesn't seem to work in Serverless v.0.5)
+2. Create a new project based on this boilerplate `serverless project install serverless-authentication-boilerplate`
 3. Change directory to one that was created in previous step.
 4. Run `npm install`.
 5. Set [environmental variables](#env-vars).
-6. Run `serverless function deploy` on project root folder. Select all and `Deploy`. Or you can enable serverless-cors-plugin and first deploy functions `serverless function deploy` and then deploy endpoints with parameter --all `serverless endpoint deploy --all`.
-7. Fine-tune [Custom Authorizer](#custom-authorizer) (and [CORS](#cors) if you choose not to use CORS plugin) in AWS Console.
+6. <a id="step-6">Enable serverless CORS plugin by adding "serverless-cors-plugin" to s-project.json (https://github.com/joostfarla/serverless-cors-plugin#installation).
+7. Run `serverless dash deploy` on the project root folder. Select all and `Deploy`. Then deploy endpoints with parameter --all `serverless endpoint deploy --all`.
+8. Fine-tune [Custom Authorizer](#custom-authorizer) in AWS Console.
 
-You need to deploy the API by hand after the changes.
+In step 6, you may also want to enable 'serverless-plugin-autoprune', it is a nice plugin that removes old lambda function versions from AWS.
+
+You need to deploy the API by hand in AWS console after the changes.
+
+## Set up authentication provider application settings
 
 The redirect URI that needs to be defined in oauth provider's application settings is the callback endpoint of the API. For example if you use facebook login, the redirect URI is _https://API-ID.execute-api.us-east-1.amazonaws.com/dev/authentication/callback/facebook_ and for google _https://API-ID.execute-api.us-east-1.amazonaws.com/dev/authentication/callback/google_.
 
-## <a id="env-vars"></a>Environmental variables
+## <a id="env-vars"></a>Environmental Variables
 
 Open _meta/variables/s-variables-STAGE.json where STAGE is the stage you are using e.g. s-variables-dev.json in "dev" stage.
 
@@ -42,7 +47,22 @@ Add following variables to file:
 "providerMicrosoftSecret": "microsoft-app-secret"
 ```
 
-Environmental variables are now mapped in s-function.json files, for example in authentication/signin/s-function.json.
+If you are using stage "dev", then contents of file s-variables-dev.json should be
+```
+{
+  "stage": "dev",
+  "redirectClientURI": "http://url-to-frontend-webapp/",
+  "tokenSecret": "secret-for-json-web-token",
+  "providerFacebookId": "facebook-app-id",
+  "providerFacebookSecret": "facebook-app-secret",
+  "providerGoogleId": "google-app-id",
+  "providerGoogleSecret": "google-app-secret",
+  "providerMicrosoftId": "microsoft-app-id",
+  "providerMicrosoftSecret": "microsoft-app-secret"
+}
+```
+
+Environmental variables are mapped in s-function.json files, for example in authentication/signin/s-function.json. If you add more providers, those should be added to s-function.json files also.
 
 ## <a id="custom-authorizer"></a>Custom Authorizer
 
@@ -60,13 +80,7 @@ Custom Authorizer is deployed but it is lacking some of the settings, these sett
 
 Click _Update_.
 
-## <a id="cors"></a>Cross-origin resource sharing (CORS)
-
-CORS plugin (https://github.com/joostfarla/serverless-cors-plugin) is now compatible with Serverless 0.5, but `serverless project install` failed to install plugins, so you need to manually enable cors to test-token resource in AWS Console.
-
-Instructions in AWS docs http://docs.aws.amazon.com/apigateway/latest/developerguide/how-to-cors.html
-
-## The structure
+## The Structure
 
 * authentication/signin
   * endpoint: /authentication/signin/{provider}, redirects to oauth provider login page
@@ -77,11 +91,11 @@ Instructions in AWS docs http://docs.aws.amazon.com/apigateway/latest/developerg
 * authentication/authorize
   * endpoint: no end point
   * handler: is used by Api Gateway custom authorizer
-* test-tokent/test-token
+* test-token/test-token
   * endpoint: /test-token
   * handler: test-token function can be used to test custom authorizer, it returns principalId of custom authorizer policy. It is mapped as username in request template.
 
-## Provider packages
+## Provider Packages
 
 * facebook https://www.npmjs.com/package/serverless-authentication-facebook
 * google https://www.npmjs.com/package/serverless-authentication-google
