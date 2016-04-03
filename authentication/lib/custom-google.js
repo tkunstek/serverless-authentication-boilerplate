@@ -35,7 +35,7 @@ var callback = function(event, config, callback) {
     profileMap: profileMap
   };
 
-  customGoogle.callback(event, options, {grant_type: 'authorization_code'}, callback);
+  customGoogle.callback(event, options, {authorization: {grant_type: 'authorization_code'}}, callback);
 };
 
 exports = module.exports = {

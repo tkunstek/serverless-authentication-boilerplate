@@ -4,8 +4,8 @@
   "private": true,
   "dependencies": {
     "serverless-authentication": "https://github.com/laardee/serverless-authentication.git#develop-provider",
-    "serverless-authentication-facebook": "^0.1.7",
-    "serverless-authentication-google": "^0.1.8",
-    "serverless-authentication-microsoft": "^0.1.7"
+    "serverless-authentication-facebook": "https://github.com/laardee/serverless-authentication-facebook.git#develop",
+    "serverless-authentication-google": "https://github.com/laardee/serverless-authentication-google.git#develop",
+    "serverless-authentication-microsoft": "https://github.com/laardee/serverless-authentication-microsoft.git#develop"
   }
 }
