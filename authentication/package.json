@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "serverless-authentication": "^0.1.9",
+    "serverless-authentication": "https://github.com/laardee/serverless-authentication.git#develop-provider",
     "serverless-authentication-facebook": "^0.1.7",
     "serverless-authentication-google": "^0.1.8",
     "serverless-authentication-microsoft": "^0.1.7"

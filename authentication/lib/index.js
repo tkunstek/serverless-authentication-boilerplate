@@ -4,6 +4,7 @@
 var slsAuth = require('serverless-authentication');
 var config = slsAuth.config;
 var utils = slsAuth.utils;
+var Provider = slsAuth.Provider;
 
 // Providers
 var facebook = require('serverless-authentication-facebook');
@@ -26,6 +27,15 @@ function signin(event, callback) {
       break;
     case 'microsoft':
       microsoft.signin(providerConfig, {scope: 'wl.basic wl.emails', state: state}, callback);
+      break;
+    case 'custom-google':
+      var customGoogle = new Provider(providerConfig);
+      var options = {
+        signin_uri: 'https://accounts.google.com/o/oauth2/v2/auth/'+event.provider,
+        scope: 'profile email', 
+        state: state
+      };
+      customGoogle.signin(options, callback);
       break;
     default:
       utils.errorResponse({error: 'Invalid provider'}, providerConfig, callback);

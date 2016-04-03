@@ -43,7 +43,7 @@ describe('Authentication', () => {
 
       lib.signin(event, (error, data) => {
         expect(error).to.be.null;
-        expect(data.url).to.be.equal('https://accounts.google.com/o/oauth2/v2/auth?client_id=undefined&redirect_uri=https://api-id.execute-api.eu-west-1.amazonaws.com/dev/callback/google&scope=profile email&response_type=code&state=state-google');
+        expect(data.url).to.be.equal('https://accounts.google.com/o/oauth2/v2/auth?client_id=g-mock-id&redirect_uri=https://api-id.execute-api.eu-west-1.amazonaws.com/dev/callback/google&scope=profile email&response_type=code&state=state-google');
       });
     });
 
@@ -54,7 +54,7 @@ describe('Authentication', () => {
 
       lib.signin(event, (error, data) => {
         expect(error).to.be.null;
-        expect(data.url).to.be.equal('https://login.live.com/oauth20_authorize.srf?client_id=undefined&redirect_uri=https://api-id.execute-api.eu-west-1.amazonaws.com/dev/callback/microsoft&scope=wl.basic wl.emails&response_type=code&state=state-microsoft');
+        expect(data.url).to.be.equal('https://login.live.com/oauth20_authorize.srf?client_id=ms-mock-id&redirect_uri=https://api-id.execute-api.eu-west-1.amazonaws.com/dev/callback/microsoft&scope=wl.basic wl.emails&response_type=code&state=state-microsoft');
       });
     });
 
@@ -66,6 +66,17 @@ describe('Authentication', () => {
       lib.signin(event, (error, data) => {
         expect(error).to.be.null;
         expect(data.url).to.be.equal('http://localhost:3000/auth/crappyauth/?error=Invalid provider');
+      });
+    });
+
+    it('should return oauth signin url for custom-google', () => {
+      let event = {
+        provider: 'custom-google'
+      };
+
+      lib.signin(event, (error, data) => {
+        expect(error).to.be.null;
+        expect(data.url).to.be.equal('https://accounts.google.com/o/oauth2/v2/auth/custom-google?client_id=cg-mock-id&redirect_uri=https://api-id.execute-api.eu-west-1.amazonaws.com/dev/callback/custom-google&scope=profile email&state=state-custom-google');
       });
     });
   });
