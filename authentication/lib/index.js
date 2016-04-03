@@ -11,6 +11,8 @@ var facebook = require('serverless-authentication-facebook');
 var google = require('serverless-authentication-google');
 var microsoft = require('serverless-authentication-microsoft');
 
+var customGoogle = require('./custom-google');
+
 // Signin switch
 function signin(event, callback) {
   var providerConfig = config(event);
@@ -29,13 +31,8 @@ function signin(event, callback) {
       microsoft.signin(providerConfig, {scope: 'wl.basic wl.emails', state: state}, callback);
       break;
     case 'custom-google':
-      var customGoogle = new Provider(providerConfig);
-      var options = {
-        signin_uri: 'https://accounts.google.com/o/oauth2/v2/auth/'+event.provider,
-        scope: 'profile email', 
-        state: state
-      };
-      customGoogle.signin(options, callback);
+      // See ./customGoogle.js
+      customGoogle.signin(providerConfig, {state: state}, callback);
       break;
     default:
       utils.errorResponse({error: 'Invalid provider'}, providerConfig, callback);
@@ -54,6 +51,10 @@ function callback(event, callback) {
       break;
     case 'microsoft':
       microsoft.callback(event, providerConfig, handleResponse);
+      break;
+    case 'custom-google':
+      // See ./customGoogle.js
+      customGoogle.callback(event, providerConfig, handleResponse);
       break;
     default:
       utils.errorResponse({error: 'Invalid provider'}, providerConfig, callback);

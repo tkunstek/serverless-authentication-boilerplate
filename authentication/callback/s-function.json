@@ -55,7 +55,9 @@
     "PROVIDER_GOOGLE_ID": "${providerGoogleId}",
     "PROVIDER_GOOGLE_SECRET": "${providerGoogleSecret}",
     "PROVIDER_MICROSOFT_ID": "${providerMicrosoftId}",
-    "PROVIDER_MICROSOFT_SECRET": "${providerMicrosoftSecret}"
+    "PROVIDER_MICROSOFT_SECRET": "${providerMicrosoftSecret}",
+    "PROVIDER_CUSTOM_GOOGLE_ID": "${providerCustomGoogleId}",
+    "PROVIDER_CUSTOM_GOOGLE_SECRET": "${providerCustomGoogleSecret}"
   },
   "vpc": {
     "securityGroupIds": [],

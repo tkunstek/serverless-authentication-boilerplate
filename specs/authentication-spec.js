@@ -2,7 +2,8 @@
 
 let assert = require('assert');
 let lib = require('../authentication/lib');
-let slsAuth = require('serverless-authentication');
+//babel polyfill throws error if serverless-authentication is in root package and authentication package
+let slsAuth = require('../authentication/node_modules/serverless-authentication');
 let utils = slsAuth.utils;
 let config = slsAuth.config;
 
@@ -58,16 +59,6 @@ describe('Authentication', () => {
       });
     });
 
-    it('should fail to return token for crappyauth', () => {
-      let event = {
-        provider: 'crappyauth'
-      };
-
-      lib.signin(event, (error, data) => {
-        expect(error).to.be.null;
-        expect(data.url).to.be.equal('http://localhost:3000/auth/crappyauth/?error=Invalid provider');
-      });
-    });
 
     it('should return oauth signin url for custom-google', () => {
       let event = {
@@ -76,7 +67,18 @@ describe('Authentication', () => {
 
       lib.signin(event, (error, data) => {
         expect(error).to.be.null;
-        expect(data.url).to.be.equal('https://accounts.google.com/o/oauth2/v2/auth/custom-google?client_id=cg-mock-id&redirect_uri=https://api-id.execute-api.eu-west-1.amazonaws.com/dev/callback/custom-google&scope=profile email&state=state-custom-google');
+        expect(data.url).to.be.equal('https://accounts.google.com/o/oauth2/v2/auth?client_id=cg-mock-id&redirect_uri=https://api-id.execute-api.eu-west-1.amazonaws.com/dev/callback/custom-google&response_type=code&scope=profile email&state=state-custom-google');
+      });
+    });
+
+    it('should fail to return token for crappyauth', () => {
+      let event = {
+        provider: 'crappyauth'
+      };
+
+      lib.signin(event, (error, data) => {
+        expect(error).to.be.null;
+        expect(data.url).to.be.equal('http://localhost:3000/auth/crappyauth/?error=Invalid provider');
       });
     });
   });
