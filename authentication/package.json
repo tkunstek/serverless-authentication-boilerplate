@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "serverless-authentication": "^0.2.1",
+    "serverless-authentication": "^0.2.2",
     "serverless-authentication-facebook": "^0.2.0",
     "serverless-authentication-google": "^0.2.0",
     "serverless-authentication-microsoft": "^0.2.0",
