@@ -42,7 +42,9 @@ Add following variables to file:
 "providerGoogleId": "google-app-id",
 "providerGoogleSecret": "google-app-secret",
 "providerMicrosoftId": "microsoft-app-id",
-"providerMicrosoftSecret": "microsoft-app-secret"
+"providerMicrosoftSecret": "microsoft-app-secret",
+"providerCustomGoogleId": "google-app-id",
+"providerCustomGoogleSecret": "google-app-secret"
 ```
 
 If you are using stage "dev", then contents of file s-variables-dev.json should be
@@ -56,7 +58,9 @@ If you are using stage "dev", then contents of file s-variables-dev.json should 
   "providerGoogleId": "google-app-id",
   "providerGoogleSecret": "google-app-secret",
   "providerMicrosoftId": "microsoft-app-id",
-  "providerMicrosoftSecret": "microsoft-app-secret"
+  "providerMicrosoftSecret": "microsoft-app-secret",
+  "providerCustomGoogleId": "google-app-id",
+  "providerCustomGoogleSecret": "google-app-secret"
 }
 ```
 
