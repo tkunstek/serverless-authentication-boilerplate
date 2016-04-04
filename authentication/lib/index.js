@@ -1,5 +1,7 @@
 'use strict';
 
+require('babel-polyfill');
+
 // Config
 var slsAuth = require('serverless-authentication');
 var config = slsAuth.config;

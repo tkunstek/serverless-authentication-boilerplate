@@ -2,8 +2,7 @@
 
 let assert = require('assert');
 let lib = require('../authentication/lib');
-//babel polyfill throws error if serverless-authentication is in root package and authentication package
-let slsAuth = require('../authentication/node_modules/serverless-authentication');
+let slsAuth = require('serverless-authentication');
 let utils = slsAuth.utils;
 let config = slsAuth.config;
 

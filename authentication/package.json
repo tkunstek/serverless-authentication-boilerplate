@@ -3,9 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "serverless-authentication": "https://github.com/laardee/serverless-authentication.git#develop-provider",
-    "serverless-authentication-facebook": "https://github.com/laardee/serverless-authentication-facebook.git#develop",
-    "serverless-authentication-google": "https://github.com/laardee/serverless-authentication-google.git#develop",
-    "serverless-authentication-microsoft": "https://github.com/laardee/serverless-authentication-microsoft.git#develop"
+    "serverless-authentication": "^0.2.1",
+    "serverless-authentication-facebook": "^0.2.0",
+    "serverless-authentication-google": "^0.2.0",
+    "serverless-authentication-microsoft": "^0.2.0",
+    "babel-polyfill": "^6.7.4"
   }
 }

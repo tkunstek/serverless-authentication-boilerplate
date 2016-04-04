@@ -1,11 +1,9 @@
 # Serverless Authentication
 [![serverless](http://public.serverless.com/badges/v3.svg)](http://www.serverless.com)
 
-This project is aimed to be generic authentication boilerplate for Serverless framework (http://www.serverless.com).
+This project is aimed to be generic authentication boilerplate for Serverless framework (http://www.serverless.com). This boilerplate is compatible with Serverless v.0.5.
 
 Webapp demo that uses this boilerplate: http://laardee.github.io/serverless-authentication-gh-pages
-
-## Boilerplate is now compatible with Serverless v.0.5.
 
 **Few small issues with Serverless v.0.5.**
 
@@ -26,9 +24,9 @@ In step 6, you may also want to enable 'serverless-plugin-autoprune', it is a ni
 
 You need to deploy the API by hand in AWS console after the changes.
 
-## Set up authentication provider application settings
+## Set up Authentication Provider Application Settings
 
-The redirect URI that needs to be defined in oauth provider's application settings is the callback endpoint of the API. For example if you use facebook login, the redirect URI is _https://API-ID.execute-api.us-east-1.amazonaws.com/dev/authentication/callback/facebook_ and for google _https://API-ID.execute-api.us-east-1.amazonaws.com/dev/authentication/callback/google_.
+The redirect URI that needs to be defined in oauth provider's application settings is the callback endpoint of the API. For example if you use facebook login, the redirect URI is **https://API-ID.execute-api.us-east-1.amazonaws.com/dev/authentication/callback/facebook** and for google **https://API-ID.execute-api.us-east-1.amazonaws.com/dev/authentication/callback/google**.
 
 ## <a id="env-vars"></a>Environmental Variables
 
@@ -62,7 +60,7 @@ If you are using stage "dev", then contents of file s-variables-dev.json should 
 }
 ```
 
-Environmental variables are mapped in s-function.json files, for example in authentication/signin/s-function.json. If you add more providers, those should be added to s-function.json files also.
+Environmental variables are mapped in s-function.json files, for example in authentication/signin/s-function.json. If you add more providers, those should be added to s-function.json files also and if you don't use all the providers provided in this example, remove variables from _meta/variables/s-variables-STAGE.json and s-function.json files.
 
 ## <a id="custom-authorizer"></a>Custom Authorizer
 
@@ -97,7 +95,11 @@ Click _Update_.
 
 ## Provider Packages
 
-* facebook https://www.npmjs.com/package/serverless-authentication-facebook
-* google https://www.npmjs.com/package/serverless-authentication-google
-* windows live https://www.npmjs.com/package/serverless-authentication-microsoft
+* facebook [serverless-authentication-facebook](https://www.npmjs.com/package/serverless-authentication-facebook)
+* google [serverless-authentication-google](https://www.npmjs.com/package/serverless-authentication-google)
+* windows live [serverless-authentication-microsoft](https://www.npmjs.com/package/serverless-authentication-microsoft)
 * more to come
+
+## Custom Provider
+
+Package contains example (/authentication/lib/custom-google.js) how to implement custom authentication provider using generic Provider class. To test custom provider go to http://laardee.github.io/serverless-authentication-gh-pages and click 'custom-google' button.
