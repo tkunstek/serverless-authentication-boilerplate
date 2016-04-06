@@ -27,9 +27,6 @@
         "400": {
           "statusCode": "400"
         },
-        "401": {
-          "statusCode": "401"
-        },
         "default": {
           "statusCode": "302",
           "responseParameters": {

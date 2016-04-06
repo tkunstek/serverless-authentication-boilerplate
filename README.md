@@ -104,6 +104,9 @@ Click _Update_.
 * windows live [serverless-authentication-microsoft](https://www.npmjs.com/package/serverless-authentication-microsoft)
 * more to come
 
-## Custom Provider
+If the oauth provider that you need is not listed, you can make a [custom provider](custom-provider) or create a provider package for others to use also, here is a example repository that can be used as a starting point https://github.com/laardee/serverless-authentication-provider. When you implement a new fancy provider, create an issue or a pull request and I'll add it to the Provider Package listing.
 
-Package contains example (/authentication/lib/custom-google.js) how to implement custom authentication provider using generic Provider class. To test custom provider go to http://laardee.github.io/serverless-authentication-gh-pages and click 'custom-google' button.
+## <a id="custom-provider"></a>Custom Provider
+
+Package contains example [/authentication/lib/custom-google.js](https://github.com/laardee/serverless-authentication-boilerplate/blob/master/authentication/lib/custom-google.js) how to implement custom authentication provider using generic Provider class. To test custom provider go to http://laardee.github.io/serverless-authentication-gh-pages and click 'custom-google' button.
+
