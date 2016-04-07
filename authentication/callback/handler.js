@@ -1,8 +1,8 @@
 'use strict';
 
 // Authentication logic
-var lib = require('../lib');
+let lib = require('../lib');
 
-module.exports.handler = function(event, context) {
+module.exports.handler = (event, context) => {
   return lib.callback(event, context.done);
 };

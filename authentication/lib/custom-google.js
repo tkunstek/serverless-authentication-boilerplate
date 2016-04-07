@@ -1,11 +1,11 @@
 'use strict';
 
-var slsAuth = require('serverless-authentication');
-var Provider = slsAuth.Provider;
-var Profile = slsAuth.Profile;
+let slsAuth = require('serverless-authentication');
+let Provider = slsAuth.Provider;
+let Profile = slsAuth.Profile;
 
-var signin = function(config, options, callback) {
-  var customGoogle = new Provider(config);
+let signin = (config, options, callback) => {
+  let customGoogle = new Provider(config);
   if(!options) {
     options = {};
   }
@@ -15,10 +15,10 @@ var signin = function(config, options, callback) {
   customGoogle.signin(options, callback);
 };
 
-var callback = function(event, config, callback) {
-  var customGoogle = new Provider(config);
+let callback = (event, config, callback) => {
+  let customGoogle = new Provider(config);
 
-  var profileMap = function(response) {
+  let profileMap = (response) => {
     return new Profile({
       id: response.id,
       name: response.displayName,
@@ -29,7 +29,7 @@ var callback = function(event, config, callback) {
     });
   };
 
-  var options = {
+  let options = {
     authorization_uri: 'https://www.googleapis.com/oauth2/v4/token',
     profile_uri: 'https://www.googleapis.com/plus/v1/people/me',
     profileMap: profileMap

@@ -1,6 +1,6 @@
 {
   "name": "test-token",
-  "runtime": "nodejs",
+  "runtime": "nodejs4.3",
   "description": "${project} - ${stage}: test-token",
   "customName": false,
   "customRole": false,

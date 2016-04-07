@@ -1,6 +1,6 @@
 {
   "name": "authorize",
-  "runtime": "nodejs",
+  "runtime": "nodejs4.3",
   "description": "${project} - ${stage}: authorize",
   "customName": false,
   "customRole": false,
