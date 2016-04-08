@@ -1,13 +1,15 @@
 # Serverless Authentication
 [![serverless](http://public.serverless.com/badges/v3.svg)](http://www.serverless.com)
 
-This project is aimed to be generic authentication boilerplate for Serverless framework (http://www.serverless.com). This boilerplate is compatible with Serverless v.0.5.
+This project is aimed to be generic authentication boilerplate for Serverless framework (http://www.serverless.com).
+
+This boilerplate is compatible with Serverless v.0.5.3+
 
 Webapp demo that uses this boilerplate: http://laardee.github.io/serverless-authentication-gh-pages
 
 **Few small issues with Serverless v.0.5.**
 
-For now, you need to do some manual adjustment with Custom Authorizer AWS Console. Also Serverless v.0.5 fails to install if plugins are listed in s-project.json, see Installation [step 6](#step-6).
+For now, you need to do some manual adjustment with Custom Authorizer AWS Console.
 
 ## Installation
 
@@ -16,9 +18,8 @@ For now, you need to do some manual adjustment with Custom Authorizer AWS Consol
 3. Change directory to one that was created in previous step.
 4. Run `npm install`.
 5. Set [environmental variables](#env-vars).
-6. <a id="step-6">Enable serverless CORS plugin by adding "serverless-cors-plugin" to s-project.json (https://github.com/joostfarla/serverless-cors-plugin#installation).
-7. Run `serverless dash deploy` on the project root folder. Select all and `Deploy`. Then deploy endpoints with parameter --all `serverless endpoint deploy --all`.
-8. Fine-tune [Custom Authorizer](#custom-authorizer) in AWS Console.
+6. Run `serverless dash deploy` on the project root folder. Select all and `Deploy`. Then deploy endpoints with parameter --all `serverless endpoint deploy --all`.
+7. Fine-tune [Custom Authorizer](#custom-authorizer) in AWS Console.
 
 In step 6, you may also want to enable 'serverless-plugin-autoprune', it is a nice plugin that removes old lambda function versions from AWS.
 
@@ -104,7 +105,7 @@ Click _Update_.
 * windows live [serverless-authentication-microsoft](https://www.npmjs.com/package/serverless-authentication-microsoft)
 * more to come
 
-If the oauth provider that you need is not listed, you can make a [custom provider](custom-provider) or create a provider package for others to use also, here is a example repository that can be used as a starting point https://github.com/laardee/serverless-authentication-provider. When you implement a new fancy provider, create an issue or a pull request and I'll add it to the Provider Package listing.
+If the oauth provider that you need is not listed, you can make a [custom provider](custom-provider) or create a provider package for others to use. Here is an example repository that can be used as a starting point https://github.com/laardee/serverless-authentication-provider. When you implement a new fancy provider, create an issue or a pull request and it will be added to the Provider Packages listing.
 
 ## <a id="custom-provider"></a>Custom Provider
 

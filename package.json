@@ -17,8 +17,7 @@
   ],
   "dependencies": {
     "serverless-authentication": "^0.2.2",
-    "serverless-cors-plugin": "^0.4.1",
-    "serverless-plugin-autoprune": "^0.5.2"
+    "serverless-cors-plugin": "^0.4.1"
   },
   "devDependencies": {
     "chai": "^3.5.0",
