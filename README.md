@@ -9,7 +9,7 @@ Webapp demo that uses this boilerplate: http://laardee.github.io/serverless-auth
 
 **Few small issues with Serverless v.0.5.**
 
-For now, you need to do some manual adjustment with Custom Authorizer AWS Console.
+For now, you need to do some manual adjustment with Custom Authorizer AWS Console. If you are upgrading project runtime, you need to remove the old lambda function from the AWS first before you can deploy functions with node 4.3 runtime.
 
 ## Installation
 
