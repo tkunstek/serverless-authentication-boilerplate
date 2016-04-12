@@ -27,7 +27,7 @@ You need to deploy the API by hand in AWS console after the changes.
 
 ### Use with existing project
 
-If you wish to add authentication functions to an existing project, you can download [dist/authentication.zip](dist/authentication.zip) which contains authentication folder files. Then extract files to your project and run `npm install` in that directory.
+If you wish to add authentication functions to an existing project, you can download [dist/authentication.zip](https://github.com/laardee/serverless-authentication-boilerplate/blob/master/dist/authentication.zip) which contains authentication folder files. Then extract files to your project and run `npm install` in that directory.
 
 ## Set up Authentication Provider Application Settings
 
