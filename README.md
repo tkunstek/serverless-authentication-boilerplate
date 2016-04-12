@@ -1,21 +1,21 @@
 # Serverless Authentication
 [![serverless](http://public.serverless.com/badges/v3.svg)](http://www.serverless.com)
 
-This project is aimed to be generic authentication boilerplate for Serverless framework (http://www.serverless.com).
+This project is aimed to be a generic authentication boilerplate for the [Serverless framework](http://www.serverless.com).
 
-This boilerplate is compatible with Serverless v.0.5.3+
+This boilerplate is compatible with the Serverless v.0.5.3+
 
 Webapp demo that uses this boilerplate: http://laardee.github.io/serverless-authentication-gh-pages
 
-**Few small issues with Serverless v.0.5.**
+**Few small issues with the Serverless v.0.5.**
 
 For now, you need to do some manual adjustment with Custom Authorizer AWS Console. If you are upgrading project runtime, you need to remove the old lambda function from the AWS first before you can deploy functions with node 4.3 runtime.
 
 ## Installation
 
 1. Install Serverless framework with `npm install -g serverless`.
-2. Create a new project based on this boilerplate `serverless project install serverless-authentication-boilerplate`
-3. Change directory to one that was created in previous step.
+2. Create a new project based on this boilerplate `serverless project install -n myAuthenticationProject serverless-authentication-boilerplate`
+3. Change directory to the one that was created in previous step.
 4. Run `npm install`.
 5. Set [environmental variables](#env-vars).
 6. Run `serverless dash deploy` on the project root folder. Select all and `Deploy`. Then deploy endpoints with parameter --all `serverless endpoint deploy --all`.
@@ -24,6 +24,10 @@ For now, you need to do some manual adjustment with Custom Authorizer AWS Consol
 In step 6, you may also want to enable 'serverless-plugin-autoprune', it is a nice plugin that removes old lambda function versions from AWS.
 
 You need to deploy the API by hand in AWS console after the changes.
+
+### Use with existing project
+
+If you wish to add authentication functions to an existing project, you can download [dist/authentication.zip](dist/authentication.zip) which contains authentication folder files. Then extract files to your project and run `npm install` in that directory.
 
 ## Set up Authentication Provider Application Settings
 
@@ -48,7 +52,7 @@ Add following variables to file:
 "providerCustomGoogleSecret": "google-app-secret"
 ```
 
-If you are using stage "dev", then contents of file s-variables-dev.json should be
+If you are using stage "dev", then contents of the s-variables-dev.json should be
 ```
 {
   "stage": "dev",
@@ -65,14 +69,14 @@ If you are using stage "dev", then contents of file s-variables-dev.json should 
 }
 ```
 
-Environmental variables are mapped in s-function.json files, for example in authentication/signin/s-function.json. If you add more providers, those should be added to s-function.json files also and if you don't use all the providers provided in this example, remove variables from _meta/variables/s-variables-STAGE.json and s-function.json files.
+Environmental variables are mapped in s-function.json files, for example in the authentication/signin/s-function.json. If you add more providers, those should be added to the s-function.json files also and if you don't use all the providers provided in this example, remove variables from _meta/variables/s-variables-STAGE.json and s-function.json files.
 
 ## <a id="custom-authorizer"></a>Custom Authorizer
 
-Custom Authorizer is deployed but it is lacking some of the settings, these settings should be added.
+Custom Authorizer is deployed, but it is lacking some of the settings. Following settings should be modified.
 
 1. Select deployed API
-2. Select _Custom Authorizers_ from top menu that has _Resourses_ selected by default. Then select _authorize_ function from list
+2. Select _Custom Authorizers_ from the side menu. Then select _authorize_ function from list
 3. Edit the in the form
   * Name: _authorizer_, you can also rename it.
   * Lambda region: Select the region where your _authorize_ function is deployed
@@ -105,9 +109,8 @@ Click _Update_.
 * windows live [serverless-authentication-microsoft](https://www.npmjs.com/package/serverless-authentication-microsoft)
 * more to come
 
-If the oauth provider that you need is not listed, you can make a [custom provider](custom-provider) or create a provider package for others to use. Here is an example repository that can be used as a starting point https://github.com/laardee/serverless-authentication-provider. When you implement a new fancy provider, create an issue or a pull request and it will be added to the Provider Packages listing.
+If the authentication provider that you need is not listed, you can make a [custom provider](custom-provider) or create a provider package for others to use. Here is an example repository that can be used as a starting point https://github.com/laardee/serverless-authentication-provider. When you implement a new fancy provider, create an issue or a pull request and it will be added to the Provider Packages listing.
 
 ## <a id="custom-provider"></a>Custom Provider
 
 Package contains example [/authentication/lib/custom-google.js](https://github.com/laardee/serverless-authentication-boilerplate/blob/master/authentication/lib/custom-google.js) how to implement custom authentication provider using generic Provider class. To test custom provider go to http://laardee.github.io/serverless-authentication-gh-pages and click 'custom-google' button.
-

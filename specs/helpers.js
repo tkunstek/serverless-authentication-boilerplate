@@ -1,4 +1,4 @@
-var chai = require('chai');
+const chai = require('chai');
 
 process.env.PROVIDER_FACEBOOK_ID = 'fb-mock-id';
 process.env.PROVIDER_FACEBOOK_SECRET = 'fb-mock-secret';

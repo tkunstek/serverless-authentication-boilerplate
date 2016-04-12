@@ -1,11 +1,10 @@
 'use strict';
 
-let assert = require('assert');
-let lib = require('../authentication/lib');
-let slsAuth = require('serverless-authentication');
-let utils = slsAuth.utils;
-let config = slsAuth.config;
-let nock = require('nock');
+const lib = require('../authentication/lib');
+const slsAuth = require('serverless-authentication');
+const utils = slsAuth.utils;
+const config = slsAuth.config;
+const nock = require('nock');
 
 describe('Authentication', () => {
   describe('Custom Google', () => {
