@@ -1,0 +1,12 @@
+{
+  "extends": "airbnb",
+  "plugins": [],
+  "rules": {
+    "func-names": "off",
+    "comma-dangle": 0,
+
+    // doesn't work in node v4 :(
+    "strict": "off",
+    "prefer-rest-params": "off"
+  }
+}

@@ -7,7 +7,7 @@ This boilerplate is compatible with the Serverless v.0.5.3+
 
 Webapp demo that uses this boilerplate: http://laardee.github.io/serverless-authentication-gh-pages
 
-**Few small issues with the Serverless v.0.5.**
+**Few small issues with the Serverless v.0.5. and AWS Lambda**
 
 For now, you need to do some manual adjustment with Custom Authorizer AWS Console. If you are upgrading project runtime, you need to remove the old lambda function from the AWS first before you can deploy functions with node 4.3 runtime.
 
@@ -109,7 +109,7 @@ Click _Update_.
 * windows live [serverless-authentication-microsoft](https://www.npmjs.com/package/serverless-authentication-microsoft)
 * more to come
 
-If the authentication provider that you need is not listed, you can make a [custom provider](custom-provider) or create a provider package for others to use. Here is an example repository that can be used as a starting point https://github.com/laardee/serverless-authentication-provider. When you implement a new fancy provider, create an issue or a pull request and it will be added to the Provider Packages listing.
+If the authentication provider that you need is not listed, you can make a [custom provider](#custom-provider) or create a provider package for others to use. Here is an example repository that can be used as a starting point https://github.com/laardee/serverless-authentication-provider. When you implement a new fancy provider, create an issue or a pull request and it will be added to the Provider Packages listing.
 
 ## <a id="custom-provider"></a>Custom Provider
 

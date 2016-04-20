@@ -5,5 +5,4 @@ const lib = require('../lib');
 
 module.exports.handler =
   (event, context) =>
-    lib.authorize(event, context.done);
-
+    lib.refreshHandler(event, context.done);

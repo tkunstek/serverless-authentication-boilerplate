@@ -21,11 +21,17 @@
   },
   "devDependencies": {
     "chai": "^3.5.0",
+    "dirty-chai": "^1.2.2",
+    "eslint": "^2.8.0",
+    "eslint-config-airbnb": "^7.0.0",
+    "eslint-plugin-jsx-a11y": "^0.6.2",
+    "eslint-plugin-react": "^4.3.0",
     "mocha": "^2.4.5",
     "nock": "^7.7.2"
   },
   "scripts": {
     "install": "cd authentication && npm install",
-    "test": "./node_modules/.bin/mocha specs/"
+    "test": "./node_modules/.bin/mocha specs/",
+    "lint": "eslint . || true"
   }
 }

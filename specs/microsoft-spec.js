@@ -5,11 +5,12 @@ const slsAuth = require('serverless-authentication');
 const utils = slsAuth.utils;
 const config = slsAuth.config;
 const nock = require('nock');
+const expect = require('chai').expect;
 
 describe('Authentication', () => {
   describe('Microsoft', () => {
     before(() => {
-      let providerConfig = config({provider: 'microsoft'});
+      const providerConfig = config({ provider: 'microsoft' });
       nock('https://login.live.com')
         .post('/oauth20_token.srf')
         .query({
@@ -24,7 +25,7 @@ describe('Authentication', () => {
 
       nock('https://apis.live.net')
         .get('/v5.0/me')
-        .query({access_token: 'access-token-123'})
+        .query({ access_token: 'access-token-123' })
         .reply(200, {
           id: 'user-id-1',
           name: 'Eetu Tuomala',
@@ -36,28 +37,29 @@ describe('Authentication', () => {
     });
 
     it('should return oauth signin url', () => {
-      let event = {
+      const event = {
         provider: 'microsoft'
       };
 
-      lib.signin(event, (error, data) => {
-        expect(error).to.be.null;
-        expect(data.url).to.be.equal('https://login.live.com/oauth20_authorize.srf?client_id=ms-mock-id&redirect_uri=https://api-id.execute-api.eu-west-1.amazonaws.com/dev/callback/microsoft&response_type=code&scope=wl.basic wl.emails&state=state-microsoft');
+      lib.signinHandler(event, (error, data) => {
+        expect(error).to.be.null();
+        expect(data.url).to.equal('https://login.live.com/oauth20_authorize.srf?client_id=ms-mock-id&redirect_uri=https://api-id.execute-api.eu-west-1.amazonaws.com/dev/callback/microsoft&response_type=code&scope=wl.basic wl.emails&state=state-microsoft');
       });
     });
 
     it('should return local client url', (done) => {
-      let event = {
+      const event = {
         provider: 'microsoft',
         code: 'code',
         state: 'state-microsoft'
       };
 
-      let providerConfig = config(event);
-      lib.callback(event, (error, data) => {
-        let token = data.url.match(/[a-zA-Z0-9-_]+?.[a-zA-Z0-9-_]+?.([a-zA-Z0-9-_]+)[a-zA-Z0-9-_]+?$/g)[0];
-        let tokenData = utils.readToken(token, providerConfig.token_secret);
-        expect(tokenData.id).to.equal(event.provider + '-user-id-1');
+      const providerConfig = config(event);
+      lib.callbackHandler(event, (error, data) => {
+        const token =
+          data.url.match(/[a-zA-Z0-9-_]+?.[a-zA-Z0-9-_]+?.([a-zA-Z0-9-_]+)[a-zA-Z0-9-_]+?$/g)[0];
+        const tokenData = utils.readToken(token, providerConfig.token_secret);
+        expect(tokenData.id).to.equal(`${event.provider}-user-id-1`);
         done(error);
       });
     });

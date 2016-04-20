@@ -1,4 +1,6 @@
 const chai = require('chai');
+const dirtyChai = require('dirty-chai');
+chai.use(dirtyChai);
 
 process.env.PROVIDER_FACEBOOK_ID = 'fb-mock-id';
 process.env.PROVIDER_FACEBOOK_SECRET = 'fb-mock-secret';
@@ -18,7 +20,5 @@ process.env.TOKEN_SECRET = 'token-secret-123';
 
 chai.config.includeStack = true;
 
-global.expect = chai.expect;
 global.AssertionError = chai.AssertionError;
 global.Assertion = chai.Assertion;
-global.assert = chai.assert;

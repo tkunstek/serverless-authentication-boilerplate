@@ -1,25 +1,22 @@
 'use strict';
 
-let slsAuth = require('serverless-authentication');
-let Provider = slsAuth.Provider;
-let Profile = slsAuth.Profile;
+const slsAuth = require('serverless-authentication');
+const Provider = slsAuth.Provider;
+const Profile = slsAuth.Profile;
 
-let signin = (config, options, callback) => {
-  let customGoogle = new Provider(config);
-  if(!options) {
-    options = {};
-  }
-  options.signin_uri = 'https://accounts.google.com/o/oauth2/v2/auth';
-  options.scope = 'profile email';
-  options.response_type = 'code';
-  customGoogle.signin(options, callback);
+const signinHandler = (config, options, callback) => {
+  const customGoogle = new Provider(config);
+  const signinOptions = options || {};
+  signinOptions.signin_uri = 'https://accounts.google.com/o/oauth2/v2/auth';
+  signinOptions.scope = 'profile email';
+  signinOptions.response_type = 'code';
+  customGoogle.signin(signinOptions, callback);
 };
 
-let callback = (event, config, callback) => {
-  let customGoogle = new Provider(config);
-
-  let profileMap = (response) => {
-    return new Profile({
+const callbackHandler = (event, config, callback) => {
+  const customGoogle = new Provider(config);
+  const profileMap = response =>
+    new Profile({
       id: response.id,
       name: response.displayName,
       email: response.emails ? response.emails[0].value : null,
@@ -27,18 +24,22 @@ let callback = (event, config, callback) => {
       provider: 'custom-google',
       _raw: response
     });
-  };
 
-  let options = {
+  const options = {
     authorization_uri: 'https://www.googleapis.com/oauth2/v4/token',
     profile_uri: 'https://www.googleapis.com/plus/v1/people/me',
-    profileMap: profileMap
+    profileMap
   };
 
-  customGoogle.callback(event, options, {authorization: {grant_type: 'authorization_code'}}, callback);
+  customGoogle.callback(
+    event,
+    options,
+    { authorization: { grant_type: 'authorization_code' } },
+    callback
+  );
 };
 
 exports = module.exports = {
-  signin: signin,
-  callback: callback
+  signinHandler,
+  callbackHandler
 };

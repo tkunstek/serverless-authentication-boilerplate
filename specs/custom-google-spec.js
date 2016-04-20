@@ -5,11 +5,12 @@ const slsAuth = require('serverless-authentication');
 const utils = slsAuth.utils;
 const config = slsAuth.config;
 const nock = require('nock');
+const expect = require('chai').expect;
 
 describe('Authentication', () => {
   describe('Custom Google', () => {
     before(() => {
-      let googleConfig = config({provider: 'custom-google'});
+      const googleConfig = config({ provider: 'custom-google' });
       nock('https://www.googleapis.com')
         .post('/oauth2/v4/token')
         .query({
@@ -24,7 +25,7 @@ describe('Authentication', () => {
 
       nock('https://www.googleapis.com')
         .get('/plus/v1/people/me')
-        .query({access_token: 'access-token-123'})
+        .query({ access_token: 'access-token-123' })
         .reply(200, {
           id: 'user-id-1',
           displayName: 'Eetu Tuomala',
@@ -40,28 +41,29 @@ describe('Authentication', () => {
     });
 
     it('should return oauth signin url', () => {
-      let event = {
+      const event = {
         provider: 'custom-google'
       };
 
-      lib.signin(event, (error, data) => {
-        expect(error).to.be.null;
-        expect(data.url).to.be.equal('https://accounts.google.com/o/oauth2/v2/auth?client_id=cg-mock-id&redirect_uri=https://api-id.execute-api.eu-west-1.amazonaws.com/dev/callback/custom-google&response_type=code&scope=profile email&state=state-custom-google');
+      lib.signinHandler(event, (error, data) => {
+        expect(error).to.be.null();
+        expect(data.url).to.equal('https://accounts.google.com/o/oauth2/v2/auth?client_id=cg-mock-id&redirect_uri=https://api-id.execute-api.eu-west-1.amazonaws.com/dev/callback/custom-google&response_type=code&scope=profile email&state=state-custom-google');
       });
     });
 
     it('should return local client url', (done) => {
-      let event = {
+      const event = {
         provider: 'custom-google',
         code: 'code',
         state: 'state-custom-google'
       };
 
-      let providerConfig = config(event);
-      lib.callback(event, (error, data) => {
-        let token = data.url.match(/[a-zA-Z0-9-_]+?.[a-zA-Z0-9-_]+?.([a-zA-Z0-9-_]+)[a-zA-Z0-9-_]+?$/g)[0];
-        let tokenData = utils.readToken(token, providerConfig.token_secret);
-        expect(tokenData.id).to.equal(event.provider + '-user-id-1');
+      const providerConfig = config(event);
+      lib.callbackHandler(event, (error, data) => {
+        const token =
+          data.url.match(/[a-zA-Z0-9-_]+?.[a-zA-Z0-9-_]+?.([a-zA-Z0-9-_]+)[a-zA-Z0-9-_]+?$/g)[0];
+        const tokenData = utils.readToken(token, providerConfig.token_secret);
+        expect(tokenData.id).to.equal(`${event.provider}-user-id-1`);
         done(error);
       });
     });
