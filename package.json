@@ -16,7 +16,7 @@
     "lambda"
   ],
   "dependencies": {
-    "serverless-authentication": "^0.2.2",
+    "serverless-authentication": "git@github.com:laardee/serverless-authentication.git#develop",
     "serverless-cors-plugin": "^0.4.1"
   },
   "devDependencies": {

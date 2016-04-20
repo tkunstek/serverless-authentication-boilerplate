@@ -56,31 +56,27 @@ function callbackHandler(event, callback) {
 
       // profile class: https://github.com/laardee/serverless-authentication/blob/master/src/profile.js
 
+      // create example refresh token
+      const time = (new Date()).getTime();
+      const hmac = crypto.createHmac('sha256', providerConfig.token_secret);
+      hmac.update(`${id}-${time}`);
+      const refresh = hmac.digest('hex');
+      // then save refresh token to dynamo db for later comparison
+      // in the example token is not saved
+
       // sets 1 minute expiration time as an example
       //
-
-      // refresh
-      // sign.write(id);
-      // sign.end();
-
-      const time = (new Date()).getTime();
-      const refreshPayload = `${id}-${time}`;
-      const hmac = crypto.createHmac('sha256', providerConfig.token_secret);
-      hmac.update(refreshPayload);
-
-      const refresh = hmac.digest('hex');
-
-      const tokenData = {
+      const data = {
         payload: {
           id
         },
         options: {
-          expiresIn: 60,
-          refresh
-        }
+          expiresIn: 60
+        },
+        refresh
       };
 
-      utils.tokenResponse(tokenData, providerConfig, callback);
+      utils.tokenResponse(data, providerConfig, callback);
     }
   };
 

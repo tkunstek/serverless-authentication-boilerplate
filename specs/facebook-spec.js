@@ -60,7 +60,7 @@ describe('Authentication', () => {
       const providerConfig = config(event);
       lib.callbackHandler(event, (error, data) => {
         const token =
-          data.url.match(/[a-zA-Z0-9-_]+?.[a-zA-Z0-9-_]+?.([a-zA-Z0-9-_]+)[a-zA-Z0-9-_]+?$/g)[0];
+          data.url.match(/[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?/)[0];
         const tokenData = utils.readToken(token, providerConfig.token_secret);
         expect(tokenData.id).to.equal(`${event.provider}-user-id-1`);
         done(error);
