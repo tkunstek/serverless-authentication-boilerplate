@@ -39,6 +39,30 @@ function signinHandler(event, callback) {
   }
 }
 
+function createResponseData(id, providerConfig) {
+  // here can be checked if user exist in db and update properties pr if not, create new etc.
+
+  // create example refresh token
+  const time = (new Date()).getTime();
+  const hmac = crypto.createHmac('sha256', providerConfig.token_secret);
+  hmac.update(`${id}-${time}`);
+  const refresh = hmac.digest('hex');
+  // then save refresh token to dynamo db for later comparison
+  // in the example token is not saved
+
+  // sets 1 minute expiration time as an example
+  //
+  return {
+    payload: {
+      id
+    },
+    options: {
+      expiresIn: 60
+    },
+    refresh
+  };
+}
+
 // Callback switch
 function callbackHandler(event, callback) {
   const providerConfig = config(event);
@@ -51,32 +75,10 @@ function callbackHandler(event, callback) {
       // and then expire it
       utils.errorResponse({ error: 'State mismatch' }, providerConfig, callback);
     } else {
-      const id = `${profile.provider}-${profile.id}`;
-      // here can be checked if user exist in db and update properties pr if not, create new etc.
-
+      // in example only id is added to token payload
       // profile class: https://github.com/laardee/serverless-authentication/blob/master/src/profile.js
-
-      // create example refresh token
-      const time = (new Date()).getTime();
-      const hmac = crypto.createHmac('sha256', providerConfig.token_secret);
-      hmac.update(`${id}-${time}`);
-      const refresh = hmac.digest('hex');
-      // then save refresh token to dynamo db for later comparison
-      // in the example token is not saved
-
-      // sets 1 minute expiration time as an example
-      //
-      const data = {
-        payload: {
-          id
-        },
-        options: {
-          expiresIn: 60
-        },
-        refresh
-      };
-
-      utils.tokenResponse(data, providerConfig, callback);
+      const id = `${profile.provider}-${profile.id}`;
+      utils.tokenResponse(createResponseData(id, providerConfig), providerConfig, callback);
     }
   };
 
@@ -100,24 +102,20 @@ function callbackHandler(event, callback) {
 }
 
 function refreshHandler(event, callback) {
-  callback(null, {});
-}
+  const providerConfig = config({ provider: 'facebook' });
+  const refresh = event.refresh;
 
-// Authorize
-function authorize(event, callback) {
-  const providerConfig = config(event);
-  // this example uses simple expiration time validation
-  try {
-    const data = utils.readToken(event.authorizationToken, providerConfig.token_secret);
-    callback(null, utils.generatePolicy(data.id, 'Allow', event.methodArn));
-  } catch (err) {
-    callback('Unauthorized');
+  if ((/^[A-Fa-f0-9]{64}$/).test(refresh)) {
+    const data = createResponseData('temp-id', providerConfig);
+    const token = utils.createToken(data.payload, providerConfig.token_secret, data.options);
+    callback(null, { token, refresh: data.refresh });
+  } else {
+    callback('Invalid refresh token');
   }
 }
 
 exports = module.exports = {
   signinHandler,
   callbackHandler,
-  refreshHandler,
-  authorize
+  refreshHandler
 };

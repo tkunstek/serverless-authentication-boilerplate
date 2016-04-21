@@ -1,19 +1,28 @@
 {
   "name": "refresh",
   "runtime": "nodejs4.3",
-  "description": "Serverless Lambda function for project: serverless-authentication-boilerplate",
+  "description": "${project} - ${stage}: refresh",
   "customName": false,
   "customRole": false,
-  "handler": "handler.handler",
-  "timeout": 6,
-  "memorySize": 1024,
+  "handler": "refresh/handler.handler",
+  "timeout": 60,
+  "memorySize": 512,
   "authorizer": {},
   "custom": {
-    "excludePatterns": []
+    "excludePatterns": [],
+    "cors": {
+      "allowOrigin": "*",
+      "allowHeaders": [
+        "Content-Type",
+        "X-Amz-Date",
+        "Authorization",
+        "X-Api-Key"
+      ]
+    }
   },
   "endpoints": [
     {
-      "path": "refresh",
+      "path": "authentication/refresh",
       "method": "GET",
       "type": "AWS",
       "authorizationType": "none",
@@ -21,7 +30,7 @@
       "apiKeyRequired": false,
       "requestParameters": {},
       "requestTemplates": {
-        "application/json": ""
+        "application/json": "{\"refresh\":\"$input.params('refresh')\",\"state\":\"$input.params('state')\",\"host\":\"$input.params().header.get('host')\",\"stage\":\"$context.stage\"}"
       },
       "responses": {
         "400": {
@@ -40,9 +49,19 @@
   ],
   "events": [],
   "environment": {
-    "SERVERLESS_PROJECT": "${project}",
+    "SERVERLESS_PROJECT": "serverless-authentication-boilerplate",
     "SERVERLESS_STAGE": "${stage}",
-    "SERVERLESS_REGION": "${region}"
+    "SERVERLESS_REGION": "${region}",
+    "REDIRECT_CLIENT_URI": "${redirectClientURI}",
+    "TOKEN_SECRET": "${tokenSecret}",
+    "PROVIDER_FACEBOOK_ID": "${providerFacebookId}",
+    "PROVIDER_FACEBOOK_SECRET": "${providerFacebookSecret}",
+    "PROVIDER_GOOGLE_ID": "${providerGoogleId}",
+    "PROVIDER_GOOGLE_SECRET": "${providerGoogleSecret}",
+    "PROVIDER_MICROSOFT_ID": "${providerMicrosoftId}",
+    "PROVIDER_MICROSOFT_SECRET": "${providerMicrosoftSecret}",
+    "PROVIDER_CUSTOM_GOOGLE_ID": "${providerCustomGoogleId}",
+    "PROVIDER_CUSTOM_GOOGLE_SECRET": "${providerCustomGoogleSecret}"
   },
   "vpc": {
     "securityGroupIds": [],

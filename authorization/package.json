@@ -1,0 +1,8 @@
+{
+  "name": "serverless-authorization-module",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "serverless-authentication": "git@github.com:laardee/serverless-authentication.git#develop"
+  }
+}
