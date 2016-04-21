@@ -6,8 +6,9 @@ const utils = slsAuth.utils;
 const config = slsAuth.config;
 const nock = require('nock');
 const expect = require('chai').expect;
+const url = require('url');
 
-describe('Authentication', () => {
+describe('Authentication Provider', () => {
   describe('Google', () => {
     before(() => {
       const googleConfig = config({ provider: 'google' });
@@ -60,9 +61,10 @@ describe('Authentication', () => {
 
       const providerConfig = config(event);
       lib.callbackHandler(event, (error, data) => {
-        const token =
-          data.url.match(/[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?/)[0];
-        const tokenData = utils.readToken(token, providerConfig.token_secret);
+        const query = url.parse(data.url, true).query;
+        expect(query.token).to.match(/[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?/);
+        expect(query.refresh).to.match(/[A-Fa-f0-9]{64}/);
+        const tokenData = utils.readToken(query.token, providerConfig.token_secret);
         expect(tokenData.id).to.equal(`${event.provider}-user-id-1`);
         done(error);
       });
