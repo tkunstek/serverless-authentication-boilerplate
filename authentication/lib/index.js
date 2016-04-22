@@ -115,7 +115,7 @@ function refreshHandler(event, callback) {
   if ((/^[A-Fa-f0-9]{64}$/).test(refreshToken)) {
     const providerConfig = config({ provider: '' });
     const data = createResponseData(id, providerConfig);
-    const authorization_token = utils.createToken(data, providerConfig.token_secret, data.options);
+    const authorization_token = utils.createToken(data.authorizationToken.payload, providerConfig.token_secret, data.authorizationToken.options);
     callback(null, { authorization_token, refresh_token: data.refreshToken, id });
   } else {
     callback('Invalid refresh token');

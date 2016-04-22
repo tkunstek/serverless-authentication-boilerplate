@@ -7,6 +7,14 @@ This boilerplate is compatible with the Serverless v.0.5.3+
 
 Webapp demo that uses this boilerplate: http://laardee.github.io/serverless-authentication-gh-pages
 
+## Use cases
+
+1. You can use this as a base for your project and create resource functions and endpoints to this project.
+
+2. If you wish to add authentication functions to an existing project, you can download [dist/authentication.zip](https://github.com/laardee/serverless-authentication-boilerplate/blob/master/dist/authentication.zip) and [dist/authorization.zip](https://github.com/laardee/serverless-authentication-boilerplate/blob/master/dist/authorization.zip) which contains authentication and authorization files. Then extract files to your project and run `npm install` in both directories.
+
+3. Decouple authentication and resources. Use this project as an authentication provider and create resources to another Serverless project. To authoriza request in resource api, you need to copy [dist/authorization.zip](https://github.com/laardee/serverless-authentication-boilerplate/blob/master/dist/authorization.zip) files to the project and defined tokenSecret environmental variable that matches the authentication project's tokenSecret, which is used to verify JSON Web Token.
+
 **Few small issues with the Serverless v.0.5. and AWS Lambda**
 
 For now, you need to do some manual adjustment with Custom Authorizer AWS Console. If you are upgrading project runtime, you need to remove the old lambda function from the AWS first before you can deploy functions with node 4.3 runtime.
@@ -24,10 +32,6 @@ For now, you need to do some manual adjustment with Custom Authorizer AWS Consol
 In step 6, you may also want to enable 'serverless-plugin-autoprune', it is a nice plugin that removes old lambda function versions from AWS.
 
 You need to deploy the API by hand in AWS console after the changes.
-
-### Use with existing project
-
-If you wish to add authentication functions to an existing project, you can download [dist/authentication.zip](https://github.com/laardee/serverless-authentication-boilerplate/blob/master/dist/authentication.zip) which contains authentication folder files. Then extract files to your project and run `npm install` in that directory.
 
 ## Set up Authentication Provider Application Settings
 
