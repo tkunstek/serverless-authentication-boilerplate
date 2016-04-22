@@ -19,12 +19,14 @@ describe('Authentication', () => {
   describe('Refresh Token', () => {
     it('should get new authorization token', () => {
       const event = {
-        refresh: '5165c43f29f6dc577e771d5ff837015c440990109452022dbe20816fbb1868d9'
+        id: 'facebook-123123',
+        refresh_token: '5165c43f29f6dc577e771d5ff837015c440990109452022dbe20816fbb1868d9'
       };
       lib.refreshHandler(event, (error, data) => {
         expect(error).to.be.null();
-        expect(data.token).to.match(/[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?/);
-        expect(data.refresh).to.match(/[A-Fa-f0-9]{64}/);
+        expect(data.authorization_token).to.match(/[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?/);
+        expect(data.refresh_token).to.match(/[A-Fa-f0-9]{64}/);
+        expect(data.id).to.equal(event.id);
       });
     });
   });

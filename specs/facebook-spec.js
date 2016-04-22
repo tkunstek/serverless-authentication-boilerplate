@@ -61,10 +61,11 @@ describe('Authentication Provider', () => {
       const providerConfig = config(event);
       lib.callbackHandler(event, (error, data) => {
         const query = url.parse(data.url, true).query;
-        expect(query.token).to.match(/[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?/);
-        expect(query.refresh).to.match(/[A-Fa-f0-9]{64}/);
-        const tokenData = utils.readToken(query.token, providerConfig.token_secret);
+        expect(query.authorization_token).to.match(/[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?/);
+        expect(query.refresh_token).to.match(/[A-Fa-f0-9]{64}/);
+        const tokenData = utils.readToken(query.authorization_token, providerConfig.token_secret);
         expect(tokenData.id).to.equal(`${event.provider}-user-id-1`);
+        expect(tokenData.id).to.equal(query.id);
         done(error);
       });
     });

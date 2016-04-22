@@ -11,6 +11,7 @@ const google = require('serverless-authentication-google');
 const microsoft = require('serverless-authentication-microsoft');
 const customGoogle = require('./custom-google');
 
+// General
 const crypto = require('crypto');
 
 // Signin switch
@@ -46,20 +47,25 @@ function createResponseData(id, providerConfig) {
   const time = (new Date()).getTime();
   const hmac = crypto.createHmac('sha256', providerConfig.token_secret);
   hmac.update(`${id}-${time}`);
-  const refresh = hmac.digest('hex');
+  const refreshToken = hmac.digest('hex');
   // then save refresh token to dynamo db for later comparison
   // in the example token is not saved
 
-  // sets 1 minute expiration time as an example
+  // sets 15 seconds expiration time as an example
   //
-  return {
+
+  const authorizationToken = {
     payload: {
       id
     },
     options: {
-      expiresIn: 60
-    },
-    refresh
+      expiresIn: 15
+    }
+  };
+
+  return {
+    authorizationToken,
+    refreshToken
   };
 }
 
@@ -78,7 +84,8 @@ function callbackHandler(event, callback) {
       // in example only id is added to token payload
       // profile class: https://github.com/laardee/serverless-authentication/blob/master/src/profile.js
       const id = `${profile.provider}-${profile.id}`;
-      utils.tokenResponse(createResponseData(id, providerConfig), providerConfig, callback);
+      const data = Object.assign(createResponseData(id, providerConfig), { id });
+      utils.tokenResponse(data, providerConfig, callback);
     }
   };
 
@@ -93,8 +100,7 @@ function callbackHandler(event, callback) {
       microsoft.callback(event, providerConfig, handleResponse);
       break;
     case 'custom-google':
-      // See ./customGoogle.js
-      customGoogle.callbackHandler(event, providerConfig, handleResponse);
+      customGoogle.callbackHandler(event, providerConfig, handleResponse); // See ./customGoogle.js
       break;
     default:
       utils.errorResponse({ error: 'Invalid provider' }, providerConfig, callback);
@@ -102,13 +108,15 @@ function callbackHandler(event, callback) {
 }
 
 function refreshHandler(event, callback) {
-  const providerConfig = config({ provider: 'facebook' });
-  const refresh = event.refresh;
+  const refreshToken = event.refresh_token;
+  const id = event.id;
+  // user refresh token to get userid & provider from cache table
 
-  if ((/^[A-Fa-f0-9]{64}$/).test(refresh)) {
-    const data = createResponseData('temp-id', providerConfig);
-    const token = utils.createToken(data.payload, providerConfig.token_secret, data.options);
-    callback(null, { token, refresh: data.refresh });
+  if ((/^[A-Fa-f0-9]{64}$/).test(refreshToken)) {
+    const providerConfig = config({ provider: '' });
+    const data = createResponseData(id, providerConfig);
+    const authorization_token = utils.createToken(data, providerConfig.token_secret, data.options);
+    callback(null, { authorization_token, refresh_token: data.refreshToken, id });
   } else {
     callback('Invalid refresh token');
   }
