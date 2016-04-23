@@ -17,7 +17,7 @@ Webapp demo that uses this boilerplate: http://laardee.github.io/serverless-auth
 
 **Few small issues with the Serverless v.0.5. and AWS Lambda**
 
-For now, you need to do some manual adjustment with Custom Authorizer AWS Console. If you are upgrading project runtime, you need to remove the old lambda function from the AWS first before you can deploy functions with node 4.3 runtime.
+If you are upgrading project runtime, you need to remove the old lambda function from the AWS first before you can deploy functions with node 4.3 runtime. You may also need to do some manual adjustment with Custom Authorizer AWS Console.
 
 ## Installation
 
@@ -27,7 +27,7 @@ For now, you need to do some manual adjustment with Custom Authorizer AWS Consol
 4. Run `npm install`.
 5. Set [environmental variables](#env-vars).
 6. Run `serverless dash deploy` on the project root folder. Select all and `Deploy`. Then deploy endpoints with parameter --all `serverless endpoint deploy --all`.
-7. Fine-tune [Custom Authorizer](#custom-authorizer) in AWS Console.
+(7. Fine-tune [Custom Authorizer](#custom-authorizer) in AWS Console.)
 
 In step 6, you may also want to enable 'serverless-plugin-autoprune', it is a nice plugin that removes old lambda function versions from AWS.
 
@@ -93,15 +93,20 @@ Click _Update_.
 
 ## The Structure
 
+Authentication
 * authentication/signin
   * endpoint: /authentication/signin/{provider}, redirects to oauth provider login page
   * handler: signin function creates redirect url to oauth provider
 * authentication/callback
   * endpoint: /authentication/callback/{provider}, redirects back to client webapp with token url parameter
   * handler: function is called by oauth provider with `code` parameter
-* authentication/authorize
+
+Authorization
+* authorization/authorize
   * endpoint: no end point
   * handler: is used by Api Gateway custom authorizer
+
+Testing
 * test-token/test-token
   * endpoint: /test-token
   * handler: test-token function can be used to test custom authorizer, it returns principalId of custom authorizer policy. It is mapped as username in request template.

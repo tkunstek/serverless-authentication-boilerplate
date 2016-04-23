@@ -9,7 +9,8 @@
   "memorySize": 512,
   "authorizer": {
     "type": "TOKEN",
-    "identitySource": "method.request.header.Authorization"
+    "identitySource": "method.request.header.Authorization",
+    "authorizerResultTtlInSeconds": "0"
   },
   "custom": {
     "excludePatterns": []
