@@ -9,16 +9,7 @@
   "memorySize": 512,
   "authorizer": {},
   "custom": {
-    "excludePatterns": [],
-    "cors": {
-      "allowOrigin": "*",
-      "allowHeaders": [
-        "Content-Type",
-        "X-Amz-Date",
-        "Authorization",
-        "X-Api-Key"
-      ]
-    }
+    "excludePatterns": []
   },
   "endpoints": [
     {
@@ -29,22 +20,18 @@
       "authorizerFunction": "authorize",
       "apiKeyRequired": false,
       "requestParameters": {},
-      "requestTemplates": {
-        "application/json": "{\"username\": \"$context.authorizer.principalId\"}"
-      },
+      "requestTemplates": "$${apiPrincipalIdMapRequestTemplate}",
       "responses": {
-        "401": {
-          "statusCode": "401"
-        },
-        "default": {
-          "statusCode": "200",
-          "responseParameters": {},
-          "responseModels": {},
-          "responseTemplates": {
-            "application/json": ""
-          }
-        }
+        "401": "$${api401ErrorMatchResponse}",
+        "default": "$${apiDefault200Response}"
       }
+    },
+    {
+      "path": "test-token",
+      "method": "OPTIONS",
+      "type": "MOCK",
+      "requestTemplates": "$${apiCorsRequestTemplate}",
+      "responses": "$${apiCorsOptionsResponse}"
     }
   ],
   "events": [],

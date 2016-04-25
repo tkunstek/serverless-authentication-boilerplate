@@ -9,16 +9,7 @@
   "memorySize": 512,
   "authorizer": {},
   "custom": {
-    "excludePatterns": [],
-    "cors": {
-      "allowOrigin": "*",
-      "allowHeaders": [
-        "Content-Type",
-        "X-Amz-Date",
-        "Authorization",
-        "X-Api-Key"
-      ]
-    }
+    "excludePatterns": []
   },
   "endpoints": [
     {
@@ -33,18 +24,16 @@
         "application/json": "{\"refresh_token\":\"$input.params('refresh_token')\",\"id\":\"$input.params('id')\",\"state\":\"$input.params('state')\",\"host\":\"$input.params().header.get('host')\",\"stage\":\"$context.stage\"}"
       },
       "responses": {
-        "400": {
-          "statusCode": "400"
-        },
-        "default": {
-          "statusCode": "200",
-          "responseParameters": {},
-          "responseModels": {},
-          "responseTemplates": {
-            "application/json": ""
-          }
-        }
+        "401": "$${api400ErrorMatchResponse}",
+        "default": "$${apiDefault200Response}"
       }
+    },
+    {
+      "path": "authentication/refresh",
+      "method": "OPTIONS",
+      "type": "MOCK",
+      "requestTemplates": "$${apiCorsRequestTemplate}",
+      "responses": "$${apiCorsOptionsResponse}"
     }
   ],
   "events": [],
