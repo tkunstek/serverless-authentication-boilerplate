@@ -1,5 +1,5 @@
 'use strict';
 
 module.exports.handler =
-  (event, context) =>
-    context.done(null, { username: event.username });
+  (event, context, callback) =>
+    callback(null, { username: event.username });

@@ -13,6 +13,7 @@ const customGoogle = require('./custom-google');
 
 // General
 const crypto = require('crypto');
+const cache = require('./cache');
 
 // Signin switch
 function signinHandler(event, callback) {
@@ -20,24 +21,31 @@ function signinHandler(event, callback) {
   // This is just a demo state, in real application you could
   // create a hash and save it to dynamo db and then compare it
   // in the callback
-  const state = `state-${event.provider}`;
-  switch (event.provider) {
-    case 'facebook':
-      facebook.signin(providerConfig, { scope: 'email', state }, callback);
-      break;
-    case 'google':
-      google.signin(providerConfig, { scope: 'profile email', state }, callback);
-      break;
-    case 'microsoft':
-      microsoft.signin(providerConfig, { scope: 'wl.basic wl.emails', state }, callback);
-      break;
-    case 'custom-google':
-      // See ./customGoogle.js
-      customGoogle.signinHandler(providerConfig, { state }, callback);
-      break;
-    default:
-      utils.errorResponse({ error: 'Invalid provider' }, providerConfig, callback);
-  }
+  const buffer = crypto.randomBytes(64);
+  const state = buffer.toString('hex');
+  cache.saveState(state, (error) => {
+    if (!error) {
+      switch (event.provider) {
+        case 'facebook':
+          facebook.signin(providerConfig, { scope: 'email', state }, callback);
+          break;
+        case 'google':
+          google.signin(providerConfig, { scope: 'profile email', state }, callback);
+          break;
+        case 'microsoft':
+          microsoft.signin(providerConfig, { scope: 'wl.basic wl.emails', state }, callback);
+          break;
+        case 'custom-google':
+          // See ./customGoogle.js
+          customGoogle.signinHandler(providerConfig, { state }, callback);
+          break;
+        default:
+          utils.errorResponse({ error: 'Invalid provider' }, providerConfig, callback);
+      }
+    } else {
+      utils.errorResponse({ error }, providerConfig, callback);
+    }
+  });
 }
 
 function createResponseData(id, providerConfig) {
@@ -76,16 +84,22 @@ function callbackHandler(event, callback) {
   const handleResponse = (err, profile, state) => {
     if (err) {
       utils.errorResponse({ error: 'Unauthorized' }, providerConfig, callback);
-    } else if (state !== `state-${profile.provider}`) {
-      // here you should compare if the state returned from provider exist in dynamo db
-      // and then expire it
-      utils.errorResponse({ error: 'State mismatch' }, providerConfig, callback);
     } else {
-      // in example only id is added to token payload
-      // profile class: https://github.com/laardee/serverless-authentication/blob/master/src/profile.js
-      const id = `${profile.provider}-${profile.id}`;
-      const data = Object.assign(createResponseData(id, providerConfig), { id });
-      utils.tokenResponse(data, providerConfig, callback);
+      cache.getState(state, (cacheError, cacheState) => {
+        if (cacheError) {
+          utils.errorResponse({ error: cacheError }, providerConfig, callback);
+        } else if (state !== cacheState) {
+          // here you should compare if the state returned from provider exist in dynamo db
+          // and then expire it
+          utils.errorResponse({ error: 'State mismatch' }, providerConfig, callback);
+        } else {
+          // in example only id is added to token payload
+          // profile class: https://github.com/laardee/serverless-authentication/blob/master/src/profile.js
+          const id = `${profile.provider}-${profile.id}`;
+          const data = Object.assign(createResponseData(id, providerConfig), { id });
+          utils.tokenResponse(data, providerConfig, callback);
+        }
+      });
     }
   };
 

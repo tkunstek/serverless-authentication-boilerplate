@@ -1,7 +1,5 @@
 {
   "name": "serverless-authentication-boilerplate",
   "custom": {},
-  "plugins": [
-    "serverless-cors-plugin"
-  ]
+  "plugins": []
 }

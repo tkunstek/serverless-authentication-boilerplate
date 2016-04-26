@@ -1,6 +1,6 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "The AWS CloudFormation template for this Serverless application's resources outside of Lambdas and Api Gateway",
+  "Description": "${project} ${stage} CloudFormation",
   "Resources": {
     "IamRoleLambda": {
       "Type": "AWS::IAM::Role",
@@ -39,6 +39,16 @@
                 "logs:PutLogEvents"
               ],
               "Resource": "arn:aws:logs:${region}:*:*"
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "dynamodb:Scan",
+                "dynamodb:Query",
+                "dynamodb:PutItem",
+                "dynamodb:DeleteItem"
+              ],
+              "Resource": "arn:aws:dynamodb:${region}:*:*"
             }
           ]
         },
@@ -47,6 +57,36 @@
             "Ref": "IamRoleLambda"
           }
         ]
+      }
+    },
+    "Dynamo": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "Hash",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "Type",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "Hash",
+            "KeyType": "HASH"
+          },
+          {
+            "AttributeName": "Type",
+            "KeyType": "RANGE"
+          }
+        ],
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": 1,
+          "WriteCapacityUnits": 1
+        },
+        "TableName": "${stage}-${project}-cache"
       }
     }
   },

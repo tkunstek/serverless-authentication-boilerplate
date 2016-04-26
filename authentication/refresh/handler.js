@@ -4,5 +4,5 @@
 const lib = require('../lib');
 
 module.exports.handler =
-  (event, context) =>
-    lib.refreshHandler(event, context.done);
+  (event, context, callback) =>
+    lib.refreshHandler(event, callback);

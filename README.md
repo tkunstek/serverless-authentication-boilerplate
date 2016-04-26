@@ -21,17 +21,13 @@ If you are upgrading project runtime, you need to remove the old lambda function
 
 ## Installation
 
-1. Install Serverless framework with `npm install -g serverless`.
-2. Create a new project based on this boilerplate `serverless project install -n myAuthenticationProject serverless-authentication-boilerplate`
-3. Change directory to the one that was created in previous step.
-4. Run `npm install`.
-5. Set [environmental variables](#env-vars).
-6. Run `serverless dash deploy` on the project root folder. Select all and `Deploy`. Then deploy endpoints with parameter --all `serverless endpoint deploy --all`.
-(7. Fine-tune [Custom Authorizer](#custom-authorizer) in AWS Console.)
+Install Serverless framework with `npm install -g serverless`.
 
-In step 6, you may also want to enable 'serverless-plugin-autoprune', it is a nice plugin that removes old lambda function versions from AWS.
+Installation will create one DynamoDB table for oauth state and refresh tokens.
 
-You need to deploy the API by hand in AWS console after the changes.
+1. Create a new project based on this boilerplate `serverless project install -n myAuthenticationProject serverless-authentication-boilerplate`. Don't mind the `WARNING: This variable is not defined: NNN` warnings, those will be set in next step.
+2. Change directory to the one that was created in previous step and set [environmental variables](#env-vars).
+3. Run `serverless dash deploy` on the project root folder. Select all and `Deploy`.
 
 ## Set up Authentication Provider Application Settings
 
@@ -74,22 +70,6 @@ If you are using stage "dev", then contents of the s-variables-dev.json should b
 ```
 
 Environmental variables are mapped in s-function.json files, for example in the authentication/signin/s-function.json. If you add more providers, those should be added to the s-function.json files also and if you don't use all the providers provided in this example, remove variables from _meta/variables/s-variables-STAGE.json and s-function.json files.
-
-## <a id="custom-authorizer"></a>Custom Authorizer
-
-Custom Authorizer is deployed, but it is lacking some of the settings. Following settings should be modified.
-
-1. Select deployed API
-2. Select _Custom Authorizers_ from the side menu. Then select _authorize_ function from list
-3. Edit the in the form
-  * Name: _authorizer_, you can also rename it.
-  * Lambda region: Select the region where your _authorize_ function is deployed
-  * Lambda function: This is the _authorize_ function in authentication folder
-  * Identity token source: _method.request.header.Authorization_
-  * Token validation expression: _.*_
-  * Result TTL in seconds: 0
-
-Click _Update_.
 
 ## The Structure
 

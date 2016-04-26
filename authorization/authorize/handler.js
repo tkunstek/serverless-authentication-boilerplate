@@ -4,6 +4,6 @@
 const lib = require('../lib');
 
 module.exports.handler =
-  (event, context) =>
-    lib.authorize(event, context.done);
+  (event, context, callback) =>
+    lib.authorize(event, callback);
 
