@@ -24,11 +24,12 @@
     "eslint-plugin-jsx-a11y": "^0.6.2",
     "eslint-plugin-react": "^4.3.0",
     "mocha": "^2.4.5",
-    "nock": "^7.7.2"
+    "nock": "^7.7.2",
+    "aws-sdk": "^2.2.48"
   },
   "scripts": {
     "install": "cd authentication && npm install && cd ../authorization && npm install",
-    "test": "./node_modules/.bin/mocha specs/",
+    "test": "SERVERLESS_STAGE=dev SERVERLESS_REGION=us-central-1 SERVERLESS_PROJECT=serverless-authentication-boilerplate LOCAL_DDB_ENDPOINT=http://192.168.99.100:8000 ./node_modules/.bin/mocha specs/",
     "lint": "eslint . || true"
   }
 }

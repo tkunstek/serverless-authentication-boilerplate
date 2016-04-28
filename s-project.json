@@ -1,5 +1,7 @@
 {
   "name": "serverless-authentication-boilerplate",
   "custom": {},
-  "plugins": []
+  "plugins": [
+    "./plugins/setupdb.js"
+  ]
 }

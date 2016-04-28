@@ -40,14 +40,17 @@ describe('Authentication Provider', () => {
         });
     });
 
-    it('should return oauth signin url', () => {
+    it('should return oauth signin url', (done) => {
       const event = {
         provider: 'facebook'
       };
 
       lib.signinHandler(event, (error, data) => {
-        expect(error).to.be.null();
-        expect(data.url).to.equal('https://www.facebook.com/dialog/oauth?client_id=fb-mock-id&redirect_uri=https://api-id.execute-api.eu-west-1.amazonaws.com/dev/callback/facebook&scope=email&state=state-facebook');
+        if (!error) {
+          expect(error).to.be.null();
+          expect(data.url).to.match(/https:\/\/www\.facebook\.com\/dialog\/oauth\?client_id=fb-mock-id&redirect_uri=https:\/\/api-id\.execute-api\.eu-west-1\.amazonaws\.com\/dev\/callback\/facebook&scope=email&state=.{64}/);
+        }
+        done(error);
       });
     });
 
@@ -60,13 +63,17 @@ describe('Authentication Provider', () => {
 
       const providerConfig = config(event);
       lib.callbackHandler(event, (error, data) => {
-        const query = url.parse(data.url, true).query;
-        expect(query.authorization_token).to.match(/[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?/);
-        expect(query.refresh_token).to.match(/[A-Fa-f0-9]{64}/);
-        const tokenData = utils.readToken(query.authorization_token, providerConfig.token_secret);
-        expect(tokenData.id).to.equal(`${event.provider}-user-id-1`);
-        expect(tokenData.id).to.equal(query.id);
-        done(error);
+        if (!error) {
+          const query = url.parse(data.url, true).query;
+          expect(query.authorization_token).to.match(/[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?/);
+          expect(query.refresh_token).to.match(/[A-Fa-f0-9]{64}/);
+          const tokenData = utils.readToken(query.authorization_token, providerConfig.token_secret);
+          expect(tokenData.id).to.equal(`${event.provider}-user-id-1`);
+          expect(tokenData.id).to.equal(query.id);
+          done();
+        } else {
+          done(error);
+        }
       });
     });
   });

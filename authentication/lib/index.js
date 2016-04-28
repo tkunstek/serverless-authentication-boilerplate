@@ -21,9 +21,7 @@ function signinHandler(event, callback) {
   // This is just a demo state, in real application you could
   // create a hash and save it to dynamo db and then compare it
   // in the callback
-  const buffer = crypto.randomBytes(64);
-  const state = buffer.toString('hex');
-  cache.saveState(state, (error) => {
+  cache.createState((error, state) => {
     if (!error) {
       switch (event.provider) {
         case 'facebook':
@@ -85,7 +83,7 @@ function callbackHandler(event, callback) {
     if (err) {
       utils.errorResponse({ error: 'Unauthorized' }, providerConfig, callback);
     } else {
-      cache.getState(state, (cacheError, cacheState) => {
+      cache.expireState(state, (cacheError, cacheState) => {
         if (cacheError) {
           utils.errorResponse({ error: cacheError }, providerConfig, callback);
         } else if (state !== cacheState) {
@@ -97,7 +95,14 @@ function callbackHandler(event, callback) {
           // profile class: https://github.com/laardee/serverless-authentication/blob/master/src/profile.js
           const id = `${profile.provider}-${profile.id}`;
           const data = Object.assign(createResponseData(id, providerConfig), { id });
-          utils.tokenResponse(data, providerConfig, callback);
+
+          cache.saveRefreshToken(data.refreshToken, id, (error) => {
+            if (!error) {
+              utils.tokenResponse(data, providerConfig, callback);
+            } else {
+              utils.errorResponse({ error }, providerConfig, callback);
+            }
+          });
         }
       });
     }
@@ -125,6 +130,12 @@ function refreshHandler(event, callback) {
   const refreshToken = event.refresh_token;
   const id = event.id;
   // user refresh token to get userid & provider from cache table
+  const providerConfig = config({ provider: '' });
+  const data = createResponseData(id, providerConfig);
+
+  cache.revokeRefreshToken(refreshToken, data.refreshToken, (error, token) => {
+
+  });
 
   if ((/^[A-Fa-f0-9]{64}$/).test(refreshToken)) {
     const providerConfig = config({ provider: '' });

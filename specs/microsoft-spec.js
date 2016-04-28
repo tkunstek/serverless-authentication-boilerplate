@@ -37,14 +37,17 @@ describe('Authentication Provider', () => {
         });
     });
 
-    it('should return oauth signin url', () => {
+    it('should return oauth signin url', (done) => {
       const event = {
         provider: 'microsoft'
       };
 
       lib.signinHandler(event, (error, data) => {
-        expect(error).to.be.null();
-        expect(data.url).to.equal('https://login.live.com/oauth20_authorize.srf?client_id=ms-mock-id&redirect_uri=https://api-id.execute-api.eu-west-1.amazonaws.com/dev/callback/microsoft&response_type=code&scope=wl.basic wl.emails&state=state-microsoft');
+        if(!error){
+          expect(error).to.be.null();
+          expect(data.url).to.match(/https:\/\/login\.live\.com\/oauth20_authorize\.srf\?client_id=ms-mock-id&redirect_uri=https:\/\/api-id\.execute-api\.eu-west-1\.amazonaws\.com\/dev\/callback\/microsoft&response_type=code&scope=wl\.basic wl\.emails&state=.{64}/);
+        }
+        done(error);
       });
     });
 
@@ -57,12 +60,14 @@ describe('Authentication Provider', () => {
 
       const providerConfig = config(event);
       lib.callbackHandler(event, (error, data) => {
-        const query = url.parse(data.url, true).query;
-        expect(query.authorization_token).to.match(/[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?/);
-        expect(query.refresh_token).to.match(/[A-Fa-f0-9]{64}/);
-        const tokenData = utils.readToken(query.authorization_token, providerConfig.token_secret);
-        expect(tokenData.id).to.equal(`${event.provider}-user-id-1`);
-        expect(tokenData.id).to.equal(query.id);
+        if(!error){
+          const query = url.parse(data.url, true).query;
+          expect(query.authorization_token).to.match(/[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?/);
+          expect(query.refresh_token).to.match(/[A-Fa-f0-9]{64}/);
+          const tokenData = utils.readToken(query.authorization_token, providerConfig.token_secret);
+          expect(tokenData.id).to.equal(`${event.provider}-user-id-1`);
+          expect(tokenData.id).to.equal(query.id);
+        }
         done(error);
       });
     });

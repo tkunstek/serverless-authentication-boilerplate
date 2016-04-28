@@ -41,14 +41,17 @@ describe('Authentication Provider', () => {
         });
     });
 
-    it('should return oauth signin url', () => {
+    it('should return oauth signin url', (done) => {
       const event = {
         provider: 'google'
       };
 
       lib.signinHandler(event, (error, data) => {
-        expect(error).to.be.null();
-        expect(data.url).to.equal('https://accounts.google.com/o/oauth2/v2/auth?client_id=g-mock-id&redirect_uri=https://api-id.execute-api.eu-west-1.amazonaws.com/dev/callback/google&response_type=code&scope=profile email&state=state-google');
+        if (!error) {
+          expect(error).to.be.null();
+          expect(data.url).to.match(/https:\/\/accounts\.google\.com\/o\/oauth2\/v2\/auth\?client_id=g-mock-id&redirect_uri=https:\/\/api-id\.execute-api\.eu-west-1\.amazonaws\.com\/dev\/callback\/google&response_type=code&scope=profile email&state=.{64}/);
+        }
+        done(error);
       });
     });
 

@@ -64,7 +64,7 @@
       "Properties": {
         "AttributeDefinitions": [
           {
-            "AttributeName": "Hash",
+            "AttributeName": "Token",
             "AttributeType": "S"
           },
           {
@@ -74,7 +74,7 @@
         ],
         "KeySchema": [
           {
-            "AttributeName": "Hash",
+            "AttributeName": "Token",
             "KeyType": "HASH"
           },
           {
