@@ -16,7 +16,8 @@
     "lambda"
   ],
   "devDependencies": {
-    "serverless-authentication": "^0.3.0",
+    "async": "^2.0.0-rc.3",
+    "aws-sdk": "^2.2.48",
     "chai": "^3.5.0",
     "dirty-chai": "^1.2.2",
     "eslint": "^2.8.0",
@@ -25,11 +26,11 @@
     "eslint-plugin-react": "^4.3.0",
     "mocha": "^2.4.5",
     "nock": "^7.7.2",
-    "aws-sdk": "^2.2.48"
+    "serverless-authentication": "^0.3.0"
   },
   "scripts": {
     "install": "cd authentication && npm install && cd ../authorization && npm install",
-    "test": "SERVERLESS_STAGE=dev SERVERLESS_REGION=us-central-1 SERVERLESS_PROJECT=serverless-authentication-boilerplate LOCAL_DDB_ENDPOINT=http://192.168.99.100:8000 ./node_modules/.bin/mocha specs/",
+    "test": "./specs.sh",
     "lint": "eslint . || true"
   }
 }

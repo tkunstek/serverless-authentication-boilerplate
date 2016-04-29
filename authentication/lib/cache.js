@@ -21,8 +21,6 @@ function createState(callback) {
     }
   };
 
-  //console.log(dynamodb);
-
   dynamodb.put(params, (error) => callback(error, state));
 }
 
@@ -61,19 +59,6 @@ function expireState(state, callback) {
           _callback(error);
         }
       });
-      
-      // const params = {
-      //   TableName: table,
-      //   Key: { Token: state, Type: 'STATE' },
-      // };
-      //
-      // dynamodb.put(params, (error) => {
-      //   if (!error) {
-      //     _callback(null, data.Items[0].Token);
-      //   } else {
-      //     _callback(error);
-      //   }
-      // });
     }
   ], (err, data) => {
     callback(err, data);
@@ -87,9 +72,7 @@ function saveRefreshToken(token, user, callback) {
       Token: token,
       Type: 'REFRESH',
       Expired: false,
-      Additional: {
-        user
-      }
+      UserId: user
     }
   };
 
@@ -101,35 +84,50 @@ function revokeRefreshToken(oldToken, newToken, callback) {
     (_callback) => {
       const params = {
         TableName: table,
-        ProjectionExpression: '#token, #type',
+        ProjectionExpression: '#token, #type, #user',
         KeyConditionExpression: '#token = :token and #type = :type',
         ExpressionAttributeNames: {
-          '#token': 'Additional.token',
-          '#type': 'Type'
+          '#token': 'Token',
+          '#type': 'Type',
+          '#user': 'UserId'
         },
         ExpressionAttributeValues: {
           ':token': oldToken,
-          ':type': 'STATE'
+          ':type': 'REFRESH'
         }
       };
+
       dynamodb.query(params, _callback);
     },
     (data, _callback) => {
+      const UserId = data.Items[0].UserId;
       const params = {
         TableName: table,
-        Key: { Hash: data.Items[0].Hash, Type: 'STATE' }
+        Item: {
+          Token: newToken,
+          Type: 'REFRESH',
+          Expired: false,
+          UserId
+        }
       };
 
-      dynamodb.delete(params, (error) => {
-        if (!error) {
-          _callback(null, data.Items[0].Hash);
-        } else {
-          _callback(error);
+      dynamodb.put(params, (error) => _callback(error, UserId));
+    },
+    (UserId, _callback) => {
+      const params = {
+        TableName: table,
+        Item: {
+          Token: oldToken,
+          Type: 'REFRESH',
+          Expired: true,
+          UserId
         }
-      });
+      };
+
+      dynamodb.put(params, (error) => _callback(error));
     }
-  ], (err, data) => {
-    callback(err, data);
+  ], (err) => {
+    callback(err);
   });
 }
 

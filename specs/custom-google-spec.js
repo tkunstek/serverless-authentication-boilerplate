@@ -7,10 +7,12 @@ const config = slsAuth.config;
 const nock = require('nock');
 const expect = require('chai').expect;
 const url = require('url');
+const dynamo = require('./dynamo');
 
 describe('Authentication Provider', () => {
   describe('Custom Google', () => {
     before(() => {
+      dynamo.init();
       const googleConfig = config({ provider: 'custom-google' });
       nock('https://www.googleapis.com')
         .post('/oauth2/v4/token')
@@ -41,6 +43,8 @@ describe('Authentication Provider', () => {
         });
     });
 
+    let state = '';
+
     it('should return oauth signin url', (done) => {
       const event = {
         provider: 'custom-google'
@@ -48,6 +52,8 @@ describe('Authentication Provider', () => {
 
       lib.signinHandler(event, (error, data) => {
         if (!error) {
+          const query = url.parse(data.url, true).query;
+          state = query.state;
           expect(error).to.be.null();
           expect(data.url).to.match(/https:\/\/accounts\.google\.com\/o\/oauth2\/v2\/auth\?client_id=cg-mock-id&redirect_uri=https:\/\/api-id\.execute-api\.eu-west-1\.amazonaws\.com\/dev\/callback\/custom-google&response_type=code&scope=profile email&state=.{64}/);
         }
@@ -59,17 +65,20 @@ describe('Authentication Provider', () => {
       const event = {
         provider: 'custom-google',
         code: 'code',
-        state: 'state-custom-google'
+        state
       };
 
       const providerConfig = config(event);
       lib.callbackHandler(event, (error, data) => {
-        const query = url.parse(data.url, true).query;
-        expect(query.authorization_token).to.match(/[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?/);
-        expect(query.refresh_token).to.match(/[A-Fa-f0-9]{64}/);
-        const tokenData = utils.readToken(query.authorization_token, providerConfig.token_secret);
-        expect(tokenData.id).to.equal(`${event.provider}-user-id-1`);
-        expect(tokenData.id).to.equal(query.id);
+        if (!error) {
+          const query = url.parse(data.url, true).query;
+          expect(query.authorization_token).to.match(/[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?/);
+          expect(query.refresh_token).to.match(/[A-Fa-f0-9]{64}/);
+          const tokenData = utils.readToken(query.authorization_token, providerConfig.token_secret);
+          expect(tokenData.id)
+            .to.equal('46344f93c18d9b70ddef7cc5c24886451a0af124f74d84a0c89387b5f7c70ff4');
+          expect(tokenData.id).to.equal(query.id);
+        }
         done(error);
       });
     });

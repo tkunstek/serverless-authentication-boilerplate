@@ -46,14 +46,21 @@ function signinHandler(event, callback) {
   });
 }
 
+function hash(data, secret) {
+  const hmac = crypto.createHmac('sha256', secret);
+  hmac.update(data);
+  return hmac.digest('hex');
+}
+
 function createResponseData(id, providerConfig) {
   // here can be checked if user exist in db and update properties pr if not, create new etc.
 
   // create example refresh token
   const time = (new Date()).getTime();
-  const hmac = crypto.createHmac('sha256', providerConfig.token_secret);
-  hmac.update(`${id}-${time}`);
-  const refreshToken = hmac.digest('hex');
+  // const hmac = crypto.createHmac('sha256', providerConfig.token_secret);
+  // hmac.update(`${id}-${time}`);
+  const refreshToken = hash(`${id}-${time}`, providerConfig.token_secret);
+  // hmac.digest('hex');
   // then save refresh token to dynamo db for later comparison
   // in the example token is not saved
 
@@ -93,7 +100,7 @@ function callbackHandler(event, callback) {
         } else {
           // in example only id is added to token payload
           // profile class: https://github.com/laardee/serverless-authentication/blob/master/src/profile.js
-          const id = `${profile.provider}-${profile.id}`;
+          const id = hash(`${profile.provider}-${profile.id}`, providerConfig.token_secret);
           const data = Object.assign(createResponseData(id, providerConfig), { id });
 
           cache.saveRefreshToken(data.refreshToken, id, (error) => {
@@ -133,22 +140,18 @@ function refreshHandler(event, callback) {
   const providerConfig = config({ provider: '' });
   const data = createResponseData(id, providerConfig);
 
-  cache.revokeRefreshToken(refreshToken, data.refreshToken, (error, token) => {
-
+  cache.revokeRefreshToken(refreshToken, data.refreshToken, (error) => {
+    if (error) {
+      callback(error);
+    } else {
+      const authorization_token =
+        utils.createToken(
+          data.authorizationToken.payload,
+          providerConfig.token_secret,
+          data.authorizationToken.options);
+      callback(null, { authorization_token, refresh_token: data.refreshToken, id });
+    }
   });
-
-  if ((/^[A-Fa-f0-9]{64}$/).test(refreshToken)) {
-    const providerConfig = config({ provider: '' });
-    const data = createResponseData(id, providerConfig);
-    const authorization_token =
-      utils.createToken(
-        data.authorizationToken.payload,
-        providerConfig.token_secret,
-        data.authorizationToken.options);
-    callback(null, { authorization_token, refresh_token: data.refreshToken, id });
-  } else {
-    callback('Invalid refresh token');
-  }
 }
 
 exports = module.exports = {

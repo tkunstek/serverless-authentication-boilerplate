@@ -7,10 +7,12 @@ const config = slsAuth.config;
 const nock = require('nock');
 const expect = require('chai').expect;
 const url = require('url');
+const dynamo = require('./dynamo');
 
 describe('Authentication Provider', () => {
   describe('Microsoft', () => {
     before(() => {
+      dynamo.init();
       const providerConfig = config({ provider: 'microsoft' });
       nock('https://login.live.com')
         .post('/oauth20_token.srf')
@@ -37,13 +39,17 @@ describe('Authentication Provider', () => {
         });
     });
 
+    let state = '';
+
     it('should return oauth signin url', (done) => {
       const event = {
         provider: 'microsoft'
       };
 
       lib.signinHandler(event, (error, data) => {
-        if(!error){
+        if (!error) {
+          const query = url.parse(data.url, true).query;
+          state = query.state;
           expect(error).to.be.null();
           expect(data.url).to.match(/https:\/\/login\.live\.com\/oauth20_authorize\.srf\?client_id=ms-mock-id&redirect_uri=https:\/\/api-id\.execute-api\.eu-west-1\.amazonaws\.com\/dev\/callback\/microsoft&response_type=code&scope=wl\.basic wl\.emails&state=.{64}/);
         }
@@ -55,17 +61,18 @@ describe('Authentication Provider', () => {
       const event = {
         provider: 'microsoft',
         code: 'code',
-        state: 'state-microsoft'
+        state
       };
 
       const providerConfig = config(event);
       lib.callbackHandler(event, (error, data) => {
-        if(!error){
+        if (!error) {
           const query = url.parse(data.url, true).query;
           expect(query.authorization_token).to.match(/[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?/);
           expect(query.refresh_token).to.match(/[A-Fa-f0-9]{64}/);
           const tokenData = utils.readToken(query.authorization_token, providerConfig.token_secret);
-          expect(tokenData.id).to.equal(`${event.provider}-user-id-1`);
+          expect(tokenData.id)
+            .to.equal('0bc293b1bf8b932f7a996605f13aae28011f45a933abb48d10b693b8edfc5b34');
           expect(tokenData.id).to.equal(query.id);
         }
         done(error);
