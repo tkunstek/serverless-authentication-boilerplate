@@ -11,30 +11,34 @@ const async = require('async');
 const DynamoDB = require('aws-sdk').DynamoDB;
 const db = new DynamoDB({ endpoint, region });
 
+function init(cb) {
+  async.waterfall([
+    (callback) => {
+      db.listTables({}, callback);
+    },
+    (data, callback) => {
+      const tables = data.TableNames;
+      if (tables.indexOf(table) < 0) {
+        db.createTable(resources.Dynamo.Properties, (err, created) => {
+          if (!err) {
+            callback(null, `table ${created.TableDescription.TableName} created`);
+          } else {
+            callback(err);
+          }
+        });
+      } else {
+        callback(null, `${table} already exists`);
+      }
+    }
+  ], (err) => {
+    if (cb) {
+      cb(err);
+    }
+  });
+}
+
 exports = module.exports = {
-  init: () => {
-    async.waterfall([
-      (callback) => {
-        db.listTables({}, callback);
-      },
-      (data, callback) => {
-        const tables = data.TableNames;
-        if (tables.indexOf(table) === -1) {
-          db.createTable(resources.Dynamo.Properties, (err, created) => {
-            if (!err) {
-              callback(null, `table ${created.TableDescription.TableName} created`);
-            } else {
-              callback(err);
-            }
-          });
-        } else {
-          callback(null, `${table} already exists`);
-        }
-      }
-    ], (err) => {
-      if (err) {
-        throw new Error(err);
-      }
-    });
-  }
+  init
 };
+
+init();

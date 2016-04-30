@@ -84,12 +84,11 @@ function revokeRefreshToken(oldToken, newToken, callback) {
     (_callback) => {
       const params = {
         TableName: table,
-        ProjectionExpression: '#token, #type, #user',
+        ProjectionExpression: '#token, #type',
         KeyConditionExpression: '#token = :token and #type = :type',
         ExpressionAttributeNames: {
           '#token': 'Token',
-          '#type': 'Type',
-          '#user': 'UserId'
+          '#type': 'Type'
         },
         ExpressionAttributeValues: {
           ':token': oldToken,

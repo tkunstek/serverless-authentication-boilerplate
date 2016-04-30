@@ -7,12 +7,10 @@ const config = slsAuth.config;
 const nock = require('nock');
 const expect = require('chai').expect;
 const url = require('url');
-const dynamo = require('./dynamo');
 
 describe('Authentication Provider', () => {
   describe('Google', () => {
     before(() => {
-      dynamo.init();
       const googleConfig = config({ provider: 'google' });
       nock('https://www.googleapis.com')
         .post('/oauth2/v4/token')
@@ -44,6 +42,7 @@ describe('Authentication Provider', () => {
     });
 
     let state = '';
+    let refreshToken = '';
 
     it('should return oauth signin url', (done) => {
       const event = {
@@ -72,14 +71,28 @@ describe('Authentication Provider', () => {
       lib.callbackHandler(event, (error, data) => {
         if (!error) {
           const query = url.parse(data.url, true).query;
+          refreshToken = query.refresh_token;
           expect(query.authorization_token).to.match(/[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?/);
-          expect(query.refresh_token).to.match(/[A-Fa-f0-9]{64}/);
+          expect(refreshToken).to.match(/[A-Fa-f0-9]{64}/);
           const tokenData = utils.readToken(query.authorization_token, providerConfig.token_secret);
           expect(tokenData.id)
             .to.equal('59d694734e227742db6b6788bdbfb2e5fb5f866c1811fc4d8704aff012e69623');
           expect(tokenData.id).to.equal(query.id);
         }
         done(error);
+      });
+    });
+
+    it('should get new authorization token', () => {
+      const event = {
+        refresh_token: refreshToken
+      };
+
+      lib.refreshHandler(event, (error, data) => {
+        expect(error).to.be.null();
+        expect(data.authorization_token).to.match(/[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?/);
+        expect(data.refresh_token).to.match(/[A-Fa-f0-9]{64}/);
+        expect(data.id).to.equal(event.id);
       });
     });
   });

@@ -90,19 +90,18 @@ function callbackHandler(event, callback) {
     if (err) {
       utils.errorResponse({ error: 'Unauthorized' }, providerConfig, callback);
     } else {
-      cache.expireState(state, (cacheError, cacheState) => {
+      cache.expireState(state, (cacheError) => {
         if (cacheError) {
           utils.errorResponse({ error: cacheError }, providerConfig, callback);
-        } else if (state !== cacheState) {
-          // here you should compare if the state returned from provider exist in dynamo db
-          // and then expire it
-          utils.errorResponse({ error: 'State mismatch' }, providerConfig, callback);
+        // } else if (state !== cacheState) {
+        //   // here you should compare if the state returned from provider exist in dynamo db
+        //   // and then expire it
+        //   utils.errorResponse({ error: 'State mismatch' }, providerConfig, callback);
         } else {
           // in example only id is added to token payload
           // profile class: https://github.com/laardee/serverless-authentication/blob/master/src/profile.js
           const id = hash(`${profile.provider}-${profile.id}`, providerConfig.token_secret);
           const data = Object.assign(createResponseData(id, providerConfig), { id });
-
           cache.saveRefreshToken(data.refreshToken, id, (error) => {
             if (!error) {
               utils.tokenResponse(data, providerConfig, callback);
