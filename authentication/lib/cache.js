@@ -10,15 +10,14 @@ const dynamodb = new AWS.DynamoDB.DocumentClient(config);
 const async = require('async');
 const crypto = require('crypto');
 
-// Config
-// const slsAuth = require('serverless-authentication');
-// const config = slsAuth.config;
-// const utils = slsAuth.utils;
-
 function hash() {
   return crypto.randomBytes(48).toString('hex');
 }
 
+/**
+ * Creates OAuth State
+ * @param callback
+ */
 function createState(callback) {
   const state = hash();
   const params = {
@@ -33,12 +32,17 @@ function createState(callback) {
   dynamodb.put(params, (error) => callback(error, state));
 }
 
-function expireState(state, callback) {
+/**
+ * Revokes OAuth State
+ * @param state
+ * @param callback
+ */
+function revokeState(state, callback) {
   async.waterfall([
     (_callback) => {
       const params = {
         TableName: table,
-        ProjectionExpression: '#token, #type',
+        ProjectionExpression: '#token, #type, Expired',
         KeyConditionExpression: '#token = :token and #type = :type',
         ExpressionAttributeNames: {
           '#token': 'Token',
@@ -52,28 +56,42 @@ function expireState(state, callback) {
       dynamodb.query(params, _callback);
     },
     (data, _callback) => {
-      const params = {
-        TableName: table,
-        Item: {
-          Token: state,
-          Type: 'STATE',
-          Expired: true
-        }
-      };
+      const item = data.Items[0];
+      if (item.Expired) {
+        _callback('State expired'); // @todo move to query, e.g. filter?
+      } else {
+        const params = {
+          TableName: table,
+          Item: {
+            Token: state,
+            Type: 'STATE',
+            Expired: true
+          }
+        };
 
-      dynamodb.put(params, (error) => {
-        if (!error) {
-          _callback(null, data.Items[0].Token);
-        } else {
-          _callback(error);
-        }
-      });
+        dynamodb.put(params, (error) => {
+          if (!error) {
+            _callback(null, item.Token);
+          } else {
+            _callback(error);
+          }
+        });
+      }
     }
-  ], (err, data) => {
-    callback(err, data);
+  ], (err, token) => {
+    let error = err;
+    if (!error && state !== token) {
+      error = 'State mismatch';
+    }
+    callback(error, token);
   });
 }
 
+/**
+ * Creates and saves refresh token
+ * @param user
+ * @param callback
+ */
 function saveRefreshToken(user, callback) {
   const token = hash();
   const params = {
@@ -89,17 +107,23 @@ function saveRefreshToken(user, callback) {
   dynamodb.put(params, (error) => callback(error, token));
 }
 
+/**
+ * Revokes old refresh token and creates new
+ * @param oldToken
+ * @param callback
+ */
 function revokeRefreshToken(oldToken, callback) {
   const token = hash();
   async.waterfall([
     (_callback) => {
       const params = {
         TableName: table,
-        ProjectionExpression: '#token, #type, UserId',
+        ProjectionExpression: '#token, #type, #userId',
         KeyConditionExpression: '#token = :token and #type = :type',
         ExpressionAttributeNames: {
           '#token': 'Token',
-          '#type': 'Type'
+          '#type': 'Type',
+          '#userId': 'UserId'
         },
         ExpressionAttributeValues: {
           ':token': oldToken,
@@ -138,9 +162,10 @@ function revokeRefreshToken(oldToken, callback) {
   });
 }
 
+
 exports = module.exports = {
   createState,
-  expireState,
+  revokeState,
   saveRefreshToken,
   revokeRefreshToken
 };

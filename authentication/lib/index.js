@@ -14,8 +14,29 @@ const customGoogle = require('./custom-google');
 // General
 const crypto = require('crypto');
 const cache = require('./cache');
+const async = require('async');
 
-// Signin switch
+// Helper functions
+function createResponseData(id) {
+  // sets 15 seconds expiration time as an example
+  const authorizationToken = {
+    payload: {
+      id
+    },
+    options: {
+      expiresIn: 15
+    }
+  };
+
+  return { authorizationToken };
+}
+
+
+/**
+ * Sign In Handler
+ * @param event
+ * @param callback
+ */
 function signinHandler(event, callback) {
   const providerConfig = config(event);
   // This is just a demo state, in real application you could
@@ -46,48 +67,46 @@ function signinHandler(event, callback) {
   });
 }
 
-function hash(data, secret) {
-  const hmac = crypto.createHmac('sha256', secret);
-  hmac.update(data);
-  return hmac.digest('hex');
-}
 
-function createResponseData(id) {
-  // sets 15 seconds expiration time as an example
-  const authorizationToken = {
-    payload: {
-      id
-    },
-    options: {
-      expiresIn: 15
-    }
-  };
-
-  return { authorizationToken };
-}
-
-// Callback switch
+/**
+ * Callback Handler
+ * @param event
+ * @param callback
+ */
 function callbackHandler(event, callback) {
   const providerConfig = config(event);
 
-  const handleResponse = (err, profile, state) => {
-    if (err) {
+  const handleResponse = (error, profile, state) => {
+    if (error) {
       utils.errorResponse({ error: 'Unauthorized' }, providerConfig, callback);
     } else {
-      cache.expireState(state, (cacheError, cacheState) => {
+      cache.revokeState(state, (cacheError) => {
         if (cacheError) {
           utils.errorResponse({ error: cacheError }, providerConfig, callback);
-        } else if (state !== cacheState) {
-          // here you should compare if the state returned from provider exist in dynamo db
-          // and then expire it
-          utils.errorResponse({ error: 'State mismatch' }, providerConfig, callback);
         } else {
           // profile class: https://github.com/laardee/serverless-authentication/blob/master/src/profile.js
-          const id = hash(`${profile.provider}-${profile.id}`, providerConfig.token_secret);
+          // create user id hash from profile values
+          const hmac = crypto.createHmac('sha256', providerConfig.token_secret);
+          hmac.update(`${profile.provider}-${profile.id}`);
+          const id = hmac.digest('hex');
+
           const data = createResponseData(id, providerConfig);
-          cache.saveRefreshToken(id, (error, refreshToken) => {
-            if (!error) {
-              utils.tokenResponse(Object.assign(data, { refreshToken }), providerConfig, callback);
+          async.parallel({
+            refreshToken: (_callback) => {
+              cache.saveRefreshToken(id, _callback);
+            },
+            profile: (_callback) => {
+              // Here you can save the profile to DynamoDB if it doesn't already exist
+              // In this example it just makes empty callback to continue and nothing is saved.
+              _callback(null);
+            }
+          }, (saveError, results) => {
+            if (!saveError) {
+              utils.tokenResponse(
+                Object.assign(data, { refreshToken: results.refreshToken }),
+                providerConfig,
+                callback
+              );
             } else {
               utils.errorResponse({ error }, providerConfig, callback);
             }
@@ -115,6 +134,12 @@ function callbackHandler(event, callback) {
   }
 }
 
+
+/**
+ * Refresh Handler
+ * @param event
+ * @param callback
+ */
 function refreshHandler(event, callback) {
   const refreshToken = event.refresh_token;
   // user refresh token to get userid & provider from cache table
