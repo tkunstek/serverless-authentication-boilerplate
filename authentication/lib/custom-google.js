@@ -20,7 +20,7 @@ const callbackHandler = (event, config, callback) => {
       id: response.id,
       name: response.displayName,
       email: response.emails ? response.emails[0].value : null,
-      picture: response.image.url,
+      picture: response.image ? response.image.url : null,
       provider: 'custom-google',
       _raw: response
     });

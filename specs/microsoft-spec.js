@@ -73,7 +73,6 @@ describe('Authentication Provider', () => {
           const tokenData = utils.readToken(query.authorization_token, providerConfig.token_secret);
           expect(tokenData.id)
             .to.equal('0bc293b1bf8b932f7a996605f13aae28011f45a933abb48d10b693b8edfc5b34');
-          expect(tokenData.id).to.equal(query.id);
         }
         done(error);
       });

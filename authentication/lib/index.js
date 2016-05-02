@@ -52,21 +52,8 @@ function hash(data, secret) {
   return hmac.digest('hex');
 }
 
-function createResponseData(id, providerConfig) {
-  // here can be checked if user exist in db and update properties pr if not, create new etc.
-
-  // create example refresh token
-  const time = (new Date()).getTime();
-  // const hmac = crypto.createHmac('sha256', providerConfig.token_secret);
-  // hmac.update(`${id}-${time}`);
-  const refreshToken = hash(`${id}-${time}`, providerConfig.token_secret);
-  // hmac.digest('hex');
-  // then save refresh token to dynamo db for later comparison
-  // in the example token is not saved
-
+function createResponseData(id) {
   // sets 15 seconds expiration time as an example
-  //
-
   const authorizationToken = {
     payload: {
       id
@@ -76,10 +63,7 @@ function createResponseData(id, providerConfig) {
     }
   };
 
-  return {
-    authorizationToken,
-    refreshToken
-  };
+  return { authorizationToken };
 }
 
 // Callback switch
@@ -90,21 +74,20 @@ function callbackHandler(event, callback) {
     if (err) {
       utils.errorResponse({ error: 'Unauthorized' }, providerConfig, callback);
     } else {
-      cache.expireState(state, (cacheError) => {
+      cache.expireState(state, (cacheError, cacheState) => {
         if (cacheError) {
           utils.errorResponse({ error: cacheError }, providerConfig, callback);
-        // } else if (state !== cacheState) {
-        //   // here you should compare if the state returned from provider exist in dynamo db
-        //   // and then expire it
-        //   utils.errorResponse({ error: 'State mismatch' }, providerConfig, callback);
+        } else if (state !== cacheState) {
+          // here you should compare if the state returned from provider exist in dynamo db
+          // and then expire it
+          utils.errorResponse({ error: 'State mismatch' }, providerConfig, callback);
         } else {
-          // in example only id is added to token payload
           // profile class: https://github.com/laardee/serverless-authentication/blob/master/src/profile.js
           const id = hash(`${profile.provider}-${profile.id}`, providerConfig.token_secret);
-          const data = Object.assign(createResponseData(id, providerConfig), { id });
-          cache.saveRefreshToken(data.refreshToken, id, (error) => {
+          const data = createResponseData(id, providerConfig);
+          cache.saveRefreshToken(id, (error, refreshToken) => {
             if (!error) {
-              utils.tokenResponse(data, providerConfig, callback);
+              utils.tokenResponse(Object.assign(data, { refreshToken }), providerConfig, callback);
             } else {
               utils.errorResponse({ error }, providerConfig, callback);
             }
@@ -134,12 +117,12 @@ function callbackHandler(event, callback) {
 
 function refreshHandler(event, callback) {
   const refreshToken = event.refresh_token;
-  const id = event.id;
   // user refresh token to get userid & provider from cache table
-  const providerConfig = config({ provider: '' });
-  const data = createResponseData(id, providerConfig);
+  cache.revokeRefreshToken(refreshToken, (error, res) => {
+    const providerConfig = config({ provider: '' });
+    const id = res.id;
+    const data = Object.assign(createResponseData(id, providerConfig), { refreshToken: res.token });
 
-  cache.revokeRefreshToken(refreshToken, data.refreshToken, (error) => {
     if (error) {
       callback(error);
     } else {

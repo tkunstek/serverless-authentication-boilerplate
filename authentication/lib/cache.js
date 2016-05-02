@@ -4,14 +4,23 @@ const table = `${process.env.SERVERLESS_STAGE}-${process.env.SERVERLESS_PROJECT}
 const config = { region: process.env.SERVERLESS_REGION };
 if (process.env.LOCAL_DDB_ENDPOINT) config.endpoint = process.env.LOCAL_DDB_ENDPOINT;
 
+// Common
 const AWS = require('aws-sdk');
 const dynamodb = new AWS.DynamoDB.DocumentClient(config);
 const async = require('async');
 const crypto = require('crypto');
 
+// Config
+// const slsAuth = require('serverless-authentication');
+// const config = slsAuth.config;
+// const utils = slsAuth.utils;
+
+function hash() {
+  return crypto.randomBytes(48).toString('hex');
+}
+
 function createState(callback) {
-  const buffer = crypto.randomBytes(32);
-  const state = buffer.toString('hex');
+  const state = hash();
   const params = {
     TableName: table,
     Item: {
@@ -65,7 +74,8 @@ function expireState(state, callback) {
   });
 }
 
-function saveRefreshToken(token, user, callback) {
+function saveRefreshToken(user, callback) {
+  const token = hash();
   const params = {
     TableName: table,
     Item: {
@@ -76,15 +86,16 @@ function saveRefreshToken(token, user, callback) {
     }
   };
 
-  dynamodb.put(params, (error) => callback(error));
+  dynamodb.put(params, (error) => callback(error, token));
 }
 
-function revokeRefreshToken(oldToken, newToken, callback) {
+function revokeRefreshToken(oldToken, callback) {
+  const token = hash();
   async.waterfall([
     (_callback) => {
       const params = {
         TableName: table,
-        ProjectionExpression: '#token, #type',
+        ProjectionExpression: '#token, #type, UserId',
         KeyConditionExpression: '#token = :token and #type = :type',
         ExpressionAttributeNames: {
           '#token': 'Token',
@@ -95,7 +106,6 @@ function revokeRefreshToken(oldToken, newToken, callback) {
           ':type': 'REFRESH'
         }
       };
-
       dynamodb.query(params, _callback);
     },
     (data, _callback) => {
@@ -103,13 +113,12 @@ function revokeRefreshToken(oldToken, newToken, callback) {
       const params = {
         TableName: table,
         Item: {
-          Token: newToken,
+          Token: token,
           Type: 'REFRESH',
           Expired: false,
           UserId
         }
       };
-
       dynamodb.put(params, (error) => _callback(error, UserId));
     },
     (UserId, _callback) => {
@@ -122,11 +131,10 @@ function revokeRefreshToken(oldToken, newToken, callback) {
           UserId
         }
       };
-
-      dynamodb.put(params, (error) => _callback(error));
+      dynamodb.put(params, (error) => _callback(error, UserId));
     }
-  ], (err) => {
-    callback(err);
+  ], (err, id) => {
+    callback(err, { id, token });
   });
 }
 

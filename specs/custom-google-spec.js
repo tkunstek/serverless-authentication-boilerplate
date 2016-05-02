@@ -76,7 +76,6 @@ describe('Authentication Provider', () => {
           const tokenData = utils.readToken(query.authorization_token, providerConfig.token_secret);
           expect(tokenData.id)
             .to.equal('46344f93c18d9b70ddef7cc5c24886451a0af124f74d84a0c89387b5f7c70ff4');
-          expect(tokenData.id).to.equal(query.id);
         }
         done(error);
       });
@@ -91,7 +90,6 @@ describe('Authentication Provider', () => {
         expect(error).to.be.null();
         expect(data.authorization_token).to.match(/[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?/);
         expect(data.refresh_token).to.match(/[A-Fa-f0-9]{64}/);
-        expect(data.id).to.equal(event.id);
       });
     });
   });
