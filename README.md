@@ -11,7 +11,7 @@ Webapp demo that uses this boilerplate: http://laardee.github.io/serverless-auth
 
 1. You can use this as a base for your project and create resource functions and endpoints to this project.
 
-2. If you wish to add authentication functions to an existing project, you can download [dist/authentication.zip](https://github.com/laardee/serverless-authentication-boilerplate/blob/master/dist/authentication.zip) and [dist/authorization.zip](https://github.com/laardee/serverless-authentication-boilerplate/blob/master/dist/authorization.zip) which contains authentication and authorization files. Then extract files to your project and run `npm install` in both directories.
+2. If you wish to add authentication functions to an existing project, you can download [dist/authentication.zip](https://github.com/laardee/serverless-authentication-boilerplate/blob/master/dist/authentication.zip) and [dist/authorization.zip](https://github.com/laardee/serverless-authentication-boilerplate/blob/master/dist/authorization.zip) which contains authentication and authorization files. Then extract files to your project and run `npm install` in both directories. Remember to create DynamoDB table for cache.
 
 3. Decouple authentication and resources. Use this project as an authentication provider and create resources to another Serverless project. To authorize request in resource api, you need to copy [dist/authorization.zip](https://github.com/laardee/serverless-authentication-boilerplate/blob/master/dist/authorization.zip) files to the project and define tokenSecret environmental variable that matches the authentication project's tokenSecret, which is used to verify JSON Web Token.
 
@@ -103,3 +103,8 @@ If the authentication provider that you need is not listed, you can make a [cust
 ## <a id="custom-provider"></a>Custom Provider
 
 Package contains example [/authentication/lib/custom-google.js](https://github.com/laardee/serverless-authentication-boilerplate/blob/master/authentication/lib/custom-google.js) how to implement custom authentication provider using generic Provider class. To test custom provider go to http://laardee.github.io/serverless-authentication-gh-pages and click 'custom-google' button.
+
+## Running Tests on Mac
+
+* Install Docker
+* Run ./specs-docker.sh
