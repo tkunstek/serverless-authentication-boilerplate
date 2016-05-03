@@ -3,7 +3,7 @@
 
 This project is aimed to be a generic authentication boilerplate for the [Serverless framework](http://www.serverless.com).
 
-This boilerplate is compatible with the Serverless v.0.5.3+
+This boilerplate is compatible with the Serverless v.0.5.3+. To install Serverless framework run `npm install -g serverless`.
 
 Webapp demo that uses this boilerplate: http://laardee.github.io/serverless-authentication-gh-pages
 
@@ -15,19 +15,17 @@ Webapp demo that uses this boilerplate: http://laardee.github.io/serverless-auth
 
 3. Decouple authentication and resources. Use this project as an authentication provider and create resources to another Serverless project. To authorize request in resource api, you need to copy [dist/authorization.zip](https://github.com/laardee/serverless-authentication-boilerplate/blob/master/dist/authorization.zip) files to the project and define tokenSecret environmental variable that matches the authentication project's tokenSecret, which is used to verify JSON Web Token.
 
-**Few small issues with the Serverless v.0.5. and AWS Lambda**
-
-If you are upgrading project runtime, you need to remove the old lambda function from the AWS first before you can deploy functions with node 4.3 runtime. You may also need to do some manual adjustment with Custom Authorizer AWS Console.
-
 ## Installation
 
-Install Serverless framework with `npm install -g serverless`.
-
-Installation will create one DynamoDB table for oauth state and refresh tokens.
+Installation will create one DynamoDB table for OAuth state and refresh tokens.
 
 1. Create a new project based on this boilerplate `serverless project install -n myAuthenticationProject serverless-authentication-boilerplate`. Don't mind the `WARNING: This variable is not defined: NNN` warnings, those will be set in next step.
 2. Change directory to the one that was created in previous step and set [environmental variables](#env-vars).
 3. Run `serverless dash deploy` on the project root folder. Select all and `Deploy`.
+
+**Few small issues with the Serverless v.0.5. and AWS Lambda**
+
+If you are upgrading project runtime, you need to remove the old lambda function from the AWS first before you can deploy functions with node 4.3 runtime. You may also need to do some manual adjustment with Custom Authorizer AWS Console.
 
 ## Set up Authentication Provider Application Settings
 
@@ -36,21 +34,6 @@ The redirect URI that needs to be defined in oauth provider's application settin
 ## <a id="env-vars"></a>Environmental Variables
 
 Open _meta/variables/s-variables-STAGE.json where STAGE is the stage you are using e.g. s-variables-dev.json in "dev" stage.
-
-Add following variables to file:
-
-```
-"redirectClientURI": "http://url-to-frontend-webapp/",
-"tokenSecret": "secret-for-json-web-token",
-"providerFacebookId": "facebook-app-id",
-"providerFacebookSecret": "facebook-app-secret",
-"providerGoogleId": "google-app-id",
-"providerGoogleSecret": "google-app-secret",
-"providerMicrosoftId": "microsoft-app-id",
-"providerMicrosoftSecret": "microsoft-app-secret",
-"providerCustomGoogleId": "google-app-id",
-"providerCustomGoogleSecret": "google-app-secret"
-```
 
 If you are using stage "dev", then contents of the s-variables-dev.json should be
 ```
@@ -76,10 +59,13 @@ Environmental variables are mapped in s-function.json files, for example in the 
 Authentication
 * authentication/signin
   * endpoint: /authentication/signin/{provider}, redirects to oauth provider login page
-  * handler: signin function creates redirect url to oauth provider
+  * handler: signin function creates redirect url to oauth provider and saves `state` to DynamoDB
 * authentication/callback
   * endpoint: /authentication/callback/{provider}, redirects back to client webapp with token url parameter
-  * handler: function is called by oauth provider with `code` parameter
+  * handler: function is called by oauth provider with `code` and `state` parameters and it creates authorization and refresh tokens
+* authentication/refresh
+  * endpoint: /authentication/refresh/{refresh_token}, returns new authentication token and refresh token
+  * handler: function revokes refresh token
 
 Authorization
 * authorization/authorize

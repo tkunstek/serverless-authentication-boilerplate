@@ -13,7 +13,7 @@
   },
   "endpoints": [
     {
-      "path": "authentication/refresh",
+      "path": "authentication/refresh/{refresh_token}",
       "method": "GET",
       "type": "AWS",
       "authorizationType": "none",
