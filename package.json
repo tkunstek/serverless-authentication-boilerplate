@@ -30,7 +30,6 @@
   },
   "scripts": {
     "install": "cd authentication && npm install && cd ../authorization && npm install",
-    "test": "./specs.sh",
-    "lint": "eslint . || true"
+    "lint": "./node_modules/.bin/eslint . || true"
   }
 }

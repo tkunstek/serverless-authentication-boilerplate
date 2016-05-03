@@ -113,55 +113,58 @@ function saveRefreshToken(user, callback) {
  * @param callback
  */
 function revokeRefreshToken(oldToken, callback) {
-  const token = hash();
-  async.waterfall([
-    (_callback) => {
-      const params = {
-        TableName: table,
-        ProjectionExpression: '#token, #type, #userId',
-        KeyConditionExpression: '#token = :token and #type = :type',
-        ExpressionAttributeNames: {
-          '#token': 'Token',
-          '#type': 'Type',
-          '#userId': 'UserId'
-        },
-        ExpressionAttributeValues: {
-          ':token': oldToken,
-          ':type': 'REFRESH'
-        }
-      };
-      dynamodb.query(params, _callback);
-    },
-    (data, _callback) => {
-      const UserId = data.Items[0].UserId;
-      const params = {
-        TableName: table,
-        Item: {
-          Token: token,
-          Type: 'REFRESH',
-          Expired: false,
-          UserId
-        }
-      };
-      dynamodb.put(params, (error) => _callback(error, UserId));
-    },
-    (UserId, _callback) => {
-      const params = {
-        TableName: table,
-        Item: {
-          Token: oldToken,
-          Type: 'REFRESH',
-          Expired: true,
-          UserId
-        }
-      };
-      dynamodb.put(params, (error) => _callback(error, UserId));
-    }
-  ], (err, id) => {
-    callback(err, { id, token });
-  });
+  if (oldToken.match(/[A-Fa-f0-9]{64}/)) {
+    const token = hash();
+    async.waterfall([
+      (_callback) => {
+        const params = {
+          TableName: table,
+          ProjectionExpression: '#token, #type, #userId',
+          KeyConditionExpression: '#token = :token and #type = :type',
+          ExpressionAttributeNames: {
+            '#token': 'Token',
+            '#type': 'Type',
+            '#userId': 'UserId'
+          },
+          ExpressionAttributeValues: {
+            ':token': oldToken,
+            ':type': 'REFRESH'
+          }
+        };
+        dynamodb.query(params, _callback);
+      },
+      (data, _callback) => {
+        const UserId = data.Items[0].UserId;
+        const params = {
+          TableName: table,
+          Item: {
+            Token: token,
+            Type: 'REFRESH',
+            Expired: false,
+            UserId
+          }
+        };
+        dynamodb.put(params, (error) => _callback(error, UserId));
+      },
+      (UserId, _callback) => {
+        const params = {
+          TableName: table,
+          Item: {
+            Token: oldToken,
+            Type: 'REFRESH',
+            Expired: true,
+            UserId
+          }
+        };
+        dynamodb.put(params, (error) => _callback(error, UserId));
+      }
+    ], (err, id) => {
+      callback(err, { id, token });
+    });
+  } else {
+    callback('Invalid token');
+  }
 }
-
 
 exports = module.exports = {
   createState,

@@ -1,6 +1,10 @@
+'use strict';
+
 const chai = require('chai');
+const expect = chai.expect;
 const dirtyChai = require('dirty-chai');
 chai.use(dirtyChai);
+const dynamo = require('./dynamo');
 
 process.env.PROVIDER_FACEBOOK_ID = 'fb-mock-id';
 process.env.PROVIDER_FACEBOOK_SECRET = 'fb-mock-secret';
@@ -22,3 +26,11 @@ chai.config.includeStack = false;
 
 global.AssertionError = chai.AssertionError;
 global.Assertion = chai.Assertion;
+
+describe('Setup specs', () => {
+  before((done) => dynamo.init(done));
+
+  it('Local DynamoDB should be ready', () => {
+    expect(dynamo.isReady()).to.be.true();
+  });
+});

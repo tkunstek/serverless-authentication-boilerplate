@@ -5,13 +5,16 @@ const project = process.env.SERVERLESS_PROJECT;
 const stage = process.env.SERVERLESS_STAGE;
 const region = process.env.SERVERLESS_REGION;
 const table = [stage, project, 'cache'].join('-');
-const resources = require(`../_meta/resources/s-resources-cf-${stage}-${region.replace(/-/g, '')}.json`).Resources;
+const resources = require('../s-resources-cf.json').Resources;
 
 const async = require('async');
 const DynamoDB = require('aws-sdk').DynamoDB;
 const db = new DynamoDB({ endpoint, region });
 
+let ready = false;
+
 function init(cb) {
+  resources.Dynamo.Properties.TableName = table;
   async.waterfall([
     (callback) => {
       db.listTables({}, callback);
@@ -31,14 +34,20 @@ function init(cb) {
       }
     }
   ], (err) => {
+    if (!err) {
+      ready = true;
+    }
     if (cb) {
       cb(err);
     }
   });
 }
 
-exports = module.exports = {
-  init
-};
+function isReady() {
+  return ready;
+}
 
-init();
+exports = module.exports = {
+  init,
+  isReady
+};
