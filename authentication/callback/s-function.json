@@ -19,7 +19,9 @@
       "authorizationType": "none",
       "authorizerFunction": false,
       "apiKeyRequired": false,
-      "requestParameters": {},
+      "requestParameters": {
+        "integration.request.path.provider": "method.request.path.provider"
+      },
       "requestTemplates": {
         "application/json": "{\"provider\":\"$input.params('provider')\",\"code\":\"$input.params('code')\",\"state\":\"$input.params('state')\",\"host\":\"$input.params().header.get('host')\",\"stage\":\"$context.stage\"}"
       },
