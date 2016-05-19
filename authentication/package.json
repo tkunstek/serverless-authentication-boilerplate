@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "async": "^2.0.0-rc.3",
-    "serverless-authentication": "^0.3.0",
-    "serverless-authentication-facebook": "^0.2.1",
-    "serverless-authentication-google": "^0.2.1",
-    "serverless-authentication-microsoft": "^0.2.1"
+    "bluebird": "^3.4.0",
+    "serverless-authentication": "^0.4.0",
+    "serverless-authentication-facebook": "^0.3.0",
+    "serverless-authentication-google": "^0.3.0",
+    "serverless-authentication-microsoft": "^0.3.0"
   }
 }

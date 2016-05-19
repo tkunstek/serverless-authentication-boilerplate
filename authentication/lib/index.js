@@ -1,7 +1,7 @@
 'use strict';
 
 exports = module.exports = {
-  signinHandler: require('./signinHandler'),
-  callbackHandler: require('./callbackHandler'),
-  refreshHandler: require('./refreshHandler')
+  signinHandler: require('./handlers/signinHandler'),
+  callbackHandler: require('./handlers/callbackHandler'),
+  refreshHandler: require('./handlers/refreshHandler')
 };

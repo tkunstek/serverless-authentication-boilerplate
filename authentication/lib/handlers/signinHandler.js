@@ -9,10 +9,10 @@ const utils = slsAuth.utils;
 const facebook = require('serverless-authentication-facebook');
 const google = require('serverless-authentication-google');
 const microsoft = require('serverless-authentication-microsoft');
-const customGoogle = require('./custom-google');
+const customGoogle = require('../custom-google');
 
 // Common
-const cache = require('./cache');
+const cache = require('../storage/cacheStorage');
 
 /**
  * Sign In Handler
@@ -21,20 +21,17 @@ const cache = require('./cache');
  */
 function signinHandler(event, callback) {
   const providerConfig = config(event);
-  // This is just a demo state, in real application you could
-  // create a hash and save it to dynamo db and then compare it
-  // in the callback
-  cache.createState((error, state) => {
-    if (!error) {
+  cache.createState()
+    .then((state) => {
       switch (event.provider) {
         case 'facebook':
-          facebook.signin(providerConfig, { scope: 'email', state }, callback);
+          facebook.signinHandler(providerConfig, { scope: 'email', state }, callback);
           break;
         case 'google':
-          google.signin(providerConfig, { scope: 'profile email', state }, callback);
+          google.signinHandler(providerConfig, { scope: 'profile email', state }, callback);
           break;
         case 'microsoft':
-          microsoft.signin(providerConfig, { scope: 'wl.basic wl.emails', state }, callback);
+          microsoft.signinHandler(providerConfig, { scope: 'wl.basic wl.emails', state }, callback);
           break;
         case 'custom-google':
           // See ./customGoogle.js
@@ -43,10 +40,8 @@ function signinHandler(event, callback) {
         default:
           utils.errorResponse({ error: 'Invalid provider' }, providerConfig, callback);
       }
-    } else {
-      utils.errorResponse({ error }, providerConfig, callback);
-    }
-  });
+    })
+    .catch((error) => utils.errorResponse({ error }, providerConfig, callback));
 }
 
 exports = module.exports = signinHandler;
