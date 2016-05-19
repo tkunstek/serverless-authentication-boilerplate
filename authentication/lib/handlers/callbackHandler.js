@@ -9,14 +9,15 @@ const utils = slsAuth.utils;
 const facebook = require('serverless-authentication-facebook');
 const google = require('serverless-authentication-google');
 const microsoft = require('serverless-authentication-microsoft');
-const customGoogle = require('./custom-google');
+const customGoogle = require('../custom-google');
 
 // Common
 const crypto = require('crypto');
-const cache = require('./cache');
-const async = require('async');
+const cache = require('../storage/cacheStorage');
+const users = require('../storage/usersStorage');
+const Promise = require('bluebird');
 
-const helpers = require('./helpers');
+const helpers = require('../helpers');
 const createResponseData = helpers.createResponseData;
 
 function createUserId(data, secret) {
@@ -68,47 +69,35 @@ function callbackHandler(event, callback) {
       // Error response if something went wrong at the first place
       errorResponse({ error: 'Unauthorized' });
     } else {
-      cache.revokeState(state, (stateError) => {
-        if (stateError) {
-          // Error response if state saving fail or state is not valid
-          errorResponse({ error: stateError });
-        } else {
+      cache.revokeState(state)
+        .then(() => {
           const id = createUserId(`${profile.provider}-${profile.id}`, providerConfig.token_secret);
           const data = createResponseData(id, providerConfig);
-          async.parallel({
-            refreshToken: (_callback) => {
-              // Save refresh token
-              cache.saveRefreshToken(id, _callback);
-            },
-            profile: (_callback) => {
-              // Here you can save the profile to DynamoDB if it doesn't already exist
-              // In this example it just makes empty callback to continue and nothing is saved.
-              // profile class: https://github.com/laardee/serverless-authentication/blob/master/src/profile.js
-              _callback(null);
-            }
-          }, (saveError, results) => {
-            if (!saveError) {
-              // Token response
-              tokenResponse(Object.assign(data, { refreshToken: results.refreshToken }));
-            } else {
-              // Error response
-              errorResponse({ error });
-            }
-          });
-        }
-      });
+
+          // Here you can save the profile to DynamoDB if it doesn't already exist
+          // In this example it just makes empty callback to continue and nothing is saved.
+          // profile class: https://github.com/laardee/serverless-authentication/blob/master/src/profile.js
+
+          Promise.all([
+            cache.saveRefreshToken(id),
+            // users.saveCognito(profile),
+            users.saveDatabase(profile)
+          ])
+            .then((results) => tokenResponse(Object.assign(data, { refreshToken: results[0] })))
+            .catch((_error) => errorResponse({ error: _error }));
+        }).catch((_error) => errorResponse({ error: _error }));
     }
   };
 
   switch (event.provider) {
     case 'facebook':
-      facebook.callback(event, providerConfig, handleResponse);
+      facebook.callbackHandler(event, providerConfig, handleResponse);
       break;
     case 'google':
-      google.callback(event, providerConfig, handleResponse);
+      google.callbackHandler(event, providerConfig, handleResponse);
       break;
     case 'microsoft':
-      microsoft.callback(event, providerConfig, handleResponse);
+      microsoft.callbackHandler(event, providerConfig, handleResponse);
       break;
     case 'custom-google':
       customGoogle.callbackHandler(event, providerConfig, handleResponse); // See ./customGoogle.js

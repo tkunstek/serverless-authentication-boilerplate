@@ -6,8 +6,8 @@ const config = slsAuth.config;
 const utils = slsAuth.utils;
 
 // Common
-const cache = require('./cache');
-const helpers = require('./helpers');
+const cache = require('../storage/cacheStorage');
+const helpers = require('../helpers');
 const createResponseData = helpers.createResponseData;
 
 /**
@@ -18,10 +18,9 @@ const createResponseData = helpers.createResponseData;
 function refreshHandler(event, callback) {
   const refreshToken = event.refresh_token;
   // user refresh token to get userid & provider from cache table
-  cache.revokeRefreshToken(refreshToken, (error, results) => {
-    if (error) {
-      callback(error);
-    } else {
+
+  cache.revokeRefreshToken(refreshToken)
+    .then((results) => {
       const providerConfig = config({ provider: '' });
       const id = results.id;
       const data =
@@ -32,8 +31,8 @@ function refreshHandler(event, callback) {
           providerConfig.token_secret,
           data.authorizationToken.options);
       callback(null, { authorization_token, refresh_token: data.refreshToken, id });
-    }
-  });
+    })
+    .catch((error) => callback(error));
 }
 
 exports = module.exports = refreshHandler;

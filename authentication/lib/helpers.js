@@ -1,6 +1,6 @@
 'use strict';
 
-function createResponseData(id) {
+const createResponseData = (id) => {
   // sets 15 seconds expiration time as an example
   const authorizationToken = {
     payload: {
@@ -12,7 +12,7 @@ function createResponseData(id) {
   };
 
   return { authorizationToken };
-}
+};
 
 exports = module.exports = {
   createResponseData
