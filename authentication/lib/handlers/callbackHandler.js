@@ -73,15 +73,10 @@ function callbackHandler(event, callback) {
         .then(() => {
           const id = createUserId(`${profile.provider}-${profile.id}`, providerConfig.token_secret);
           const data = createResponseData(id, providerConfig);
-
-          // Here you can save the profile to DynamoDB if it doesn't already exist
-          // In this example it just makes empty callback to continue and nothing is saved.
-          // profile class: https://github.com/laardee/serverless-authentication/blob/master/src/profile.js
-
+          
           Promise.all([
             cache.saveRefreshToken(id),
-            // users.saveCognito(profile),
-            users.saveDatabase(profile)
+            users.saveUser(profile)
           ])
             .then((results) => tokenResponse(Object.assign(data, { refreshToken: results[0] })))
             .catch((_error) => errorResponse({ error: _error }));
