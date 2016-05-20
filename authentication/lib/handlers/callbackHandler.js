@@ -73,10 +73,10 @@ function callbackHandler(event, callback) {
         .then(() => {
           const id = createUserId(`${profile.provider}-${profile.id}`, providerConfig.token_secret);
           const data = createResponseData(id, providerConfig);
-          
+
           Promise.all([
             cache.saveRefreshToken(id),
-            users.saveUser(profile)
+            users.saveUser(Object.assign(profile, { userId: id }))
           ])
             .then((results) => tokenResponse(Object.assign(data, { refreshToken: results[0] })))
             .catch((_error) => errorResponse({ error: _error }));

@@ -49,6 +49,14 @@
                 "dynamodb:DeleteItem"
               ],
               "Resource": "arn:aws:dynamodb:${region}:*:*"
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "cognito-sync:*",
+                "cognito-identity:*"
+              ],
+              "Resource": "arn:aws:cognito-identity:eu-west-1:*:*"
             }
           ]
         },
