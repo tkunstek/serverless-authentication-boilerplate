@@ -18,6 +18,15 @@ const saveDatabase = (profile) => new Promise((resolve, reject) => {
 const saveCognito = (profile) => new Promise((resolve, reject) => {
   if (profile) {
     // Use AWS console or AWS-CLI to create identity pool
+    // Add Cognito allowing statement to policy
+    // {
+    //   "Effect": "Allow",
+    //   "Action": [
+    //   "cognito-sync:*",
+    //   "cognito-identity:*"
+    // ],
+    //   "Resource": "arn:aws:cognito-identity:*:*:*"
+    // }
     cognitoidentity.getOpenIdTokenForDeveloperIdentity({
       IdentityPoolId: process.env.COGNITO_IDENTITY_POOL_ID,
       Logins: {
