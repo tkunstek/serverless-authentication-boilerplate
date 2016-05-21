@@ -3,6 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "serverless-authentication": "^0.4.3"
+    "serverless-authentication": "^0.4.4"
   }
 }
