@@ -21,8 +21,7 @@ const callbackHandler = (event, config, callback) => {
       name: response.displayName,
       email: response.emails ? response.emails[0].value : null,
       picture: response.image ? response.image.url : null,
-      provider: 'custom-google',
-      _raw: response
+      provider: 'custom-google'
     });
 
   const options = {
