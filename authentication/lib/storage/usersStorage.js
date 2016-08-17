@@ -58,7 +58,7 @@ const saveUser = (profile) => {
   // Here you can save the profile to DynamoDB, AWS Cognito or where ever you wish
   // profile class: https://github.com/laardee/serverless-authentication/blob/master/src/profile.js
 
-  if (false) {
+  if (true) {
     return saveDatabase(profile);
   }
   return saveCognito(profile);

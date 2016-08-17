@@ -21,7 +21,8 @@ Installation will create one DynamoDB table for OAuth state and refresh tokens.
 
 1. Create a new project based on this boilerplate `serverless project install -n myAuthenticationProject serverless-authentication-boilerplate`. Don't mind the `WARNING: This variable is not defined: NNN` warnings, those will be set in next step.
 2. Change directory to the one that was created in previous step and set [environmental variables](#env-vars).
-3. Run `serverless dash deploy` on the project root folder. Select all and `Deploy`.
+3. Change directory to `authentication` and run `npm install` then change directory to project root and then to `authorization` and run `npm install`
+4. Run `serverless dash deploy` on the project root folder. Select all and `Deploy`.
 
 **Few small issues with the Serverless v.0.5. and AWS Lambda**
 
