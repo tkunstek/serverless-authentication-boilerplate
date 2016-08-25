@@ -13,7 +13,6 @@ const customGoogle = require('../custom-google');
 
 // Common
 const cache = require('../storage/cacheStorage');
-const helpers = require('../helpers');
 
 /**
  * Sign In Handler
@@ -21,7 +20,6 @@ const helpers = require('../helpers');
  * @param callback
  */
 function signinHandler(event, callback) {
-  helpers.initEnvVariables(event.stage);
   const providerConfig = config(event);
   cache.createState()
     .then((state) => {
@@ -40,7 +38,7 @@ function signinHandler(event, callback) {
           customGoogle.signinHandler(providerConfig, { state }, callback);
           break;
         default:
-          utils.errorResponse({ error: `Invalid provider: ${event.provider}` }, providerConfig, callback);
+          utils.errorResponse({ error: 'Invalid provider' }, providerConfig, callback);
       }
     })
     .catch((error) => utils.errorResponse({ error }, providerConfig, callback));

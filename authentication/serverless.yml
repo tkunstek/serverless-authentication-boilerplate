@@ -1,0 +1,119 @@
+# Welcome to Serverless!
+#
+# This file is the main config file for your service.
+# It's very minimal at this point and uses default values.
+# You can always add more config options for more control.
+# We've included some commented out config examples here.
+# Just uncomment any of them to get that config option.
+#
+# For full config options, check the docs:
+#    v1.docs.serverless.com
+#
+# Happy Coding!
+
+service: serverless-authentication-boilerplate-1 # NOTE: update this with your service name
+
+provider:
+  name: aws
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+      - dynamodb:Scan
+      - dynamodb:Query
+      - dynamodb:PutItem
+      - dynamodb:DeleteItem
+      Resource: arn:aws:dynamodb:${region}:*:*
+    - Effect: Allow
+      Action:
+      - cognito-sync:*
+      - cognito-identity:*
+      Resource: arn:aws:cognito-identity:*:*:*
+  runtime: nodejs4.3
+
+# you can overwrite defaults here
+defaults:
+  stage: dev
+  region: eu-west-1
+
+# you can add packaging information here
+#package:
+#  include:
+#    - include-me.js
+#  exclude:
+#    - exclude-me.js
+#  artifact: my-service-code.zip
+
+functions:
+  signin:
+    handler: handler.signin
+    events:
+      - http:
+          path: authenticate/signin/{provider}
+          method: get
+  callback:
+    handler: handler.callback
+    events:
+      - http:
+          path: authenticate/callback/{provider}
+          method: get
+  refresh:
+    handler: handler.refresh
+    events:
+      - http:
+          path: authenticate/refresh/{refresh_token}
+          method: get
+          cors: true
+
+resources:
+  Resources:
+    Dynamo:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+        - AttributeName: Token
+          AttributeType: S
+        - AttributeName: Type
+          AttributeType: S
+        KeySchema:
+        - AttributeName: Token
+          KeyType: HASH
+        - AttributeName: Type
+          KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${cache-table}
+    GetMethodApigEventSigninAuthenticateSigninProvider:
+      Type: AWS::ApiGateway::Method
+      Properties:
+        ResourceId:
+          Ref: ResourceApigEventSigninAuthenticateSigninProvider
+        RestApiId:
+          Ref: RestApiApigEvent
+        HttpMethod: GET
+        AuthorizationType: NONE
+        Integration:
+          Type: AWS
+          Uri:
+            Fn::Join:
+              - ""
+              -
+                - "arn:aws:apigateway:"
+                - Ref: "AWS::Region"
+                - ":lambda:path/2015-03-31/functions/"
+                - Fn::GetAtt:
+                  - signin
+                  - Arn
+                - "/invocations"
+          PassthroughBehavior: WHEN_NO_TEMPLATES
+          RequestTemplates:
+            application/json: "{\"provider\":\"$input.params('provider')\",\"host\":\"$input.params().header.get('host')\",\"stage\":\"$context.stage\"}"
+          IntegrationHttpMethod: POST
+          IntegrationResponses:
+            - StatusCode: 302
+              ResponseParameters:
+                method.response.header.Location: integration.response.body.url
+        MethodResponses:
+          - StatusCode: 302
+            ResponseParameters:
+              method.response.header.Location: true

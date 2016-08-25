@@ -4,8 +4,6 @@
   "private": true,
   "dependencies": {
     "bluebird": "^3.4.0",
-    "decamelize": "^1.2.0",
-    "js-yaml": "^3.6.1",
     "serverless-authentication": "^0.4.0",
     "serverless-authentication-facebook": "^0.3.0",
     "serverless-authentication-google": "^0.3.0",
