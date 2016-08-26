@@ -8,8 +8,4 @@ module.exports.signin = (event, context, cb) => signinHandler(event, cb);
 
 module.exports.callback = (event, context, cb) => callbackHandler(event, cb);
 
-// module.exports.refresh = (event, context, cb) => refreshHandler(event, cb);
-
-module.exports.refresh = (event, context, cb) => {
-  cb(null, { url: 'https://www.google.com' });
-};
+module.exports.refresh = (event, context, cb) => refreshHandler(event, cb);

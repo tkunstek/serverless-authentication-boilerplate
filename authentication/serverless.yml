@@ -48,19 +48,19 @@ functions:
     handler: handler.signin
     events:
       - http:
-          path: authenticate/signin/{provider}
+          path: authentication/signin/{provider}
           method: get
   callback:
     handler: handler.callback
     events:
       - http:
-          path: authenticate/callback/{provider}
+          path: authentication/callback/{provider}
           method: get
   refresh:
     handler: handler.refresh
     events:
       - http:
-          path: authenticate/refresh/{refresh_token}
+          path: authentication/refresh/{refresh_token}
           method: get
           cors: true
 
@@ -83,11 +83,11 @@ resources:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
         TableName: ${cache-table}
-    GetMethodApigEventSigninAuthenticateSigninProvider:
+    GetMethodApigEventSigninAuthenticationSigninProvider:
       Type: AWS::ApiGateway::Method
       Properties:
         ResourceId:
-          Ref: ResourceApigEventSigninAuthenticateSigninProvider
+          Ref: ResourceApigEventSigninAuthenticationSigninProvider
         RestApiId:
           Ref: RestApiApigEvent
         HttpMethod: GET
@@ -113,7 +113,45 @@ resources:
             - StatusCode: 302
               ResponseParameters:
                 method.response.header.Location: integration.response.body.url
+            - StatusCode: 400
         MethodResponses:
           - StatusCode: 302
             ResponseParameters:
               method.response.header.Location: true
+          - StatusCode: 400
+    GetMethodApigEventCallbackAuthenticationCallbackProvider:
+          Type: AWS::ApiGateway::Method
+          Properties:
+            ResourceId:
+              Ref: ResourceApigEventCallbackAuthenticationCallbackProvider
+            RestApiId:
+              Ref: RestApiApigEvent
+            HttpMethod: GET
+            AuthorizationType: NONE
+            Integration:
+              Type: AWS
+              Uri:
+                Fn::Join:
+                  - ""
+                  -
+                    - "arn:aws:apigateway:"
+                    - Ref: "AWS::Region"
+                    - ":lambda:path/2015-03-31/functions/"
+                    - Fn::GetAtt:
+                      - callback
+                      - Arn
+                    - "/invocations"
+              PassthroughBehavior: WHEN_NO_TEMPLATES
+              RequestTemplates:
+                application/json: "{\"provider\":\"$input.params('provider')\",\"code\":\"$input.params('code')\",\"state\":\"$input.params('state')\",\"host\":\"$input.params().header.get('host')\",\"stage\":\"$context.stage\"}"
+              IntegrationHttpMethod: POST
+              IntegrationResponses:
+                - StatusCode: 302
+                  ResponseParameters:
+                    method.response.header.Location: integration.response.body.url
+                - StatusCode: 400
+            MethodResponses:
+              - StatusCode: 302
+                ResponseParameters:
+                  method.response.header.Location: true
+              - StatusCode: 400
