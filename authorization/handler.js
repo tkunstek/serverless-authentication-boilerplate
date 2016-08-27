@@ -1,8 +1,7 @@
 'use strict';
 
-// Your first function handler
-module.exports.hello = (event, context, cb) => cb(null,
-  { message: 'Go Serverless v1.0! Your function executed successfully!', event }
-);
+const authorizeHandler = require('./lib').authorize;
 
-// You can add more handlers here, and reference them in serverless.yml
+module.exports.authorize =
+  (event, context, cb) =>
+    authorizeHandler(event, cb);

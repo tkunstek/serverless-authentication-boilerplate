@@ -47,4 +47,4 @@ _meta
 
 **/.serverless
 
-authentication/env.yml
+**/env.yml

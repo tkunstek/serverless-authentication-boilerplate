@@ -1,0 +1,10 @@
+{
+  "name": "serverless-authorization-module",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "decamelize": "^1.2.0",
+    "js-yaml": "^3.6.1",
+    "serverless-authentication": "^0.4.4"
+  }
+}

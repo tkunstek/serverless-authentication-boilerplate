@@ -1,0 +1,117 @@
+# Welcome to Serverless!
+#
+# This file is the main config file for your service.
+# It's very minimal at this point and uses default values.
+# You can always add more config options for more control.
+# We've included some commented out config examples here.
+# Just uncomment any of them to get that config option.
+#
+# For full config options, check the docs:
+#    docs.serverless.com
+#
+# Happy Coding!
+
+service: serverless-authentication-test-token # NOTE: update this with your service name
+
+provider:
+  name: aws
+  runtime: nodejs4.3
+
+# you can overwrite defaults here
+defaults:
+  stage: dev
+  region: eu-west-1
+
+# you can add packaging information here
+#package:
+#  include:
+#    - include-me.js
+#  exclude:
+#    - exclude-me.js
+#  artifact: my-service-code.zip
+
+functions:
+  testToken:
+    handler: handler.test
+    events:
+      - http:
+          path: test-token
+          method: get
+#          authorizer:
+#            arn: arn:aws:lambda:eu-west-1:12341234:function:jwtAuthorize
+#            resultTtlInSeconds: 0
+#            identitySource: method.request.header.Authorization
+#            identityValidationExpression: JWT [^\.]+\.[^\.]+\.[^\.]+
+
+#   you can add any of the following events
+#   events:
+#     - http:
+#         path: users/create
+#         method: get
+#     - s3: ${bucket}
+#     - schedule: rate(10 minutes)
+#     - sns: greeter-topic
+
+resources:
+  Resources:
+    customAuthorizer:
+      Type: AWS::ApiGateway::Authorizer
+      Properties:
+        AuthorizerResultTtlInSeconds: '0'
+        AuthorizerUri:
+          Fn::Join:
+            - ""
+            -
+              - "arn:aws:apigateway:"
+              - Ref: AWS::Region
+              - ":lambda:path/2015-03-31/functions/arn:aws:lambda:"
+              - Ref: AWS::Region
+              - ":"
+              - Ref: AWS::AccountId
+              - ":function:serverless-authorization-${stage}-authorize/invocations"
+        IdentitySource: method.request.header.Authorization
+        Name: serverlessAuthorizer
+        RestApiId:
+          Ref: RestApiApigEvent
+        Type: TOKEN
+        IdentityValidationExpression: JWT [^\.]+\.[^\.]+\.[^\.]+
+
+
+#resources:
+#  Resources:
+#    GetMethodApigEventTest-tokenTesttoken:
+#      Type: AWS::ApiGateway::Method
+#      Properties:
+#        ResourceId:
+#          Ref: ResourceApigEventTest-tokenTesttoken
+#        RestApiId:
+#          Ref: RestApiApigEvent
+#        HttpMethod: GET
+#        AuthorizationType: CUSTOM
+#        Integration:
+#          Type: AWS
+#          Uri:
+#            Fn::Join:
+#              - ""
+#              -
+#                - "arn:aws:apigateway:"
+#                - Ref: "AWS::Region"
+#                - ":lambda:path/2015-03-31/functions/"
+#                - Fn::GetAtt:
+#                  - test-token
+#                  - Arn
+#                - "/invocations"
+#          PassthroughBehavior: WHEN_NO_TEMPLATES
+#          RequestTemplates:
+#            application/json: "{\"provider\":\"$input.params('provider')\",\"code\":\"$input.params('code')\",\"state\":\"$input.params('state')\",\"host\":\"$input.params().header.get('host')\",\"stage\":\"$context.stage\"}"
+#          IntegrationHttpMethod: POST
+#          IntegrationResponses:
+#            - StatusCode: 302
+#              ResponseParameters:
+#                method.response.header.Location: integration.response.body.url
+#            - StatusCode: 400
+#        MethodResponses:
+#          - StatusCode: 302
+#            ResponseParameters:
+#              method.response.header.Location: true
+#          - StatusCode: 400

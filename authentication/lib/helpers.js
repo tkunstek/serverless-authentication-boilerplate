@@ -2,7 +2,6 @@
 
 const decamelize = require('decamelize');
 const fs = require('fs');
-
 const YAML = require('js-yaml');
 const env = YAML.load(fs.readFileSync('./env.yml').toString());
 

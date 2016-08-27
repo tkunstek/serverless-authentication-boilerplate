@@ -11,16 +11,16 @@
 #
 # Happy Coding!
 
-service: aws-nodejs # NOTE: update this with your service name
+service: serverless-authorization # NOTE: update this with your service name
 
 provider:
   name: aws
   runtime: nodejs4.3
 
 # you can overwrite defaults here
-#defaults:
-#  stage: dev
-#  region: us-east-1
+defaults:
+  stage: dev
+  region: eu-west-1
 
 # you can add packaging information here
 #package:
@@ -31,8 +31,8 @@ provider:
 #  artifact: my-service-code.zip
 
 functions:
-  hello:
-    handler: handler.hello
+  authorize:
+    handler: handler.authorize
 
 #   you can add any of the following events
 #   events:

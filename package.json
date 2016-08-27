@@ -32,6 +32,6 @@
     "lint": "./node_modules/.bin/eslint . || true",
     "deploy-authentication": "cd authentication && serverless deploy",
     "deploy-authorization": "cd authorization && serverless deploy",
-    "deploy": "npm deploy-authentication && npm deploy-authorization"
+    "deploy": "npm deploy-authorization && npm deploy-authentication"
   }
 }
