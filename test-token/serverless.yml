@@ -37,11 +37,12 @@ functions:
       - http:
           path: test-token
           method: get
-#          authorizer:
-#            arn: arn:aws:lambda:eu-west-1:12341234:function:jwtAuthorize
-#            resultTtlInSeconds: 0
-#            identitySource: method.request.header.Authorization
-#            identityValidationExpression: JWT [^\.]+\.[^\.]+\.[^\.]+
+          cors: true
+          authorizer:
+            arn: arn:aws:lambda:eu-west-1:xxxxxxxx:function:serverless-authorization-${stage}-authorize
+            resultTtlInSeconds: 0
+            identitySource: method.request.header.Authorization
+            identityValidationExpression: .*
 
 #   you can add any of the following events
 #   events:
@@ -52,29 +53,54 @@ functions:
 #     - schedule: rate(10 minutes)
 #     - sns: greeter-topic
 
-resources:
-  Resources:
-    customAuthorizer:
-      Type: AWS::ApiGateway::Authorizer
-      Properties:
-        AuthorizerResultTtlInSeconds: '0'
-        AuthorizerUri:
-          Fn::Join:
-            - ""
-            -
-              - "arn:aws:apigateway:"
-              - Ref: AWS::Region
-              - ":lambda:path/2015-03-31/functions/arn:aws:lambda:"
-              - Ref: AWS::Region
-              - ":"
-              - Ref: AWS::AccountId
-              - ":function:serverless-authorization-${stage}-authorize/invocations"
-        IdentitySource: method.request.header.Authorization
-        Name: serverlessAuthorizer
-        RestApiId:
-          Ref: RestApiApigEvent
-        Type: TOKEN
-        IdentityValidationExpression: JWT [^\.]+\.[^\.]+\.[^\.]+
+#resources:
+#  Resources:
+#    authorizeAuthorizer:
+#      Type: AWS::ApiGateway::Authorizer
+#      Properties:
+#        AuthorizerResultTtlInSeconds: '0'
+#        AuthorizerUri:
+#          Fn::Join:
+#            - ""
+#            -
+#              - "arn:aws:apigateway:"
+#              - Ref: AWS::Region
+#              - ":lambda:path/2015-03-31/functions/arn:aws:lambda:"
+#              - Ref: AWS::Region
+#              - ":"
+#              - Ref: AWS::AccountId
+#              - ":function:serverless-authorization-${stage}-authorize/invocations"
+#        IdentitySource: method.request.header.Authorization
+#        Name: serverless-authorization-${stage}-authorize
+#        RestApiId:
+#          Ref: RestApiApigEvent
+#        Type: TOKEN
+#        IdentityValidationExpression: JWT [^\.]+\.[^\.]+\.[^\.]+
+
+
+#resources:
+#  Resources:
+#    customAuthorizer:
+#      Type: AWS::ApiGateway::Authorizer
+#      Properties:
+#        AuthorizerResultTtlInSeconds: '0'
+#        AuthorizerUri:
+#          Fn::Join:
+#            - ""
+#            -
+#              - "arn:aws:apigateway:"
+#              - Ref: AWS::Region
+#              - ":lambda:path/2015-03-31/functions/arn:aws:lambda:"
+#              - Ref: AWS::Region
+#              - ":"
+#              - Ref: AWS::AccountId
+#              - ":function:serverless-authorization-${stage}-authorize/invocations"
+#        IdentitySource: method.request.header.Authorization
+#        Name: serverlessAuthorizer
+#        RestApiId:
+#          Ref: RestApiApigEvent
+#        Type: TOKEN
+#        IdentityValidationExpression: JWT [^\.]+\.[^\.]+\.[^\.]+
 
 
 #resources:

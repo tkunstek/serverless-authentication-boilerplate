@@ -26,14 +26,19 @@ const initEnvVariables = (stage) => {
 
 // Authorize
 const authorize = (event, callback) => {
+  if(event.stage === 'test-request') {
+    event.stage = 'dev';
+  }
   initEnvVariables(event.stage);
   let error = null;
   let policy;
-  if (event.authorizationToken) {
+  const authorizationToken = event.authorizationToken || event.headers.authorizationToken;
+  if (authorizationToken) {
     try {
       const providerConfig = config(event);
+      console.log('providerConfig', providerConfig);
       // this example uses simple expiration time validation
-      const data = utils.readToken(event.authorizationToken, providerConfig.token_secret);
+      const data = utils.readToken(authorizationToken, providerConfig.token_secret);
       policy = utils.generatePolicy(data.id, 'Allow', event.methodArn);
     } catch (err) {
       error = 'Unauthorized';
