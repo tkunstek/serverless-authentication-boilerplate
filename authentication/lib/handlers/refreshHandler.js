@@ -17,7 +17,7 @@ const createResponseData = helpers.createResponseData;
  */
 function refreshHandler(event, callback) {
   helpers.initEnvVariables(event.stage);
-  const refreshToken = event.refresh_token;
+  const refreshToken = event.path.refresh_token || event.refresh_token;
   // user refresh token to get userid & provider from cache table
 
   cache.revokeRefreshToken(refreshToken)

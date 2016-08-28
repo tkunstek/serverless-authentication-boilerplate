@@ -4,6 +4,24 @@
 
 [![serverless](http://public.serverless.com/badges/v3.svg)](http://www.serverless.com)
 
+
+## Services
+
+In this example project authentication service is separated from authorization and content API (test-token).
+
+### Authentication
+
+Authentication service.
+
+### Authorization
+
+Authorization function for content API.
+
+### Test-token
+
+Content API.
+
+
 # Serverless 0.5.x
 
 This project is aimed to be a generic authentication boilerplate for the [Serverless framework](http://www.serverless.com).
