@@ -1,9 +1,10 @@
 'use strict';
 
 const decamelize = require('decamelize');
-const fs = require('fs');
-const YAML = require('js-yaml');
-const env = YAML.load(fs.readFileSync('./env.yml').toString());
+// const fs = require('fs');
+// const YAML = require('js-yaml');
+// const env = YAML.load(fs.readFileSync('./env.yml').toString());
+const env = require('../env.json');
 
 const createResponseData = (id) => {
   // sets 15 seconds expiration time as an example
@@ -24,7 +25,7 @@ const createResponseData = (id) => {
  * Initialize process.env variables -> check for better way
  * @param stage
  */
-const initEnvVariables = (stage) => {
+const initEnvVariables = (stage) => new Promise((resolve, reject) => {
   const vars = env[stage];
   if (vars) {
     for (const key in vars) {
@@ -32,7 +33,8 @@ const initEnvVariables = (stage) => {
       process.env[upperKey] = vars[key];
     }
   }
-};
+  resolve();
+});
 
 exports = module.exports = {
   createResponseData,

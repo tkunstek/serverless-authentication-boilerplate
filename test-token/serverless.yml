@@ -39,10 +39,11 @@ functions:
           method: get
           cors: true
           authorizer:
-            arn: arn:aws:lambda:eu-west-1:xxxxxxxx:function:serverless-authorization-${stage}-authorize
+            arn: arn:aws:lambda:eu-west-1:xxxxxxxx:function:serverless-authentication-${stage}-authorize
             resultTtlInSeconds: 0
             identitySource: method.request.header.Authorization
             identityValidationExpression: .*
+
 
 #   you can add any of the following events
 #   events:

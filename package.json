@@ -31,7 +31,7 @@
   "scripts": {
     "lint": "./node_modules/.bin/eslint . || true",
     "deploy-authentication": "cd authentication && serverless deploy",
-    "deploy-authorization": "cd authorization && serverless deploy",
-    "deploy": "npm deploy-authorization && npm deploy-authentication"
+    "deploy-test-token": "cd test-token && serverless deploy",
+    "deploy": "npm run deploy-authentication && npm run deploy-test-token"
   }
 }

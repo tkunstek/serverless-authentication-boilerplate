@@ -1,8 +1,0 @@
-{
-  "name": "serverless-authorization-module",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "serverless-authentication": "^0.4.3"
-  }
-}

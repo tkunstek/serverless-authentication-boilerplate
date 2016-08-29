@@ -7,19 +7,15 @@
 
 ## Services
 
-In this example project authentication service is separated from authorization and content API (test-token).
+In this example project authentication and authorization services are separated from content API (test-token).
 
 ### Authentication
 
-Authentication service.
-
-### Authorization
-
-Authorization function for content API.
+Authentication service and authorization function for content API. These can also be separated if needed.
 
 ### Test-token
 
-Content API.
+Simulates content API.
 
 
 # Serverless 0.5.x
