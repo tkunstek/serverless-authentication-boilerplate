@@ -2,8 +2,8 @@
 
 // Common
 const AWS = require('aws-sdk');
-const config = { region: process.env.SERVERLESS_REGION };
-const dynamodb = new AWS.DynamoDB.DocumentClient(config);
+// const config = { region: process.env.SERVERLESS_REGION };
+// const dynamodb = new AWS.DynamoDB.DocumentClient(config);
 const Promise = require('bluebird');
 const cognitoidentity = new AWS.CognitoIdentity({ region: process.env.COGNITO_REGION });
 
@@ -44,21 +44,13 @@ const saveCognito = (profile) => new Promise((resolve, reject) => {
   }
 });
 
-const saveToUserPools = (profile) => new Promise((resolve, reject) => {
-  if (profile) {
-    resolve(null);
-  } else {
-    reject('Invalid profile');
-  }
-});
-
 const saveUser = (profile) => {
   // just temp switch
 
   // Here you can save the profile to DynamoDB, AWS Cognito or where ever you wish
   // profile class: https://github.com/laardee/serverless-authentication/blob/master/src/profile.js
-
-  if (true) {
+  const useDatabase = true;
+  if (useDatabase) {
     return saveDatabase(profile);
   }
   return saveCognito(profile);

@@ -40,7 +40,11 @@ function signinHandler(event, callback) {
           customGoogle.signinHandler(providerConfig, { state }, callback);
           break;
         default:
-          utils.errorResponse({ error: `Invalid provider: ${event.provider}` }, providerConfig, callback);
+          utils.errorResponse(
+            { error: `Invalid provider: ${event.provider}` },
+            providerConfig,
+            callback
+          );
       }
     })
     .catch((error) => utils.errorResponse({ error }, providerConfig, callback));

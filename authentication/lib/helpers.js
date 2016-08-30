@@ -25,16 +25,17 @@ const createResponseData = (id) => {
  * Initialize process.env variables -> check for better way
  * @param stage
  */
-const initEnvVariables = (stage) => new Promise((resolve, reject) => {
+const initEnvVariables = (stage) => {
   const vars = env[stage];
   if (vars) {
     for (const key in vars) {
-      const upperKey = decamelize(key).toUpperCase();
-      process.env[upperKey] = vars[key];
+      if (vars.hasOwnProperty(key)) {
+        const upperKey = decamelize(key).toUpperCase();
+        process.env[upperKey] = vars[key];
+      }
     }
   }
-  resolve();
-});
+};
 
 exports = module.exports = {
   createResponseData,
