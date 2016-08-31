@@ -3,7 +3,9 @@
 
 This project is aimed to be a generic authentication boilerplate for the [Serverless framework](http://www.serverless.com).
 
-This boilerplate is compatible with the Serverless v.0.5.3+. To install Serverless framework run `npm install -g serverless`.
+This boilerplate is compatible with the Serverless v.0.5.3+. To install Serverless framework run `npm install -g serverless@0.5.5`.
+
+**I'm currently upgrading the boilerplate to work with Serverless v.1.0 beta**
 
 Webapp demo that uses this boilerplate: http://laardee.github.io/serverless-authentication-gh-pages
 
