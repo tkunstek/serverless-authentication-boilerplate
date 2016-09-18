@@ -1,16 +1,19 @@
 'use strict';
 
-const lib = require('../authentication/lib');
+const signinHandler = require('../authentication/lib/handlers/signinHandler');
+const callbackHandler = require('../authentication/lib/handlers/callbackHandler');
+const refreshHandler = require('../authentication/lib/handlers/refreshHandler');
 const slsAuth = require('serverless-authentication');
 const utils = slsAuth.utils;
 const config = slsAuth.config;
 const nock = require('nock');
 const expect = require('chai').expect;
 const url = require('url');
+const helpers = require('../authentication/lib/helpers');
 
 describe('Authentication Provider', () => {
   before(() => {
-    const googleConfig = config({ provider: 'custom-google' });
+    const googleConfig = config({ provider: 'custom-google' }, helpers.getEnvVars('dev'));
     nock('https://www.googleapis.com')
       .post('/oauth2/v4/token')
       .query({
@@ -45,10 +48,11 @@ describe('Authentication Provider', () => {
     let refreshToken = '';
     it('should return oauth signin url', (done) => {
       const event = {
-        provider: 'custom-google'
+        provider: 'custom-google',
+        stage: 'dev'
       };
 
-      lib.signinHandler(event, (error, data) => {
+      signinHandler(event, (error, data) => {
         if (!error) {
           const query = url.parse(data.url, true).query;
           state = query.state;
@@ -66,8 +70,8 @@ describe('Authentication Provider', () => {
         state
       };
 
-      const providerConfig = config(event);
-      lib.callbackHandler(event, (error, data) => {
+      const providerConfig = config(event, helpers.getEnvVars('dev'));
+      callbackHandler(event, (error, data) => {
         if (!error) {
           const query = url.parse(data.url, true).query;
           refreshToken = query.refresh_token;
@@ -86,7 +90,7 @@ describe('Authentication Provider', () => {
         refresh_token: refreshToken
       };
 
-      lib.refreshHandler(event, (error, data) => {
+      refreshHandler(event, (error, data) => {
         expect(error).to.be.null();
         expect(data.authorization_token).to.match(/[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?/);
         expect(data.refresh_token).to.match(/[A-Fa-f0-9]{64}/);

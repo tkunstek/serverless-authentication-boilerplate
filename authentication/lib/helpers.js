@@ -37,7 +37,30 @@ const initEnvVariables = (stage) => {
   }
 };
 
+const getEnvVars = (stage) => {
+  if(env.hasOwnProperty(stage)){
+    return env[stage];
+  }
+  throw new Error(`No vars for stage ${stage}`);
+};
+
+const getConfig = (stage, vars) => {
+  let envVars;
+  if (vars) {
+    envVars = vars;
+  } else {
+    if(env.hasOwnProperty(stage)){
+      envVars = env[stage];
+    } else {
+      throw new Error(`No vars for stage ${stage}`);
+    }
+  }
+  return envVars;
+};
+
 exports = module.exports = {
   createResponseData,
-  initEnvVariables
+  initEnvVariables,
+  getEnvVars,
+  getConfig
 };

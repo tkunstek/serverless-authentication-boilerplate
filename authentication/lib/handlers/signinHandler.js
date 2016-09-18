@@ -21,8 +21,7 @@ const helpers = require('../helpers');
  * @param callback
  */
 function signinHandler(event, callback) {
-  helpers.initEnvVariables(event.stage);
-  const providerConfig = config(event);
+  const providerConfig = config(event, helpers.getEnvVars(event.stage));
   cache.createState()
     .then((state) => {
       switch (event.provider) {

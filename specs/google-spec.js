@@ -1,6 +1,8 @@
 'use strict';
 
-const lib = require('../authentication/lib');
+const signinHandler = require('../authentication/lib/handlers/signinHandler');
+const callbackHandler = require('../authentication/lib/handlers/callbackHandler');
+const refreshHandler = require('../authentication/lib/handlers/refreshHandler');
 const slsAuth = require('serverless-authentication');
 const utils = slsAuth.utils;
 const config = slsAuth.config;
@@ -49,7 +51,7 @@ describe('Authentication Provider', () => {
         provider: 'google'
       };
 
-      lib.signinHandler(event, (error, data) => {
+      signinHandler(event, (error, data) => {
         if (!error) {
           const query = url.parse(data.url, true).query;
           state = query.state;
@@ -68,7 +70,7 @@ describe('Authentication Provider', () => {
       };
 
       const providerConfig = config(event);
-      lib.callbackHandler(event, (error, data) => {
+      callbackHandler(event, (error, data) => {
         if (!error) {
           const query = url.parse(data.url, true).query;
           refreshToken = query.refresh_token;
@@ -87,7 +89,7 @@ describe('Authentication Provider', () => {
         refresh_token: refreshToken
       };
 
-      lib.refreshHandler(event, (error, data) => {
+      refreshHandler(event, (error, data) => {
         expect(error).to.be.null();
         expect(data.authorization_token).to.match(/[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?/);
         expect(data.refresh_token).to.match(/[A-Fa-f0-9]{64}/);

@@ -1,0 +1,13 @@
+{
+  "PROVIDER_FACEBOOK_ID": "fb-mock-id",
+  "PROVIDER_FACEBOOK_SECRET": "fb-mock-secret",
+  "PROVIDER_GOOGLE_ID": "g-mock-id",
+  "PROVIDER_GOOGLE_SECRET": "g-mock-secret",
+  "PROVIDER_MICROSOFT_ID": "ms-mock-id",
+  "PROVIDER_MICROSOFT_SECRET": "ms-mock-secret",
+  "PROVIDER_CUSTOM_GOOGLE_ID": "cg-mock-id",
+  "PROVIDER_CUSTOM_GOOGLE_SECRET": "cg-mock-secret",
+  "REDIRECT_CLIENT_URI": "http://localhost:3000/auth/{provider}/",
+  "REDIRECT_URI": "https://api-id.execute-api.eu-west-1.amazonaws.com/dev/callback/{provider}",
+  "TOKEN_SECRET": "token-secret-123"
+}

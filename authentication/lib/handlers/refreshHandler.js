@@ -16,13 +16,12 @@ const createResponseData = helpers.createResponseData;
  * @param callback
  */
 function refreshHandler(event, callback) {
-  helpers.initEnvVariables(event.stage);
   const refreshToken = event.path.refresh_token || event.refresh_token;
   // user refresh token to get userid & provider from cache table
 
   cache.revokeRefreshToken(refreshToken)
     .then((results) => {
-      const providerConfig = config({ provider: '' });
+      const providerConfig = config({ provider: '' }, helpers.getEnvVars(event.stage));
       const id = results.id;
       const data =
         Object.assign(createResponseData(id, providerConfig), { refreshToken: results.token });

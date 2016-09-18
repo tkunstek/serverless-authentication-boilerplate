@@ -32,8 +32,7 @@ function createUserId(data, secret) {
  * @param callback
  */
 function callbackHandler(event, callback) {
-  helpers.initEnvVariables(event.stage);
-  const providerConfig = config(event);
+  const providerConfig = config(event, helpers.getEnvVars(event.stage));
 
   /**
    * Error response
