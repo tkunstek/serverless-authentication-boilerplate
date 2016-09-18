@@ -15,6 +15,8 @@ service: serverless-authentication # NOTE: update this with your service name
 
 provider:
   name: aws
+  stage: dev
+  region: eu-west-1
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -22,7 +24,7 @@ provider:
       - dynamodb:Query
       - dynamodb:PutItem
       - dynamodb:DeleteItem
-      Resource: arn:aws:dynamodb:${region}:*:*
+      Resource: arn:aws:dynamodb:${self:provider.region}:*:*
     - Effect: Allow
       Action:
       - cognito-sync:*
@@ -31,9 +33,9 @@ provider:
   runtime: nodejs4.3
 
 # you can overwrite defaults here
-defaults:
-  stage: dev
-  region: eu-west-1
+#defaults:
+#  stage: dev
+#  region: eu-west-1
 
 # you can add packaging information here
 #package:
@@ -50,12 +52,18 @@ functions:
       - http:
           path: authentication/signin/{provider}
           method: get
+          request:
+            template:
+              application/json: "{\"provider\":\"$input.params('provider')\",\"host\":\"$input.params().header.get('host')\",\"stage\":\"$context.stage\"}"
   callback:
     handler: handler.callback
     events:
       - http:
           path: authentication/callback/{provider}
           method: get
+          request:
+            template:
+              application/json: "{\"provider\":\"$input.params('provider')\",\"code\":\"$input.params('code')\",\"state\":\"$input.params('state')\",\"host\":\"$input.params().header.get('host')\",\"stage\":\"$context.stage\"}"
   refresh:
     handler: handler.refresh
     events:
@@ -84,76 +92,26 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
-        TableName: ${cache-table}
-    GetMethodApigEventSigninAuthenticationSigninProvider:
-      Type: AWS::ApiGateway::Method
+        TableName: ${self:provider.stage}-${self:service}-cache
+    ApiGatewayMethodAuthenticationSigninProviderGet:
       Properties:
-        ResourceId:
-          Ref: ResourceApigEventSigninAuthenticationSigninProvider
-        RestApiId:
-          Ref: RestApiApigEvent
-        HttpMethod: GET
-        AuthorizationType: NONE
         Integration:
-          Type: AWS
-          Uri:
-            Fn::Join:
-              - ""
-              -
-                - "arn:aws:apigateway:"
-                - Ref: "AWS::Region"
-                - ":lambda:path/2015-03-31/functions/"
-                - Fn::GetAtt:
-                  - signin
-                  - Arn
-                - "/invocations"
-          PassthroughBehavior: WHEN_NO_TEMPLATES
-          RequestTemplates:
-            application/json: "{\"provider\":\"$input.params('provider')\",\"host\":\"$input.params().header.get('host')\",\"stage\":\"$context.stage\"}"
-          IntegrationHttpMethod: POST
           IntegrationResponses:
             - StatusCode: 302
               ResponseParameters:
                 method.response.header.Location: integration.response.body.url
-            - StatusCode: 400
         MethodResponses:
           - StatusCode: 302
             ResponseParameters:
               method.response.header.Location: true
-          - StatusCode: 400
-    GetMethodApigEventCallbackAuthenticationCallbackProvider:
-          Type: AWS::ApiGateway::Method
-          Properties:
-            ResourceId:
-              Ref: ResourceApigEventCallbackAuthenticationCallbackProvider
-            RestApiId:
-              Ref: RestApiApigEvent
-            HttpMethod: GET
-            AuthorizationType: NONE
-            Integration:
-              Type: AWS
-              Uri:
-                Fn::Join:
-                  - ""
-                  -
-                    - "arn:aws:apigateway:"
-                    - Ref: "AWS::Region"
-                    - ":lambda:path/2015-03-31/functions/"
-                    - Fn::GetAtt:
-                      - callback
-                      - Arn
-                    - "/invocations"
-              PassthroughBehavior: WHEN_NO_TEMPLATES
-              RequestTemplates:
-                application/json: "{\"provider\":\"$input.params('provider')\",\"code\":\"$input.params('code')\",\"state\":\"$input.params('state')\",\"host\":\"$input.params().header.get('host')\",\"stage\":\"$context.stage\"}"
-              IntegrationHttpMethod: POST
-              IntegrationResponses:
-                - StatusCode: 302
-                  ResponseParameters:
-                    method.response.header.Location: integration.response.body.url
-                - StatusCode: 400
-            MethodResponses:
-              - StatusCode: 302
-                ResponseParameters:
-                  method.response.header.Location: true
-              - StatusCode: 400
+    ApiGatewayMethodAuthenticationCallbackProviderGet:
+      Properties:
+        Integration:
+          IntegrationResponses:
+            - StatusCode: 302
+              ResponseParameters:
+                method.response.header.Location: integration.response.body.url
+        MethodResponses:
+          - StatusCode: 302
+            ResponseParameters:
+              method.response.header.Location: true
