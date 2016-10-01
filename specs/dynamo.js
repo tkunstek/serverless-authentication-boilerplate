@@ -5,7 +5,11 @@ const project = process.env.SERVERLESS_PROJECT;
 const stage = process.env.SERVERLESS_STAGE;
 const region = process.env.SERVERLESS_REGION;
 const table = [stage, project, 'cache'].join('-');
-const resources = require('../s-resources-cf.json').Resources;
+
+const fs = require('fs');
+const YAML = require('js-yaml');
+const env = YAML.load(fs.readFileSync('./authentication/serverless.yml').toString());
+const resources = env.resources.Resources;
 
 const async = require('async');
 const DynamoDB = require('aws-sdk').DynamoDB;
