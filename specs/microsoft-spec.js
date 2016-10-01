@@ -9,11 +9,12 @@ const config = slsAuth.config;
 const nock = require('nock');
 const expect = require('chai').expect;
 const url = require('url');
+const defaultEvent = require('./event.json');
 
 describe('Authentication Provider', () => {
   describe('Microsoft', () => {
     before(() => {
-      const providerConfig = config({ provider: 'microsoft' });
+      const providerConfig = config(Object.assign({}, defaultEvent, { provider: 'microsoft' }));
       nock('https://login.live.com')
         .post('/oauth20_token.srf')
         .query({
@@ -43,27 +44,25 @@ describe('Authentication Provider', () => {
     let refreshToken = '';
 
     it('should return oauth signin url', (done) => {
-      const event = {
-        provider: 'microsoft'
-      };
+      const event = Object.assign({}, defaultEvent, { provider: 'microsoft' });
 
       signinHandler(event, (error, data) => {
         if (!error) {
           const query = url.parse(data.url, true).query;
           state = query.state;
           expect(error).to.be.null();
-          expect(data.url).to.match(/https:\/\/login\.live\.com\/oauth20_authorize\.srf\?client_id=ms-mock-id&redirect_uri=https:\/\/api-id\.execute-api\.eu-west-1\.amazonaws\.com\/dev\/callback\/microsoft&response_type=code&scope=wl\.basic wl\.emails&state=.{64}/);
+          expect(data.url).to.match(/https:\/\/login\.live\.com\/oauth20_authorize\.srf\?client_id=ms-mock-id&redirect_uri=https:\/\/api-id\.execute-api\.eu-west-1\.amazonaws\.com\/dev\/authentication\/callback\/microsoft&response_type=code&scope=wl\.basic wl\.emails&state=.{64}/);
         }
         done(error);
       });
     });
 
     it('should return local client url', (done) => {
-      const event = {
+      const event = Object.assign({}, defaultEvent, {
         provider: 'microsoft',
         code: 'code',
         state
-      };
+      });
 
       const providerConfig = config(event);
       callbackHandler(event, (error, data) => {

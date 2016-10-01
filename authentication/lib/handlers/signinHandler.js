@@ -1,6 +1,7 @@
 'use strict';
 
 // Config
+require('dotenv').config();
 const slsAuth = require('serverless-authentication');
 const config = slsAuth.config;
 const utils = slsAuth.utils;
@@ -13,8 +14,6 @@ const customGoogle = require('../custom-google');
 
 // Common
 const cache = require('../storage/cacheStorage');
-const helpers = require('../helpers');
-const errorResponse = helpers.errorResponse;
 
 /**
  * Sign In Handler
@@ -22,7 +21,7 @@ const errorResponse = helpers.errorResponse;
  * @param callback
  */
 function signinHandler(event, callback) {
-  const providerConfig = config(event, helpers.stageVars(event));
+  const providerConfig = config(event);
   // console.log('signinHandler PC', event, providerConfig);
   cache.createState()
     .then((state) => {
@@ -41,8 +40,8 @@ function signinHandler(event, callback) {
           customGoogle.signinHandler(providerConfig, { state }, callback);
           break;
         default:
-          errorResponse(
-            { error: `Invalid provider: ${event.provider}` },
+          utils.errorResponse({
+            error: `Invalid provider: ${event.provider}` },
             providerConfig,
             callback
           );

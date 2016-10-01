@@ -9,16 +9,17 @@ const config = slsAuth.config;
 const nock = require('nock');
 const expect = require('chai').expect;
 const url = require('url');
+const defaultEvent = require('./event.json');
 
 describe('Authentication Provider', () => {
   describe('Facebook', () => {
     before(() => {
-      const providerConfig = config({ provider: 'facebook', stage: 'dev'});
+      const providerConfig = config(Object.assign({}, defaultEvent, { provider: 'facebook' }));
       nock('https://graph.facebook.com')
         .get('/v2.3/oauth/access_token')
         .query({
           client_id: providerConfig.id,
-          redirect_uri: providerConfig.redirectUri,
+          redirect_uri: providerConfig.redirect_uri,
           client_secret: providerConfig.secret,
           code: 'code'
         })
@@ -46,29 +47,25 @@ describe('Authentication Provider', () => {
     let refreshToken = '';
 
     it('should return oauth signin url', (done) => {
-      const event = {
-        provider: 'facebook',
-        stage: 'dev'
-      };
+      const event = Object.assign({}, defaultEvent, { provider: 'facebook' });
 
       signinHandler(event, (error, data) => {
         if (!error) {
           const query = url.parse(data.url, true).query;
           state = query.state;
           expect(error).to.be.null();
-          expect(data.url).to.match(/https:\/\/www\.facebook\.com\/dialog\/oauth\?client_id=fb-mock-id&redirect_uri=https:\/\/api-id\.execute-api\.eu-west-1\.amazonaws\.com\/dev\/callback\/facebook&scope=email&state=.{64}/);
+          expect(data.url).to.match(/https:\/\/www\.facebook\.com\/dialog\/oauth\?client_id=fb-mock-id&redirect_uri=https:\/\/api-id\.execute-api\.eu-west-1\.amazonaws\.com\/dev\/authentication\/callback\/facebook&scope=email&state=.{64}/);
         }
         done(error);
       });
     });
 
     it('should return local client url', (done) => {
-      const event = {
+      const event = Object.assign({}, defaultEvent, {
         provider: 'facebook',
         code: 'code',
-        state,
-        stage: 'dev'
-      };
+        state
+      });
 
       const providerConfig = config(event);
       callbackHandler(event, (error, data) => {

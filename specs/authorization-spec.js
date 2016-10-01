@@ -3,16 +3,15 @@
 const authorize = require('../authentication/lib/handlers/authorizeHandler');
 const slsAuth = require('serverless-authentication');
 const utils = slsAuth.utils;
+const config = slsAuth.config;
 const expect = require('chai').expect;
-const helpers = require('../authentication/lib/helpers');
-const config = helpers.config;
 
 describe('Authorization', () => {
   describe('Authorize', () => {
-    it('should return policy', () => {
+    it('should return policy', (done) => {
       const payload = { id: 'username-123' };
-      const providerConfig = config({ stage: 'dev' });
-      const authorizationToken = utils.createToken(payload, providerConfig.tokenSecret);
+      const providerConfig = config({ provider: '', stage: 'dev' });
+      const authorizationToken = utils.createToken(payload, providerConfig.token_secret);
       const event = {
         type: 'TOKEN',
         authorizationToken,
@@ -22,6 +21,7 @@ describe('Authorization', () => {
       authorize(event, (error, data) => {
         expect(error).to.be.null();
         expect(data.principalId).to.be.equal(payload.id);
+        done(error);
       });
     });
   });

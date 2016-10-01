@@ -1,6 +1,7 @@
 'use strict';
 
 // Config
+require('dotenv').config();
 const slsAuth = require('serverless-authentication');
 const config = slsAuth.config;
 const utils = slsAuth.utils;
@@ -32,9 +33,7 @@ function createUserId(data, secret) {
  * @param callback
  */
 function callbackHandler(event, callback) {
-  const providerConfig = config(event, helpers.stageVars(event));
-
-  console.log('callback', providerConfig)
+  const providerConfig = config(event);
 
   /**
    * Error response

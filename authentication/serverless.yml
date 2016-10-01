@@ -1,4 +1,4 @@
-service: serverless-authentication
+service: serverless-authentication # change this
 
 provider:
   name: aws
@@ -70,7 +70,7 @@ resources:
           WriteCapacityUnits: 1
         TableName: ${self:provider.stage}-${self:service}-cache
 # Overwrites default 200 responses with 302, @todo change to use proxy
-    ApiGatewayMethodAuthenticationSigninProviderVarGet:
+    ApiGatewayMethodAuthenticationSigninProviderGet:
       Type: AWS::ApiGateway::Method
       Properties:
         Integration:
@@ -82,7 +82,7 @@ resources:
           - StatusCode: 302
             ResponseParameters:
               method.response.header.Location: true
-    ApiGatewayMethodAuthenticationCallbackProviderVarGet:
+    ApiGatewayMethodAuthenticationCallbackProviderGet:
       Type: AWS::ApiGateway::Method
       Properties:
         Integration:

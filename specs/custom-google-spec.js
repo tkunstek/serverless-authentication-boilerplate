@@ -9,15 +9,11 @@ const config = slsAuth.config;
 const nock = require('nock');
 const expect = require('chai').expect;
 const url = require('url');
-const helpers = require('../authentication/lib/helpers');
-const vars = require('./_env.json');
+const defaultEvent = require('./event.json');
 
 describe('Authentication Provider', () => {
   before(() => {
-    const googleConfig = config({
-      stage: 'dev', provider: 'custom-google', host: 'api-id' },
-      helpers.stageVars({ stage: 'dev'}));
-
+    const googleConfig = config(Object.assign({}, defaultEvent, { provider: 'custom-google' }));
     nock('https://www.googleapis.com')
       .post('/oauth2/v4/token')
       .query({
@@ -51,11 +47,7 @@ describe('Authentication Provider', () => {
     let state = '';
     let refreshToken = '';
     it('should return oauth signin url', (done) => {
-      const event = {
-        provider: 'custom-google',
-        stage: 'dev',
-        host: 'api-id'
-      };
+      const event = Object.assign({}, defaultEvent, { provider: 'custom-google' });
 
       signinHandler(event, (error, data) => {
         let theError = null;
@@ -63,8 +55,7 @@ describe('Authentication Provider', () => {
           const query = url.parse(data.url, true).query;
           state = query.state;
           expect(error).to.be.null();
-          //console.log('UURLII', data.url)
-          //expect(data.url).to.match(/https:\/\/accounts\.google\.com\/o\/oauth2\/v2\/auth\?client_id=cg-mock-id&redirect_uri=https:\/\/api-id\.execute-api\.eu-west-1\.amazonaws\.com\/dev\/callback\/custom-google&response_type=code&scope=profile email&state=.{64}/);
+          expect(data.url).to.match(/https:\/\/accounts\.google\.com\/o\/oauth2\/v2\/auth\?client_id=cg-mock-id&redirect_uri=https:\/\/api-id\.execute-api\.eu-west-1\.amazonaws\.com\/dev\/authentication\/callback\/custom-google&response_type=code&scope=profile email&state=.{64}/);
         } else {
           theError = typeof error === 'string' ? new Error(error) : error;
         }
@@ -74,16 +65,14 @@ describe('Authentication Provider', () => {
     });
 
     it('should return local client url', (done) => {
-      const event = {
+      const event = Object.assign({}, defaultEvent, {
         provider: 'custom-google',
         code: 'code',
-        state,
-        stage: 'dev'
-      };
+        state
+      });
 
-      const providerConfig = config(event, helpers.stageVars(event));
+      const providerConfig = config(event);
       callbackHandler(event, (error, data) => {
-        console.log(error, data);
         if (!error) {
           const query = url.parse(data.url, true).query;
           refreshToken = query.refresh_token;

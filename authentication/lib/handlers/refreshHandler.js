@@ -1,6 +1,7 @@
 'use strict';
 
 // Config
+require('dotenv').config();
 const slsAuth = require('serverless-authentication');
 const config = slsAuth.config;
 const utils = slsAuth.utils;
@@ -20,7 +21,7 @@ function refreshHandler(event, callback) {
   // user refresh token to get userid & provider from cache table
   cache.revokeRefreshToken(refreshToken)
     .then((results) => {
-      const providerConfig = config({ provider: '', stage: event.stage }, helpers.stageVars(event));
+      const providerConfig = config({ provider: '', stage: event.stage });
       const id = results.id;
       const data =
         Object.assign(createResponseData(id, providerConfig), { refreshToken: results.token });

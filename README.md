@@ -1,5 +1,8 @@
 # Serverless Authentication
 
+1. rename example.env to env -> authentication
+
+
 # WIP: Upgrading to Serverless framework 1.0
 
 [![serverless](http://public.serverless.com/badges/v3.svg)](http://www.serverless.com)

@@ -20,13 +20,14 @@
     "aws-sdk": "^2.2.48",
     "chai": "^3.5.0",
     "dirty-chai": "^1.2.2",
+    "dotenv": "^2.0.0",
     "eslint": "^2.8.0",
     "eslint-config-airbnb": "^7.0.0",
     "eslint-plugin-jsx-a11y": "^0.6.2",
     "eslint-plugin-react": "^4.3.0",
     "mocha": "^2.4.5",
     "nock": "^7.7.2",
-    "serverless-authentication": "git://github.com/laardee/serverless-authentication.git#config"
+    "serverless-authentication": "^0.4.4"
   },
   "scripts": {
     "lint": "./node_modules/.bin/eslint . || true",

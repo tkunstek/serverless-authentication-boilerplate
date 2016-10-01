@@ -9,11 +9,12 @@ const config = slsAuth.config;
 const nock = require('nock');
 const expect = require('chai').expect;
 const url = require('url');
+const defaultEvent = require('./event.json');
 
 describe('Authentication Provider', () => {
   describe('Google', () => {
     before(() => {
-      const googleConfig = config({ provider: 'google' });
+      const googleConfig = config(Object.assign({}, defaultEvent, { provider: 'google' }));
       nock('https://www.googleapis.com')
         .post('/oauth2/v4/token')
         .query({
@@ -47,27 +48,25 @@ describe('Authentication Provider', () => {
     let refreshToken = '';
 
     it('should return oauth signin url', (done) => {
-      const event = {
-        provider: 'google'
-      };
+      const event = Object.assign({}, defaultEvent, { provider: 'google' });
 
       signinHandler(event, (error, data) => {
         if (!error) {
           const query = url.parse(data.url, true).query;
           state = query.state;
           expect(error).to.be.null();
-          expect(data.url).to.match(/https:\/\/accounts\.google\.com\/o\/oauth2\/v2\/auth\?client_id=g-mock-id&redirect_uri=https:\/\/api-id\.execute-api\.eu-west-1\.amazonaws\.com\/dev\/callback\/google&response_type=code&scope=profile email&state=.{64}/);
+          expect(data.url).to.match(/https:\/\/accounts\.google\.com\/o\/oauth2\/v2\/auth\?client_id=g-mock-id&redirect_uri=https:\/\/api-id\.execute-api\.eu-west-1\.amazonaws\.com\/dev\/authentication\/callback\/google&response_type=code&scope=profile email&state=.{64}/);
         }
         done(error);
       });
     });
 
     it('should return local client url', (done) => {
-      const event = {
+      const event = Object.assign({}, defaultEvent, {
         provider: 'google',
         code: 'code',
         state
-      };
+      });
 
       const providerConfig = config(event);
       callbackHandler(event, (error, data) => {
