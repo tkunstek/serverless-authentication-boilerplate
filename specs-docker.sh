@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-SERVERLESS_PROJECT="serverless-authentication-boilerplate"
+SERVERLESS_PROJECT="serverless-authentication"
 SERVERLESS_STAGE="dev"
-SERVERLESS_REGION="eu-central-1"
+SERVERLESS_REGION="eu-west-1"
 LOCAL_DDB_ENDPOINT="http://192.168.99.100:8000"
 
 docker-machine start default

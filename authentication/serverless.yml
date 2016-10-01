@@ -1,17 +1,4 @@
-# Welcome to Serverless!
-#
-# This file is the main config file for your service.
-# It's very minimal at this point and uses default values.
-# You can always add more config options for more control.
-# We've included some commented out config examples here.
-# Just uncomment any of them to get that config option.
-#
-# For full config options, check the docs:
-#    v1.docs.serverless.com
-#
-# Happy Coding!
-
-service: serverless-authentication # NOTE: update this with your service name
+service: serverless-authentication
 
 provider:
   name: aws
@@ -32,18 +19,7 @@ provider:
       Resource: arn:aws:cognito-identity:*:*:*
   runtime: nodejs4.3
 
-# you can overwrite defaults here
-#defaults:
-#  stage: dev
-#  region: eu-west-1
-
-# you can add packaging information here
-#package:
-#  include:
-#    - include-me.js
-#  exclude:
-#    - exclude-me.js
-#  artifact: my-service-code.zip
+# Functions
 
 functions:
   signin:
@@ -93,7 +69,9 @@ resources:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
         TableName: ${self:provider.stage}-${self:service}-cache
-    ApiGatewayMethodAuthenticationSigninProviderGet:
+# Overwrites default 200 responses with 302, @todo change to use proxy
+    ApiGatewayMethodAuthenticationSigninProviderVarGet:
+      Type: AWS::ApiGateway::Method
       Properties:
         Integration:
           IntegrationResponses:
@@ -104,7 +82,8 @@ resources:
           - StatusCode: 302
             ResponseParameters:
               method.response.header.Location: true
-    ApiGatewayMethodAuthenticationCallbackProviderGet:
+    ApiGatewayMethodAuthenticationCallbackProviderVarGet:
+      Type: AWS::ApiGateway::Method
       Properties:
         Integration:
           IntegrationResponses:

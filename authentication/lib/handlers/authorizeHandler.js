@@ -18,7 +18,8 @@ const authorize = (event, callback) => {
     try {
       // const providerConfig = config(event, helpers.getEnvVars(stage));
       // this example uses simple expiration time validation
-      const data = utils.readToken(authorizationToken, helpers.getEnvVars(stage).tokenSecret);
+      const providerConfig = config({ stage }, helpers.stageVars({ stage }));
+      const data = utils.readToken(authorizationToken, providerConfig.tokenSecret);
       policy = utils.generatePolicy(data.id, 'Allow', event.methodArn);
     } catch (err) {
       error = 'Unauthorized';

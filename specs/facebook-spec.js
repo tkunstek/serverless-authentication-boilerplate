@@ -13,12 +13,12 @@ const url = require('url');
 describe('Authentication Provider', () => {
   describe('Facebook', () => {
     before(() => {
-      const providerConfig = config({ provider: 'facebook' });
+      const providerConfig = config({ provider: 'facebook', stage: 'dev'});
       nock('https://graph.facebook.com')
         .get('/v2.3/oauth/access_token')
         .query({
           client_id: providerConfig.id,
-          redirect_uri: providerConfig.redirect_uri,
+          redirect_uri: providerConfig.redirectUri,
           client_secret: providerConfig.secret,
           code: 'code'
         })
@@ -47,7 +47,8 @@ describe('Authentication Provider', () => {
 
     it('should return oauth signin url', (done) => {
       const event = {
-        provider: 'facebook'
+        provider: 'facebook',
+        stage: 'dev'
       };
 
       signinHandler(event, (error, data) => {
@@ -65,7 +66,8 @@ describe('Authentication Provider', () => {
       const event = {
         provider: 'facebook',
         code: 'code',
-        state
+        state,
+        stage: 'dev'
       };
 
       const providerConfig = config(event);
@@ -83,7 +85,7 @@ describe('Authentication Provider', () => {
       });
     });
 
-    it('should get new authorization token', () => {
+    it('should get new authorization token', (done) => {
       const event = {
         refresh_token: refreshToken
       };
@@ -92,6 +94,7 @@ describe('Authentication Provider', () => {
         expect(error).to.be.null();
         expect(data.authorization_token).to.match(/[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?/);
         expect(data.refresh_token).to.match(/[A-Fa-f0-9]{64}/);
+        done(error);
       });
     });
   });

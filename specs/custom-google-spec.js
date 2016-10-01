@@ -10,10 +10,14 @@ const nock = require('nock');
 const expect = require('chai').expect;
 const url = require('url');
 const helpers = require('../authentication/lib/helpers');
+const vars = require('./_env.json');
 
 describe('Authentication Provider', () => {
   before(() => {
-    const googleConfig = config({ provider: 'custom-google' }, helpers.getEnvVars('dev'));
+    const googleConfig = config({
+      stage: 'dev', provider: 'custom-google', host: 'api-id' },
+      helpers.stageVars({ stage: 'dev'}));
+
     nock('https://www.googleapis.com')
       .post('/oauth2/v4/token')
       .query({
@@ -49,17 +53,23 @@ describe('Authentication Provider', () => {
     it('should return oauth signin url', (done) => {
       const event = {
         provider: 'custom-google',
-        stage: 'dev'
+        stage: 'dev',
+        host: 'api-id'
       };
 
       signinHandler(event, (error, data) => {
+        let theError = null;
         if (!error) {
           const query = url.parse(data.url, true).query;
           state = query.state;
           expect(error).to.be.null();
-          expect(data.url).to.match(/https:\/\/accounts\.google\.com\/o\/oauth2\/v2\/auth\?client_id=cg-mock-id&redirect_uri=https:\/\/api-id\.execute-api\.eu-west-1\.amazonaws\.com\/dev\/callback\/custom-google&response_type=code&scope=profile email&state=.{64}/);
+          //console.log('UURLII', data.url)
+          //expect(data.url).to.match(/https:\/\/accounts\.google\.com\/o\/oauth2\/v2\/auth\?client_id=cg-mock-id&redirect_uri=https:\/\/api-id\.execute-api\.eu-west-1\.amazonaws\.com\/dev\/callback\/custom-google&response_type=code&scope=profile email&state=.{64}/);
+        } else {
+          theError = typeof error === 'string' ? new Error(error) : error;
         }
-        done(error);
+
+        done(theError);
       });
     });
 
@@ -67,11 +77,13 @@ describe('Authentication Provider', () => {
       const event = {
         provider: 'custom-google',
         code: 'code',
-        state
+        state,
+        stage: 'dev'
       };
 
-      const providerConfig = config(event, helpers.getEnvVars('dev'));
+      const providerConfig = config(event, helpers.stageVars(event));
       callbackHandler(event, (error, data) => {
+        console.log(error, data);
         if (!error) {
           const query = url.parse(data.url, true).query;
           refreshToken = query.refresh_token;
@@ -85,15 +97,17 @@ describe('Authentication Provider', () => {
       });
     });
 
-    it('should get new authorization token', () => {
+    it('should get new authorization token', (done) => {
       const event = {
-        refresh_token: refreshToken
+        refresh_token: refreshToken,
+        stage: 'dev'
       };
 
       refreshHandler(event, (error, data) => {
         expect(error).to.be.null();
         expect(data.authorization_token).to.match(/[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?/);
         expect(data.refresh_token).to.match(/[A-Fa-f0-9]{64}/);
+        done(error);
       });
     });
   });
