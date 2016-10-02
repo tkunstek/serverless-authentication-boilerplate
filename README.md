@@ -6,7 +6,7 @@
 
 This project is aimed to be a generic authentication boilerplate for the [Serverless framework](http://www.serverless.com).
 
-This boilerplate is compatible with the Serverless v.1.0.rc2. To install Serverless framework run `npm install -g serverless`.
+This boilerplate is compatible with the Serverless v.1.0.0-rc.2. To install Serverless framework run `npm install -g serverless`.
 
 Webapp demo that uses this boilerplate: http://laardee.github.io/serverless-authentication-gh-pages
 
@@ -17,7 +17,9 @@ Installation will create one DynamoDB table for OAuth state and refresh tokens.
 1. Clone the repository
 2. Rename `authentication/example.env` to `.env` and set [environmental variables](#env-vars).
 3. Change directory to `authentication` and run `npm install`.
-4. Run `serverless deploy` on the authentication folder to deploy authentication service to AWS. Change directory to test-token and run `serverless deploy` to deploy test-token service.
+4. Run `serverless deploy` on the authentication folder to deploy authentication service to AWS. Notice the arn of the authorize function.
+5. (optional) Change directory to test-token and insert the arn of the authorizer function to authorizer/arn in serverless.yml. Then run `serverless deploy` to deploy test-token service.
+
 
 ## Set up Authentication Provider Application Settings
 

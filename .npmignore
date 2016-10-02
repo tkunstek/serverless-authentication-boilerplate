@@ -27,6 +27,9 @@ node_modules
 .DS_Store
 .tmp
 
+.eslintignore
+.eslintrc
+
 #SERVERLESS STUFF
 admin.env
 .env

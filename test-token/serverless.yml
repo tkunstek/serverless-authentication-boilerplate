@@ -17,7 +17,7 @@ functions:
           method: get
           cors: true
           authorizer:
-            arn: arn:aws:lambda:eu-west-1::function:serverless-authentication-${stage}-authorize
+            arn: authorizer-function-arn
             resultTtlInSeconds: 0
             identitySource: method.request.header.Authorization
             identityValidationExpression: .*
