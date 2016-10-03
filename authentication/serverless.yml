@@ -3,7 +3,7 @@ service: serverless-authentication # change this
 provider:
   name: aws
   stage: dev
-  region: eu-west-1
+  region: us-east-1
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -24,6 +24,8 @@ provider:
 functions:
   signin:
     handler: handler.signin
+    memorySize: 256
+    timeout: 15
     events:
       - http:
           path: authentication/signin/{provider}
@@ -33,6 +35,8 @@ functions:
               application/json: "{\"provider\":\"$input.params('provider')\",\"host\":\"$input.params().header.get('host')\",\"stage\":\"$context.stage\"}"
   callback:
     handler: handler.callback
+    memorySize: 256
+    timeout: 15
     events:
       - http:
           path: authentication/callback/{provider}
@@ -42,11 +46,16 @@ functions:
               application/json: "{\"provider\":\"$input.params('provider')\",\"code\":\"$input.params('code')\",\"state\":\"$input.params('state')\",\"host\":\"$input.params().header.get('host')\",\"stage\":\"$context.stage\"}"
   refresh:
     handler: handler.refresh
+    memorySize: 256
+    timeout: 15
     events:
       - http:
           path: authentication/refresh/{refresh_token}
           method: get
           cors: true
+          request:
+            template:
+              application/json: "{\"refresh_token\":\"$input.params('refresh_token')\",\"id\":\"$input.params('id')\",\"state\":\"$input.params('state')\",\"host\":\"$input.params().header.get('host')\",\"stage\":\"$context.stage\"}"
   authorize:
     handler: handler.authorize
 
@@ -69,7 +78,7 @@ resources:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
         TableName: ${self:provider.stage}-${self:service}-cache
-# Overwrites default 200 responses with 302, @todo change to use proxy
+# Overwrites default 200 responses with 302, @todo change to use proxy when it's available
     ApiGatewayMethodAuthenticationSigninProviderGet:
       Type: AWS::ApiGateway::Method
       Properties:

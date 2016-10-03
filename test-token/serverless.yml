@@ -2,11 +2,9 @@ service: serverless-authentication-test-token # NOTE: update this with your serv
 
 provider:
   name: aws
-  runtime: nodejs4.3
-
-defaults:
   stage: dev
-  region: eu-west-1
+  region: us-east-1
+  runtime: nodejs4.3
 
 functions:
   testToken:
@@ -17,7 +15,7 @@ functions:
           method: get
           cors: true
           authorizer:
-            arn: authorizer-function-arn
+            arn: replace-with-arn-of-the-authorizer-function
             resultTtlInSeconds: 0
             identitySource: method.request.header.Authorization
             identityValidationExpression: .*
