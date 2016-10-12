@@ -9,11 +9,11 @@ describe('Authentication', () => {
     it('should fail to return token for invalid provider', (done) => {
       const event = Object.assign({}, defaultEvent, { provider: 'invalid' });
 
-      signinHandler(event, (error, data) => {
-        expect(error).to.be.null();
-        expect(data.url).to.equal('http://127.0.0.1:3000/?error=Invalid provider: invalid');
-        done(error);
-      });
+      signinHandler(event, { succeed: (data) => {
+        expect(data.statusCode).to.equal(302);
+        expect(data.headers.Location).to.equal('http://127.0.0.1:3000/?error=Invalid provider: invalid');
+        done(null);
+      }});
     });
   });
 });

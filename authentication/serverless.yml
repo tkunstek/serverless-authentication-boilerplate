@@ -30,6 +30,7 @@ functions:
       - http:
           path: authentication/signin/{provider}
           method: get
+          integration: lambda-proxy
           request:
             template:
               application/json: "{\"provider\":\"$input.params('provider')\",\"host\":\"$input.params().header.get('host')\",\"stage\":\"$context.stage\"}"
@@ -41,6 +42,7 @@ functions:
       - http:
           path: authentication/callback/{provider}
           method: get
+          integration: lambda-proxy
           request:
             template:
               application/json: "{\"provider\":\"$input.params('provider')\",\"code\":\"$input.params('code')\",\"state\":\"$input.params('state')\",\"host\":\"$input.params().header.get('host')\",\"stage\":\"$context.stage\"}"
@@ -53,6 +55,7 @@ functions:
           path: authentication/refresh/{refresh_token}
           method: get
           cors: true
+          integration: lambda
           request:
             template:
               application/json: "{\"refresh_token\":\"$input.params('refresh_token')\",\"id\":\"$input.params('id')\",\"state\":\"$input.params('state')\",\"host\":\"$input.params().header.get('host')\",\"stage\":\"$context.stage\"}"
@@ -78,8 +81,8 @@ resources:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
         TableName: ${self:provider.stage}-${self:service}-cache
-# Overwrites default 200 responses with 302, @todo change to use proxy when it's available
-    ApiGatewayMethodAuthenticationSigninProviderGet:
+# Overwrites default 200 responses with 302, @todo change to use proxy
+    ApiGatewayMethodAuthenticationSigninProviderVarGet:
       Type: AWS::ApiGateway::Method
       Properties:
         Integration:
@@ -91,7 +94,7 @@ resources:
           - StatusCode: 302
             ResponseParameters:
               method.response.header.Location: true
-    ApiGatewayMethodAuthenticationCallbackProviderGet:
+    ApiGatewayMethodAuthenticationCallbackProviderVarGet:
       Type: AWS::ApiGateway::Method
       Properties:
         Integration:
