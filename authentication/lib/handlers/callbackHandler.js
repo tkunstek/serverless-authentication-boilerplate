@@ -30,10 +30,18 @@ function createUserId(data, secret) {
 
 /**
  * Callback Handler
- * @param event
- * @param callback
+ * @param proxyEvent
+ * @param context
  */
-function callbackHandler(event, context) {
+function callbackHandler(proxyEvent, context) {
+  const event = {
+    provider: proxyEvent.pathParameters.provider,
+    stage: proxyEvent.requestContext.stage,
+    host: proxyEvent.headers.Host,
+    code: proxyEvent.queryStringParameters.code,
+    state: proxyEvent.queryStringParameters.state
+  };
+
   const providerConfig = config(event);
 
   /**
@@ -44,7 +52,7 @@ function callbackHandler(event, context) {
     utils.errorResponse(
       error,
       providerConfig,
-      (error) => redirectProxyCallback(context, error)
+      (err, response) => redirectProxyCallback(context, response)
     );
   }
 
@@ -56,7 +64,7 @@ function callbackHandler(event, context) {
     utils.tokenResponse(
       data,
       providerConfig,
-      (data) => redirectProxyCallback(context, data)
+      (err, response) => redirectProxyCallback(context, response)
     );
   }
 

@@ -19,12 +19,18 @@ const redirectProxyCallback = require('../helpers').redirectProxyCallback;
 
 /**
  * Sign In Handler
- * @param event
- * @param callback
+ * @param proxyEvent
+ * @param context
  */
-function signinHandler(event, context) {
+function signinHandler(proxyEvent, context) {
+  const event = {
+    provider: proxyEvent.pathParameters.provider,
+    stage: proxyEvent.requestContext.stage,
+    host: proxyEvent.headers.Host
+  };
+
   const providerConfig = config(event);
-  // console.log('signinHandler PC', event, providerConfig);
+
   cache.createState()
     .then((state) => {
       switch (event.provider) {

@@ -31,9 +31,6 @@ functions:
           path: authentication/signin/{provider}
           method: get
           integration: lambda-proxy
-          request:
-            template:
-              application/json: "{\"provider\":\"$input.params('provider')\",\"host\":\"$input.params().header.get('host')\",\"stage\":\"$context.stage\"}"
   callback:
     handler: handler.callback
     memorySize: 256
@@ -43,9 +40,6 @@ functions:
           path: authentication/callback/{provider}
           method: get
           integration: lambda-proxy
-          request:
-            template:
-              application/json: "{\"provider\":\"$input.params('provider')\",\"code\":\"$input.params('code')\",\"state\":\"$input.params('state')\",\"host\":\"$input.params().header.get('host')\",\"stage\":\"$context.stage\"}"
   refresh:
     handler: handler.refresh
     memorySize: 256
@@ -80,29 +74,4 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
-        TableName: ${self:provider.stage}-${self:service}-cache
-# Overwrites default 200 responses with 302, @todo change to use proxy
-    ApiGatewayMethodAuthenticationSigninProviderVarGet:
-      Type: AWS::ApiGateway::Method
-      Properties:
-        Integration:
-          IntegrationResponses:
-            - StatusCode: 302
-              ResponseParameters:
-                method.response.header.Location: integration.response.body.url
-        MethodResponses:
-          - StatusCode: 302
-            ResponseParameters:
-              method.response.header.Location: true
-    ApiGatewayMethodAuthenticationCallbackProviderVarGet:
-      Type: AWS::ApiGateway::Method
-      Properties:
-        Integration:
-          IntegrationResponses:
-            - StatusCode: 302
-              ResponseParameters:
-                method.response.header.Location: integration.response.body.url
-        MethodResponses:
-          - StatusCode: 302
-            ResponseParameters:
-              method.response.header.Location: true
+        TableName: ${self:provider.stage}-serverless-authentication-cache

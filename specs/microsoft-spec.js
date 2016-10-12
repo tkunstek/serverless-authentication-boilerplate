@@ -44,39 +44,42 @@ describe('Authentication Provider', () => {
     let refreshToken = '';
 
     it('should return oauth signin url', (done) => {
-      const event = Object.assign({}, defaultEvent, { provider: 'microsoft' });
-
-      signinHandler(event, (error, data) => {
-        if (!error) {
-          const query = url.parse(data.url, true).query;
-          state = query.state;
-          expect(error).to.be.null();
-          expect(data.url).to.match(/https:\/\/login\.live\.com\/oauth20_authorize\.srf\?client_id=ms-mock-id&redirect_uri=https:\/\/api-id\.execute-api\.eu-west-1\.amazonaws\.com\/dev\/authentication\/callback\/microsoft&response_type=code&scope=wl\.basic wl\.emails&state=.{64}/);
+      const event = Object.assign({}, defaultEvent, {
+        pathParameters: {
+          provider: 'microsoft'
         }
-        done(error);
       });
+
+      signinHandler(event, { succeed: (data) => {
+        const query = url.parse(data.headers.Location, true).query;
+        state = query.state;
+        expect(data.headers.Location).to.match(/https:\/\/login\.live\.com\/oauth20_authorize\.srf\?client_id=ms-mock-id&redirect_uri=https:\/\/api-id\.execute-api\.eu-west-1\.amazonaws\.com\/dev\/authentication\/callback\/microsoft&response_type=code&scope=wl\.basic wl\.emails&state=.{64}/);
+        done(null);
+      }});
     });
 
     it('should return local client url', (done) => {
       const event = Object.assign({}, defaultEvent, {
-        provider: 'microsoft',
-        code: 'code',
-        state
+        pathParameters: {
+          provider: 'microsoft'
+        },
+        queryStringParameters: {
+          code: 'code',
+          state
+        }
       });
 
       const providerConfig = config(event);
-      callbackHandler(event, (error, data) => {
-        if (!error) {
-          const query = url.parse(data.url, true).query;
-          refreshToken = query.refresh_token;
-          expect(query.authorization_token).to.match(/[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?/);
-          expect(refreshToken).to.match(/[A-Fa-f0-9]{64}/);
-          const tokenData = utils.readToken(query.authorization_token, providerConfig.token_secret);
-          expect(tokenData.id)
-            .to.equal('0bc293b1bf8b932f7a996605f13aae28011f45a933abb48d10b693b8edfc5b34');
-        }
-        done(error);
-      });
+      callbackHandler(event, { succeed: (data) => {
+        const query = url.parse(data.headers.Location, true).query;
+        refreshToken = query.refresh_token;
+        expect(query.authorization_token).to.match(/[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?/);
+        expect(refreshToken).to.match(/[A-Fa-f0-9]{64}/);
+        const tokenData = utils.readToken(query.authorization_token, providerConfig.token_secret);
+        expect(tokenData.id)
+          .to.equal('0bc293b1bf8b932f7a996605f13aae28011f45a933abb48d10b693b8edfc5b34');
+        done(null);
+      }});
     });
 
     it('should get new authorization token', () => {

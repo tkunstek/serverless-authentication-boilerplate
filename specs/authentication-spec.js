@@ -7,7 +7,9 @@ const defaultEvent = require('./event.json');
 describe('Authentication', () => {
   describe('Signin', () => {
     it('should fail to return token for invalid provider', (done) => {
-      const event = Object.assign({}, defaultEvent, { provider: 'invalid' });
+      const event = Object.assign({}, defaultEvent, {
+        pathParameters: { provider: 'invalid' }
+      });
 
       signinHandler(event, { succeed: (data) => {
         expect(data.statusCode).to.equal(302);
