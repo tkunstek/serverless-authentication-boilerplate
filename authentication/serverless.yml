@@ -3,7 +3,7 @@ service: serverless-authentication # change this
 provider:
   name: aws
   stage: dev
-  region: us-east-1
+  region: us-west-2
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -30,9 +30,7 @@ functions:
       - http:
           path: authentication/signin/{provider}
           method: get
-          request:
-            template:
-              application/json: "{\"provider\":\"$input.params('provider')\",\"host\":\"$input.params().header.get('host')\",\"stage\":\"$context.stage\"}"
+          integration: lambda-proxy
   callback:
     handler: handler.callback
     memorySize: 256
@@ -41,9 +39,7 @@ functions:
       - http:
           path: authentication/callback/{provider}
           method: get
-          request:
-            template:
-              application/json: "{\"provider\":\"$input.params('provider')\",\"code\":\"$input.params('code')\",\"state\":\"$input.params('state')\",\"host\":\"$input.params().header.get('host')\",\"stage\":\"$context.stage\"}"
+          integration: lambda-proxy
   refresh:
     handler: handler.refresh
     memorySize: 256
@@ -53,6 +49,7 @@ functions:
           path: authentication/refresh/{refresh_token}
           method: get
           cors: true
+          integration: lambda
           request:
             template:
               application/json: "{\"refresh_token\":\"$input.params('refresh_token')\",\"id\":\"$input.params('id')\",\"state\":\"$input.params('state')\",\"host\":\"$input.params().header.get('host')\",\"stage\":\"$context.stage\"}"
@@ -77,29 +74,4 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
-        TableName: ${self:provider.stage}-${self:service}-cache
-# Overwrites default 200 responses with 302, @todo change to use proxy when it's available
-    ApiGatewayMethodAuthenticationSigninProviderGet:
-      Type: AWS::ApiGateway::Method
-      Properties:
-        Integration:
-          IntegrationResponses:
-            - StatusCode: 302
-              ResponseParameters:
-                method.response.header.Location: integration.response.body.url
-        MethodResponses:
-          - StatusCode: 302
-            ResponseParameters:
-              method.response.header.Location: true
-    ApiGatewayMethodAuthenticationCallbackProviderGet:
-      Type: AWS::ApiGateway::Method
-      Properties:
-        Integration:
-          IntegrationResponses:
-            - StatusCode: 302
-              ResponseParameters:
-                method.response.header.Location: integration.response.body.url
-        MethodResponses:
-          - StatusCode: 302
-            ResponseParameters:
-              method.response.header.Location: true
+        TableName: ${self:provider.stage}-serverless-authentication-cache

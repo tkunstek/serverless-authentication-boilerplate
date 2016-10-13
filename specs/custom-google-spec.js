@@ -47,43 +47,44 @@ describe('Authentication Provider', () => {
     let state = '';
     let refreshToken = '';
     it('should return oauth signin url', (done) => {
-      const event = Object.assign({}, defaultEvent, { provider: 'custom-google' });
-
-      signinHandler(event, (error, data) => {
-        let theError = null;
-        if (!error) {
-          const query = url.parse(data.url, true).query;
-          state = query.state;
-          expect(error).to.be.null();
-          expect(data.url).to.match(/https:\/\/accounts\.google\.com\/o\/oauth2\/v2\/auth\?client_id=cg-mock-id&redirect_uri=https:\/\/api-id\.execute-api\.eu-west-1\.amazonaws\.com\/dev\/authentication\/callback\/custom-google&response_type=code&scope=profile email&state=.{64}/);
-        } else {
-          theError = typeof error === 'string' ? new Error(error) : error;
+      const event = Object.assign({}, defaultEvent, {
+        pathParameters: {
+          provider: 'custom-google'
         }
-
-        done(theError);
       });
+
+      signinHandler(event, { succeed: (data) => {
+        expect(data.statusCode).to.equal(302);
+        const query = url.parse(data.headers.Location, true).query;
+        state = query.state;
+        expect(data.headers.Location).to.match(/https:\/\/accounts\.google\.com\/o\/oauth2\/v2\/auth\?client_id=cg-mock-id&redirect_uri=https:\/\/api-id\.execute-api\.eu-west-1\.amazonaws\.com\/dev\/authentication\/callback\/custom-google&response_type=code&scope=profile email&state=.{64}/);
+        done(null);
+      }});
     });
 
     it('should return local client url', (done) => {
       const event = Object.assign({}, defaultEvent, {
-        provider: 'custom-google',
-        code: 'code',
-        state
+        pathParameters: {
+          provider: 'custom-google'
+        },
+        queryStringParameters: {
+          code: 'code',
+          state
+        }
       });
 
       const providerConfig = config(event);
-      callbackHandler(event, (error, data) => {
-        if (!error) {
-          const query = url.parse(data.url, true).query;
-          refreshToken = query.refresh_token;
-          expect(query.authorization_token).to.match(/[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?/);
-          expect(refreshToken).to.match(/[A-Fa-f0-9]{64}/);
-          const tokenData = utils.readToken(query.authorization_token, providerConfig.token_secret);
-          expect(tokenData.id)
-            .to.equal('46344f93c18d9b70ddef7cc5c24886451a0af124f74d84a0c89387b5f7c70ff4');
-        }
-        done(error);
-      });
+      callbackHandler(event, { succeed: (data) => {
+        expect(data.statusCode).to.equal(302);
+        const query = url.parse(data.headers.Location, true).query;
+        refreshToken = query.refresh_token;
+        expect(query.authorization_token).to.match(/[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?/);
+        expect(refreshToken).to.match(/[A-Fa-f0-9]{64}/);
+        const tokenData = utils.readToken(query.authorization_token, providerConfig.token_secret);
+        expect(tokenData.id)
+          .to.equal('46344f93c18d9b70ddef7cc5c24886451a0af124f74d84a0c89387b5f7c70ff4');
+        done(null);
+      }});
     });
 
     it('should get new authorization token', (done) => {

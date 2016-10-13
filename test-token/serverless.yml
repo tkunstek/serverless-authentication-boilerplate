@@ -3,7 +3,7 @@ service: serverless-authentication-test-token # NOTE: update this with your serv
 provider:
   name: aws
   stage: dev
-  region: us-east-1
+  region: us-west-2
   runtime: nodejs4.3
 
 functions:
@@ -14,6 +14,7 @@ functions:
           path: test-token
           method: get
           cors: true
+          integration: lambda
           authorizer:
             arn: replace-with-arn-of-the-authorizer-function
             resultTtlInSeconds: 0

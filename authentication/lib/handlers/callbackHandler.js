@@ -20,6 +20,7 @@ const Promise = require('bluebird');
 
 const helpers = require('../helpers');
 const createResponseData = helpers.createResponseData;
+const redirectProxyCallback = helpers.redirectProxyCallback;
 
 function createUserId(data, secret) {
   const hmac = crypto.createHmac('sha256', secret);
@@ -29,10 +30,18 @@ function createUserId(data, secret) {
 
 /**
  * Callback Handler
- * @param event
- * @param callback
+ * @param proxyEvent
+ * @param context
  */
-function callbackHandler(event, callback) {
+function callbackHandler(proxyEvent, context) {
+  const event = {
+    provider: proxyEvent.pathParameters.provider,
+    stage: proxyEvent.requestContext.stage,
+    host: proxyEvent.headers.Host,
+    code: proxyEvent.queryStringParameters.code,
+    state: proxyEvent.queryStringParameters.state
+  };
+
   const providerConfig = config(event);
 
   /**
@@ -43,7 +52,7 @@ function callbackHandler(event, callback) {
     utils.errorResponse(
       error,
       providerConfig,
-      callback
+      (err, response) => redirectProxyCallback(context, response)
     );
   }
 
@@ -55,7 +64,7 @@ function callbackHandler(event, callback) {
     utils.tokenResponse(
       data,
       providerConfig,
-      callback
+      (err, response) => redirectProxyCallback(context, response)
     );
   }
 

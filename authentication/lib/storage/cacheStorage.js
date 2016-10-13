@@ -1,7 +1,8 @@
 'use strict';
 
+require('dotenv').config();
 // const table = `${process.env.SERVERLESS_STAGE}-${process.env.SERVERLESS_PROJECT}-cache`;
-const table = 'dev-serverless-authentication-cache'; // @todo dynamic tablename
+const table = process.env.CACHE_DB_NAME.replace(/{stage}/, process.env.STAGE);
 const config = { region: process.env.SERVERLESS_REGION };
 
 if (process.env.LOCAL_DDB_ENDPOINT) config.endpoint = process.env.LOCAL_DDB_ENDPOINT;

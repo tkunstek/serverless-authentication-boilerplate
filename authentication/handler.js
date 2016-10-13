@@ -6,12 +6,12 @@ const refreshHandler = require('./lib/handlers/refreshHandler');
 const authorizeHandler = require('./lib/handlers/authorizeHandler');
 
 module.exports.signin =
-  (event, context, cb) =>
-    signinHandler(event, cb);
+  (event, context) =>
+    signinHandler(event, context);
 
 module.exports.callback =
-  (event, context, cb) =>
-    callbackHandler(event, cb);
+  (event, context) =>
+    callbackHandler(event, context);
 
 module.exports.refresh =
   (event, context, cb) =>

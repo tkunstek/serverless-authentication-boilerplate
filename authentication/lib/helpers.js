@@ -14,6 +14,16 @@ const createResponseData = (id) => {
   return { authorizationToken };
 };
 
+const redirectProxyCallback = (context, data) => {
+  context.succeed({
+    statusCode: 302,
+    headers: {
+      Location: data.url
+    }
+  });
+};
+
 exports = module.exports = {
-  createResponseData
+  createResponseData,
+  redirectProxyCallback
 };

@@ -1,5 +1,11 @@
 {
-  "provider": "",
-  "stage": "dev",
-  "host": "api-id.execute-api.eu-west-1.amazonaws.com"
+  "pathParameters": {
+    "provider": ""
+  },
+  "requestContext": {
+    "stage": "dev"
+  },
+  "headers": {
+    "Host": "api-id.execute-api.eu-west-1.amazonaws.com"
+  }
 }
