@@ -52,7 +52,14 @@ functions:
           integration: lambda
           request:
             template:
-              application/json: "{\"refresh_token\":\"$input.params('refresh_token')\",\"id\":\"$input.params('id')\",\"state\":\"$input.params('state')\",\"host\":\"$input.params().header.get('host')\",\"stage\":\"$context.stage\"}"
+              application/json: |
+                {
+                  "refresh_token":"$input.params('refresh_token')",
+                  "id":"$input.params('id')",
+                  "state":"$input.params('state')",
+                  "host":"$input.params().header.get('host')",
+                  "stage":"$context.stage"
+                }
   authorize:
     handler: handler.authorize
 
