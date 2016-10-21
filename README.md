@@ -94,5 +94,6 @@ Package contains example [/authentication/lib/custom-google.js](https://github.c
 
 ## Running Tests on Mac
 
-* Install Docker
+* Install Docker and Docker Compose
+* Run `npm install` in project root directory 
 * Run ./specs-docker.sh
