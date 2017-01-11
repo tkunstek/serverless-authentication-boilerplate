@@ -1,7 +1,6 @@
 'use strict';
 
 // Config
-require('dotenv').config();
 const slsAuth = require('serverless-authentication');
 const config = slsAuth.config;
 const utils = slsAuth.utils;
