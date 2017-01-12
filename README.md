@@ -101,7 +101,7 @@ Package contains example [/authentication/lib/custom-google.js](https://github.c
 ## User database
 
 To use DynamoBD to save user data:
-1. uncomment `UsersTable` block from resources
+1. uncomment `UsersTable` block from `authentication/serverless.yml` resources
 2. uncomment `return saveDatabase(profile);` from `authentication/lib/storage/usersStorage.js`
 
 To use Cognito User Pool as user database:
