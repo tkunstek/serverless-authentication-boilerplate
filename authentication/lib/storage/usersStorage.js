@@ -27,17 +27,19 @@ const saveCognito = profile => new Promise((resolve, reject) => {
 });
 
 const saveUser = (profile) => {
-  // just temp switch
 
   // Here you can save the profile to DynamoDB,
   // AWS Cognito or where ever you wish,
   // just remove or replace unnecessary code
   // profile class: https://github.com/laardee/serverless-authentication/blob/master/src/profile.js
-  const useDatabase = false;
-  if (useDatabase) {
-    return saveDatabase(profile);
-  }
-  return saveCognito(profile);
+
+  // to use dynamo as user database enable
+  // return saveDatabase(profile);
+
+  // to use cognito user pool as user database enable
+  // return saveCognito(profile);
+
+  return true;
 };
 
 exports = module.exports = {
