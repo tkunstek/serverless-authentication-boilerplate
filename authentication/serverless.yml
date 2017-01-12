@@ -20,7 +20,7 @@ provider:
       Resource: arn:aws:cognito-identity:*:*:*
     - Effect: Allow
       Action:
-      - cognito-idp:AdminCreateUser
+      - cognito-idp:*
       Resource: arn:aws:cognito-idp:*:*:*
   runtime: nodejs4.3
 
@@ -75,20 +75,33 @@ functions:
 resources:
   Description: ${self:provider.environment.SERVICE} [${self:provider.environment.STAGE}] template
   Resources:
-    Dynamo:
+    CacheTable:
       Type: AWS::DynamoDB::Table
       Properties:
         AttributeDefinitions:
-        - AttributeName: Token
+        - AttributeName: token
           AttributeType: S
-        - AttributeName: Type
+        - AttributeName: type
           AttributeType: S
         KeySchema:
-        - AttributeName: Token
+        - AttributeName: token
           KeyType: HASH
-        - AttributeName: Type
+        - AttributeName: type
           KeyType: RANGE
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
         TableName: ${self:provider.environment.CACHE_DB_NAME}
+#    UsersTable:
+#      Type: AWS::DynamoDB::Table
+#      Properties:
+#        AttributeDefinitions:
+#        - AttributeName: userId
+#          AttributeType: S
+#        KeySchema:
+#        - AttributeName: userId
+#          KeyType: HASH
+#        ProvisionedThroughput:
+#          ReadCapacityUnits: 1
+#          WriteCapacityUnits: 1
+#        TableName: ${self:provider.environment.USERS_DB_NAME}
