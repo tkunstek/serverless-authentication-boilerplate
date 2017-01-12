@@ -1,9 +1,7 @@
 'use strict';
 
-require('dotenv').config();
-// const table = `${process.env.SERVERLESS_STAGE}-${process.env.SERVERLESS_PROJECT}-cache`;
-const table = process.env.CACHE_DB_NAME.replace(/{stage}/, process.env.STAGE);
-const config = { region: process.env.SERVERLESS_REGION };
+const table = process.env.CACHE_DB_NAME;
+const config = { region: process.env.REGION };
 
 if (process.env.LOCAL_DDB_ENDPOINT) config.endpoint = process.env.LOCAL_DDB_ENDPOINT;
 
@@ -20,39 +18,35 @@ function hash() {
 /**
  * Creates OAuth State
  */
-const createState = () => new Promise((resolve, reject) => {
+const createState = () => {
   const state = hash();
   const params = {
     TableName: table,
     Item: {
-      Token: state,
-      Type: 'STATE',
-      Expired: false
+      token: state,
+      type: 'STATE',
+      expired: false
     }
   };
 
-  dynamodb.put(params, (error) => {
-    if (error) {
-      reject(error);
-    } else {
-      resolve(state);
-    }
-  });
-});
+  return dynamodb
+    .put(params).promise()
+    .then(() => state);
+};
 
 /**
  * Revokes OAuth State
  * @param state
  */
-const revokeState = (state) => new Promise((resolve, reject) => {
-  const queryToken = () => new Promise((_resolve, _reject) => {
+const revokeState = state => new Promise((resolve, reject) => {
+  const queryToken = () => {
     const params = {
       TableName: table,
       ProjectionExpression: '#token, #type, Expired',
       KeyConditionExpression: '#token = :token and #type = :type',
       ExpressionAttributeNames: {
-        '#token': 'Token',
-        '#type': 'Type'
+        '#token': 'token',
+        '#type': 'type'
       },
       ExpressionAttributeValues: {
         ':token': state,
@@ -60,38 +54,29 @@ const revokeState = (state) => new Promise((resolve, reject) => {
       }
     };
 
-    dynamodb.query(params, (err, data) => {
-      if (err) {
-        _reject(err);
-      } else {
-        _resolve(data);
-      }
-    });
-  });
+    return dynamodb
+      .query(params).promise();
+  };
 
-  const insertToken = (data) => new Promise((_resolve, _reject) => {
+  const insertToken = (data) => {
     const item = data.Items[0];
-    if (item.Expired) {
-      _reject('State expired'); // @todo move to query, e.g. filter?
+    if (item.expired) {
+      throw new Error('State expired');
     } else {
       const params = {
         TableName: table,
         Item: {
-          Token: state,
-          Type: 'STATE',
-          Expired: true
+          token: state,
+          type: 'STATE',
+          expired: true
         }
       };
 
-      dynamodb.put(params, (error) => {
-        if (!error) {
-          _resolve(item.Token);
-        } else {
-          _reject(error);
-        }
-      });
+      return dynamodb
+        .put(params).promise()
+        .then(() => item.token);
     }
-  });
+  };
 
   queryToken()
     .then(insertToken)
@@ -101,112 +86,96 @@ const revokeState = (state) => new Promise((resolve, reject) => {
       }
       resolve(token);
     })
-    .catch((error) => reject(error));
+    .catch(reject);
 });
 
 /**
  * Creates and saves refresh token
  * @param user
  */
-const saveRefreshToken = (user) => new Promise((resolve, reject) => {
+const saveRefreshToken = (user) => {
   const token = hash();
   const params = {
     TableName: table,
     Item: {
-      Token: token,
-      Type: 'REFRESH',
-      Expired: false,
-      UserId: user
+      token,
+      type: 'REFRESH',
+      expired: false,
+      userId: user
     }
   };
 
-  dynamodb.put(params, (error) => {
-    if (error) {
-      reject(error);
-    } else {
-      resolve(token);
-    }
-  });
-});
+  return dynamodb
+    .put(params).promise()
+    .then(() => token);
+};
 
 /**
  * Revokes old refresh token and creates new
  * @param oldToken
  */
-const revokeRefreshToken = (oldToken) => new Promise((resolve, reject) => {
+const revokeRefreshToken = oldToken => new Promise((resolve, reject) => {
   if (oldToken.match(/[A-Fa-f0-9]{64}/)) {
     const token = hash();
 
-    const queryToken = () => new Promise((_resolve, _reject) => {
+    const queryToken = () => {
       const params = {
         TableName: table,
         ProjectionExpression: '#token, #type, #userId',
         KeyConditionExpression: '#token = :token and #type = :type',
         ExpressionAttributeNames: {
-          '#token': 'Token',
-          '#type': 'Type',
-          '#userId': 'UserId'
+          '#token': 'token',
+          '#type': 'type',
+          '#userId': 'userId'
         },
         ExpressionAttributeValues: {
           ':token': oldToken,
           ':type': 'REFRESH'
         }
       };
-      dynamodb.query(params, (err, data) => {
-        if (err) {
-          _reject(err);
-        } else {
-          _resolve(data);
-        }
-      });
-    });
 
-    const newRefreshToken = (data) => new Promise((_resolve, _reject) => {
-      const UserId = data.Items[0].UserId;
+      return dynamodb
+        .query(params).promise();
+    };
+
+    const newRefreshToken = (data) => {
+      const userId = data.Items[0].userId;
       const params = {
         TableName: table,
         Item: {
-          Token: token,
-          Type: 'REFRESH',
-          Expired: false,
-          UserId
+          token,
+          type: 'REFRESH',
+          expired: false,
+          userId
         }
       };
-      dynamodb.put(params, (error) => {
-        if (error) {
-          _reject(error);
-        } else {
-          _resolve(UserId);
-        }
-      });
-    });
 
-    const expireRefreshToken = (UserId) => new Promise((_resolve, _reject) => {
+      return dynamodb
+        .put(params).promise()
+        .then(() => userId);
+    };
+
+    const expireRefreshToken = (userId) => {
       const params = {
         TableName: table,
         Item: {
-          Token: oldToken,
-          Type: 'REFRESH',
-          Expired: true,
-          UserId
+          token: oldToken,
+          type: 'REFRESH',
+          expired: true,
+          userId
         }
       };
-      dynamodb.put(params, (error) => {
-        if (error) {
-          _reject(error);
-        } else {
-          _resolve(UserId);
-        }
-      });
-    });
+
+      return dynamodb
+        .put(params).promise()
+        .then(() => userId);
+    };
 
     queryToken()
       .then(newRefreshToken)
       .then(expireRefreshToken)
-      .then((id) => {
-        resolve({ id, token });
-      })
-      .catch((error) => reject(error));
+      .then(id => resolve({ id, token }))
+      .catch(reject);
   } else {
     reject('Invalid token');
   }

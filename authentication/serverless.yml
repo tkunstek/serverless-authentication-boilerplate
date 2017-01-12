@@ -1,9 +1,10 @@
+frameworkVersion: ">=1.2.0 <2.0.0"
+
 service: serverless-authentication # change this
 
 provider:
   name: aws
-  stage: dev
-  region: us-west-2
+  environment: ${file(./env.yml):${opt:stage, self:provider.stage}}
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -17,6 +18,10 @@ provider:
       - cognito-sync:*
       - cognito-identity:*
       Resource: arn:aws:cognito-identity:*:*:*
+    - Effect: Allow
+      Action:
+      - cognito-idp:*
+      Resource: arn:aws:cognito-idp:*:*:*
   runtime: nodejs4.3
 
 package:
@@ -68,21 +73,35 @@ functions:
     handler: handler.authorize
 
 resources:
+  Description: ${self:provider.environment.SERVICE} [${self:provider.environment.STAGE}] template
   Resources:
-    Dynamo:
+    CacheTable:
       Type: AWS::DynamoDB::Table
       Properties:
         AttributeDefinitions:
-        - AttributeName: Token
+        - AttributeName: token
           AttributeType: S
-        - AttributeName: Type
+        - AttributeName: type
           AttributeType: S
         KeySchema:
-        - AttributeName: Token
+        - AttributeName: token
           KeyType: HASH
-        - AttributeName: Type
+        - AttributeName: type
           KeyType: RANGE
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
-        TableName: ${self:provider.stage}-serverless-authentication-cache
+        TableName: ${self:provider.environment.CACHE_DB_NAME}
+#    UsersTable:
+#      Type: AWS::DynamoDB::Table
+#      Properties:
+#        AttributeDefinitions:
+#        - AttributeName: userId
+#          AttributeType: S
+#        KeySchema:
+#        - AttributeName: userId
+#          KeyType: HASH
+#        ProvisionedThroughput:
+#          ReadCapacityUnits: 1
+#          WriteCapacityUnits: 1
+#        TableName: ${self:provider.environment.USERS_DB_NAME}

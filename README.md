@@ -61,24 +61,30 @@ Functions:
 
 ## <a id="env-vars"></a>Environmental Variables
 
-Open authentication/.env, fill in what you use and other ones can be deleted.
+Open `authentication/env.yml`, fill in what you use and other ones can be deleted.
 
 ```
-STAGE = dev
-REDIRECT_CLIENT_URI = http://url-to-frontend-webapp/
-TOKEN_SECRET = secret-for-json-web-token
-PROVIDER_FACEBOOK_ID = facebook-app-id
-PROVIDER_FACEBOOK_SECRET = facebook-app-secret
-PROVIDER_GOOGLE_ID = google-app-id
-PROVIDER_GOOGLE_SECRET = google-app-secret
-PROVIDER_MICROSOFT_ID = microsoft-app-id
-PROVIDER_MICROSOFT_SECRET = microsoft-app-secret
-PROVIDER_CUSTOM_GOOGLE_ID = google-app-id
-PROVIDER_CUSTOM_GOOGLE_SECRET = google-app-secret
-COGNITO_IDENTITY_POOL_ID = cognito-pool-id
-COGNITO_REGION = eu-west-1
-COGNITO_PROVIDER_NAME = your-service-name
-
+dev:
+# General
+  SERVICE: ${self:service}
+  STAGE: ${opt:stage, self:provider.stage}
+  REGION: ${opt:region, self:provider.region}
+  REDIRECT_CLIENT_URI: http://127.0.0.1:3000/
+  TOKEN_SECRET: token-secret-123
+# Database
+  CACHE_DB_NAME: ${self:provider.environment.SERVICE}-cache-${self:provider.environment.STAGE}
+  USERS_DB_NAME: ${self:provider.environment.SERVICE}-users-${self:provider.environment.STAGE}
+# Cognito
+  USER_POOL_ID: user-pool-id
+# Providers
+  PROVIDER_FACEBOOK_ID: fb-mock-id
+  PROVIDER_FACEBOOK_SECRET: fb-mock-secret
+  PROVIDER_GOOGLE_ID: g-mock-id
+  PROVIDER_GOOGLE_SECRET: cg-mock-secret
+  PROVIDER_MICROSOFT_ID: ms-mock-id
+  PROVIDER_MICROSOFT_SECRET: ms-mock-secret
+  PROVIDER_CUSTOM_GOOGLE_ID: g-mock-id
+  PROVIDER_CUSTOM_GOOGLE_SECRET: cg-mock-secret
 ```
 
 ## Example Provider Packages
@@ -91,6 +97,17 @@ COGNITO_PROVIDER_NAME = your-service-name
 ## <a id="custom-provider"></a>Custom Provider
 
 Package contains example [/authentication/lib/custom-google.js](https://github.com/laardee/serverless-authentication-boilerplate/blob/master/authentication/lib/custom-google.js) how to implement custom authentication provider using generic Provider class. To test custom provider go to http://laardee.github.io/serverless-authentication-gh-pages and click 'custom-google' button.
+
+## User database
+
+To use DynamoBD to save user data:
+1. uncomment `UsersTable` block from `authentication/serverless.yml` resources
+2. uncomment `return saveDatabase(profile);` from `authentication/lib/storage/usersStorage.js`
+
+To use Cognito User Pool as user database:
+1. create new user pool (http://docs.aws.amazon.com/cognito/latest/developerguide/setting-up-cognito-user-identity-pools.html)
+2. copy user pool id to `authentication/env.yml`
+3. uncomment `return saveCognito(profile);` from `authentication/lib/storage/usersStorage.js`
 
 ## Running Tests on Mac
 

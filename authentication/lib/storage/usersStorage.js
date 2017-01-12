@@ -1,59 +1,45 @@
 'use strict';
 
 // Common
-const AWS = require('aws-sdk');
-// const config = { region: process.env.SERVERLESS_REGION };
-// const dynamodb = new AWS.DynamoDB.DocumentClient(config);
 const Promise = require('bluebird');
-const cognitoidentity = new AWS.CognitoIdentity({ region: process.env.COGNITO_REGION });
 
-const saveDatabase = (profile) => new Promise((resolve, reject) => {
+const cognitoUser = require('./cognitoUser');
+const dynamoUser = require('./dynamoUser');
+
+const saveDatabase = profile => new Promise((resolve, reject) => {
   if (profile) {
-    resolve(null);
+    dynamoUser.saveUser(profile)
+      .then(resolve)
+      .catch(reject);
   } else {
     reject('Invalid profile');
   }
 });
 
-const saveCognito = (profile) => new Promise((resolve, reject) => {
+const saveCognito = profile => new Promise((resolve, reject) => {
   if (profile) {
-    // Use AWS console or AWS-CLI to create identity pool
-    // Add Cognito allowing statement to policy
-    // {
-    //   "Effect": "Allow",
-    //   "Action": [
-    //   "cognito-sync:*",
-    //   "cognito-identity:*"
-    // ],
-    //   "Resource": "arn:aws:cognito-identity:*:*:*"
-    // }
-    cognitoidentity.getOpenIdTokenForDeveloperIdentity({
-      IdentityPoolId: process.env.COGNITO_IDENTITY_POOL_ID,
-      Logins: {
-        [process.env.COGNITO_PROVIDER_NAME]: profile.userId
-      }
-    }, (err) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve();
-      }
-    });
+    cognitoUser.saveOrUpdateUser(profile)
+      .then(resolve)
+      .catch(reject);
   } else {
     reject('Invalid profile');
   }
 });
 
 const saveUser = (profile) => {
-  // just temp switch
 
-  // Here you can save the profile to DynamoDB, AWS Cognito or where ever you wish
+  // Here you can save the profile to DynamoDB,
+  // AWS Cognito or where ever you wish,
+  // just remove or replace unnecessary code
   // profile class: https://github.com/laardee/serverless-authentication/blob/master/src/profile.js
-  const useDatabase = true;
-  if (useDatabase) {
-    return saveDatabase(profile);
-  }
-  return saveCognito(profile);
+
+  // to use dynamo as user database enable
+  // return saveDatabase(profile);
+
+  // to use cognito user pool as user database enable
+  // return saveCognito(profile);
+
+  return true;
 };
 
 exports = module.exports = {
