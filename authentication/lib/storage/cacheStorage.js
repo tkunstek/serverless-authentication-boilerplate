@@ -1,7 +1,5 @@
 'use strict';
 
-// @todo REFACTOR!
-
 const table = process.env.CACHE_DB_NAME;
 const config = { region: process.env.REGION };
 
@@ -40,8 +38,8 @@ const createState = () => {
  * Revokes OAuth State
  * @param state
  */
-const revokeState = (state) => new Promise((resolve, reject) => {
-  const queryToken = () => new Promise((_resolve, _reject) => {
+const revokeState = state => new Promise((resolve, reject) => {
+  const queryToken = () => {
     const params = {
       TableName: table,
       ProjectionExpression: '#token, #type, Expired',
@@ -56,19 +54,14 @@ const revokeState = (state) => new Promise((resolve, reject) => {
       }
     };
 
-    dynamodb.query(params, (err, data) => {
-      if (err) {
-        _reject(err);
-      } else {
-        _resolve(data);
-      }
-    });
-  });
+    return dynamodb
+      .query(params).promise();
+  };
 
-  const insertToken = (data) => new Promise((_resolve, _reject) => {
+  const insertToken = (data) => {
     const item = data.Items[0];
     if (item.expired) {
-      _reject('State expired'); // @todo move to query, e.g. filter?
+      throw new Error('State expired');
     } else {
       const params = {
         TableName: table,
@@ -79,15 +72,11 @@ const revokeState = (state) => new Promise((resolve, reject) => {
         }
       };
 
-      dynamodb.put(params, (error) => {
-        if (!error) {
-          _resolve(item.token);
-        } else {
-          _reject(error);
-        }
-      });
+      return dynamodb
+        .put(params).promise()
+        .then(() => item.token);
     }
-  });
+  };
 
   queryToken()
     .then(insertToken)
@@ -97,7 +86,7 @@ const revokeState = (state) => new Promise((resolve, reject) => {
       }
       resolve(token);
     })
-    .catch((error) => reject(error));
+    .catch(reject);
 });
 
 /**
@@ -125,11 +114,11 @@ const saveRefreshToken = (user) => {
  * Revokes old refresh token and creates new
  * @param oldToken
  */
-const revokeRefreshToken = (oldToken) => new Promise((resolve, reject) => {
+const revokeRefreshToken = oldToken => new Promise((resolve, reject) => {
   if (oldToken.match(/[A-Fa-f0-9]{64}/)) {
     const token = hash();
 
-    const queryToken = () => new Promise((_resolve, _reject) => {
+    const queryToken = () => {
       const params = {
         TableName: table,
         ProjectionExpression: '#token, #type, #userId',
@@ -144,16 +133,12 @@ const revokeRefreshToken = (oldToken) => new Promise((resolve, reject) => {
           ':type': 'REFRESH'
         }
       };
-      dynamodb.query(params, (err, data) => {
-        if (err) {
-          _reject(err);
-        } else {
-          _resolve(data);
-        }
-      });
-    });
 
-    const newRefreshToken = (data) => new Promise((_resolve, _reject) => {
+      return dynamodb
+        .query(params).promise();
+    };
+
+    const newRefreshToken = (data) => {
       const userId = data.Items[0].userId;
       const params = {
         TableName: table,
@@ -164,16 +149,13 @@ const revokeRefreshToken = (oldToken) => new Promise((resolve, reject) => {
           userId
         }
       };
-      dynamodb.put(params, (error) => {
-        if (error) {
-          _reject(error);
-        } else {
-          _resolve(userId);
-        }
-      });
-    });
 
-    const expireRefreshToken = (userId) => new Promise((_resolve, _reject) => {
+      return dynamodb
+        .put(params).promise()
+        .then(() => userId);
+    };
+
+    const expireRefreshToken = (userId) => {
       const params = {
         TableName: table,
         Item: {
@@ -183,22 +165,17 @@ const revokeRefreshToken = (oldToken) => new Promise((resolve, reject) => {
           userId
         }
       };
-      dynamodb.put(params, (error) => {
-        if (error) {
-          _reject(error);
-        } else {
-          _resolve(userId);
-        }
-      });
-    });
+
+      return dynamodb
+        .put(params).promise()
+        .then(() => userId);
+    };
 
     queryToken()
       .then(newRefreshToken)
       .then(expireRefreshToken)
-      .then((id) => {
-        resolve({ id, token });
-      })
-      .catch((error) => reject(error));
+      .then(id => resolve({ id, token }))
+      .catch(reject);
   } else {
     reject('Invalid token');
   }
