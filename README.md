@@ -15,7 +15,7 @@ If you are using Serverless framework v.0.5, see branch https://github.com/laard
 Installation will create one DynamoDB table for OAuth state and refresh tokens.
 
 1. Run `serverless install --url https://github.com/laardee/serverless-authentication-boilerplate`, clone or download the repository
-2. Rename _example.env_ in _authentication_ to _.env_ and set [environmental variables](#env-vars).
+2. Rename _example.env.yml_ in _authentication_ to _env.yml_ and set [environmental variables](#env-vars).
 3. Change directory to `authentication` and run `npm install`.
 4. Run `serverless deploy` on the authentication folder to deploy authentication service to AWS. Notice the arn of the authorize function.
 5. (optional) Change directory to test-token and insert the arn of the authorizer function to authorizer/arn in serverless.yml. Then run `serverless deploy` to deploy test-token service.
