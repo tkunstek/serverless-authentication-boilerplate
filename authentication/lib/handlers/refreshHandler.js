@@ -24,8 +24,11 @@ function refreshHandler(event, callback) {
       const id = results.id;
       const data =
         Object.assign(createResponseData(id, providerConfig), { refreshToken: results.token });
-
-
+      if (typeof results.payload === 'object') {
+        data.authorizationToken.payload = Object.assign(
+          data.authorizationToken.payload,
+          results.payload);
+      }
       const authorization_token =
         utils.createToken(
           data.authorizationToken.payload,
@@ -33,7 +36,7 @@ function refreshHandler(event, callback) {
           data.authorizationToken.options);
       callback(null, { authorization_token, refresh_token: data.refreshToken, id });
     })
-    .catch((error) => callback(error));
+    .catch((error) => callback(JSON.stringify(error)));
 }
 
 exports = module.exports = refreshHandler;

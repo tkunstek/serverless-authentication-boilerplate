@@ -48,6 +48,8 @@ Functions:
 * authentication/authorize
   * endpoint: no end point
   * handler: is used by Api Gateway custom authorizer
+* authentication/schema
+  * invoke with `serverless invoke -f schema` to setup FaunaDB schema
 
 ### Test-token
 
@@ -100,10 +102,17 @@ Package contains example [/authentication/lib/custom-google.js](https://github.c
 
 ## User database
 
+To use FaunaDB to save user data:
+
+1. configure `FAUNADB_SECRET` in `authentication/env.yml` with a server secret for your database
+2. uncomment `return faunaUser.saveUser(profile);` from `authentication/lib/storage/usersStorage.js`
+3. change the last line of  `authentication/lib/storage/cacheStorage.js` to `exports = module.exports = faunaCache;`
+4. Run `serverless deploy` and then `serverless invoke -f schema`
+
 To use DynamoBD to save user data:
 
 1. uncomment `UsersTable` block from `authentication/serverless.yml` resources
-2. uncomment `return saveDatabase(profile);` from `authentication/lib/storage/usersStorage.js`
+2. uncomment `return dynamoUser.saveUser(profile);` from `authentication/lib/storage/usersStorage.js`
 
 To use Cognito User Pool as user database:
 
@@ -114,5 +123,5 @@ To use Cognito User Pool as user database:
 ## Running Tests on Mac
 
 * Install Docker and Docker Compose
-* Run `npm install` in project root directory 
+* Run `npm install` in project root directory
 * Run ./specs-docker.sh

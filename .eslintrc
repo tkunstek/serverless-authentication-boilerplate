@@ -5,6 +5,7 @@
     "func-names": "off",
     "comma-dangle": 0,
     "camelcase": "off",
+    "new-cap" : "off",
     "max-len": [
       "error",
       100,
