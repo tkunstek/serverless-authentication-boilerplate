@@ -102,7 +102,7 @@ Package contains example [/authentication/lib/custom-google.js](https://github.c
 
 ## User database
 
-To use FaunaDB to save user data:
+To use FaunaDB to save user data. First [create a database here](https://fauna.com/serverless-cloud-sign-up), then:
 
 1. configure `FAUNADB_SECRET` in `authentication/env.yml` with a server secret for your database
 2. uncomment `return faunaUser.saveUser(profile);` from `authentication/lib/storage/usersStorage.js`
