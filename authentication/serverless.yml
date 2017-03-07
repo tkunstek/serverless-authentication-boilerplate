@@ -71,6 +71,8 @@ functions:
                 }
   authorize:
     handler: handler.authorize
+  schema:
+    handler: handler.schema
 
 resources:
   Description: ${self:provider.environment.SERVICE} [${self:provider.environment.STAGE}] template

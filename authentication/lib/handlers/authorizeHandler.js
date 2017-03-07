@@ -5,6 +5,16 @@ const slsAuth = require('serverless-authentication');
 const config = slsAuth.config;
 const utils = slsAuth.utils;
 
+const policyContext = (data) => {
+  const context = {};
+  Object.keys(data).forEach(k => {
+    if (k !== 'id' && ['boolean', 'number', 'string'].indexOf(typeof data[k]) !== -1) {
+      context[k] = data[k];
+    }
+  });
+  return context;
+};
+
 // Authorize
 const authorize = (event, callback) => {
   const stage = event.methodArn.split('/')[1] || 'dev'; // @todo better implementation
@@ -17,6 +27,7 @@ const authorize = (event, callback) => {
       const providerConfig = config({ provider: '', stage });
       const data = utils.readToken(authorizationToken, providerConfig.token_secret);
       policy = utils.generatePolicy(data.id, 'Allow', event.methodArn);
+      policy.context = policyContext(data);
     } catch (err) {
       error = 'Unauthorized';
     }

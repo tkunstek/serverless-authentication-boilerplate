@@ -15,7 +15,6 @@ const customGoogle = require('../custom-google');
 const crypto = require('crypto');
 const cache = require('../storage/cacheStorage');
 const users = require('../storage/usersStorage');
-const Promise = require('bluebird');
 
 const helpers = require('../helpers');
 const createResponseData = helpers.createResponseData;
@@ -82,12 +81,17 @@ function callbackHandler(proxyEvent, context) {
         .then(() => {
           const id = createUserId(`${profile.provider}-${profile.id}`, providerConfig.token_secret);
           const data = createResponseData(id, providerConfig);
-
-          Promise.all([
-            cache.saveRefreshToken(id),
-            users.saveUser(Object.assign(profile, { userId: id }))
-          ])
-            .then((results) => tokenResponse(Object.assign(data, { refreshToken: results[0] })))
+          users.saveUser(Object.assign(profile, { userId: id }))
+            .then(userContext => {
+              // saveUser can optionally return an authorizer context map
+              // see http://docs.aws.amazon.com/apigateway/latest/developerguide/use-custom-authorizer.html
+              if (typeof userContext === 'object' && !Array.isArray(userContext)) {
+                data.authorizationToken.payload = Object.assign(
+                  data.authorizationToken.payload || {},
+                  userContext);
+              }
+              return cache.saveRefreshToken(id, data.authorizationToken.payload);
+            }).then(result => tokenResponse(Object.assign(data, { refreshToken: result })))
             .catch((_error) => errorResponse({ error: _error }));
         }).catch((_error) => errorResponse({ error: _error }));
     }
