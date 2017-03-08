@@ -7,6 +7,7 @@ if (process.env.LOCAL_DDB_ENDPOINT) config.endpoint = process.env.LOCAL_DDB_ENDP
 
 // Common
 const AWS = require('aws-sdk');
+
 const dynamodb = new AWS.DynamoDB.DocumentClient(config);
 const crypto = require('crypto');
 const Promise = require('bluebird');
@@ -174,7 +175,7 @@ const revokeRefreshToken = oldToken => new Promise((resolve, reject) => {
         .then(() => userId);
     };
 
-    queryToken().then((data) =>
+    queryToken().then(data =>
       newRefreshToken(data)
         .then(expireRefreshToken)
         .then(id => resolve({ id, token, payload: data.payload && JSON.parse(data.payload) }))

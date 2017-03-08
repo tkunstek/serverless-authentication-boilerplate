@@ -1,6 +1,7 @@
 'use strict';
 
 const slsAuth = require('serverless-authentication');
+
 const Provider = slsAuth.Provider;
 const Profile = slsAuth.Profile;
 
@@ -15,7 +16,7 @@ const signinHandler = (config, options, callback) => {
 
 const callbackHandler = (event, config, callback) => {
   const customGoogle = new Provider(config);
-  const profileMap = (response) =>
+  const profileMap = response =>
     new Profile({
       id: response.id,
       name: response.displayName,

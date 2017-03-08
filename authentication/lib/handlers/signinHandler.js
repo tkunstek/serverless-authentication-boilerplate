@@ -2,6 +2,7 @@
 
 // Config
 const slsAuth = require('serverless-authentication');
+
 const config = slsAuth.config;
 const utils = slsAuth.utils;
 
@@ -58,7 +59,7 @@ function signinHandler(proxyEvent, context) {
           );
       }
     })
-    .catch((error) =>
+    .catch(error =>
       utils.errorResponse(
         { error },
         providerConfig,

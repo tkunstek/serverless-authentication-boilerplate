@@ -1,5 +1,7 @@
 'use strict';
 
+const logger = require('log4js').getLogger();
+
 const createResponseData = (id) => {
   // sets 15 seconds expiration time as an example
   const authorizationToken = {
@@ -23,7 +25,12 @@ const redirectProxyCallback = (context, data) => {
   });
 };
 
+const log = (message) => {
+  logger.debug(message);
+};
+
 exports = module.exports = {
   createResponseData,
-  redirectProxyCallback
+  redirectProxyCallback,
+  log
 };

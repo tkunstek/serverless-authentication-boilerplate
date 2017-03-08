@@ -1,10 +1,11 @@
 'use strict';
 
 const chai = require('chai');
-const expect = chai.expect;
 const dirtyChai = require('dirty-chai');
-chai.use(dirtyChai);
 const dynamo = require('./dynamo');
+
+const expect = chai.expect;
+chai.use(dirtyChai);
 
 process.env.STAGE = 'dev';
 process.env.CACHE_DB_NAME = '{stage}-serverless-authentication-cache';
@@ -28,9 +29,8 @@ global.AssertionError = chai.AssertionError;
 global.Assertion = chai.Assertion;
 
 describe('Setup specs', () => {
-  before((done) => dynamo.init(done));
+  before(done => dynamo.init(done));
 
-  it('Local DynamoDB should be ready', () => {
-    expect(dynamo.isReady()).to.be.true();
-  });
+  it('Local DynamoDB should be ready', () =>
+    expect(dynamo.isReady()).to.be.true());
 });

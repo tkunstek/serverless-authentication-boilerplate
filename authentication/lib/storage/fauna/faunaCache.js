@@ -4,11 +4,14 @@
 const config = { secret: process.env.FAUNADB_SECRET };
 
 const faunadb = require('faunadb');
+
 const q = faunadb.query;
 const client = new faunadb.Client(config);
 
 const crypto = require('crypto');
 const Promise = require('bluebird');
+
+const log = require('../../helpers').log;
 
 function hash() {
   return crypto.randomBytes(48).toString('hex');
@@ -37,7 +40,7 @@ const revokeState = state => client.query(
       q.Update(q.Select('ref', q.Var('matched')), { data: { expired: true } }),
       'expired'))
   ).then((result) => {
-    console.log('revokeState', result);
+    log('revokeState', result);
     return state;
   });
 
@@ -62,7 +65,7 @@ const saveRefreshToken = (user, payload) => {
  * Revokes old refresh token and creates new
  * @param oldToken
  */
-const revokeRefreshToken = oldToken => {
+const revokeRefreshToken = (oldToken) => {
   if (!oldToken.match(/[A-Fa-f0-9]{64}/)) {
     return Promise.reject('Invalid token');
   }
@@ -76,7 +79,7 @@ const revokeRefreshToken = oldToken => {
         q.Update(q.Select('ref', q.Var('matched')), { data: { token } }),
         'expired'))
   ).then((result) => {
-    console.log('revokeRefreshToken', result);
+    log('revokeRefreshToken', result);
     return { id: result.data.userId, token, payload: result.data.payload };
   });
 };

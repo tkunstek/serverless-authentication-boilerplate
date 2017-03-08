@@ -2,12 +2,14 @@
 
 // Config
 const slsAuth = require('serverless-authentication');
+
 const config = slsAuth.config;
 const utils = slsAuth.utils;
 
 // Common
 const cache = require('../storage/cacheStorage');
 const helpers = require('../helpers');
+
 const createResponseData = helpers.createResponseData;
 
 /**
@@ -36,7 +38,7 @@ function refreshHandler(event, callback) {
           data.authorizationToken.options);
       callback(null, { authorization_token, refresh_token: data.refreshToken, id });
     })
-    .catch((error) => callback(JSON.stringify(error)));
+    .catch(error => callback(JSON.stringify(error)));
 }
 
 exports = module.exports = refreshHandler;

@@ -4,7 +4,7 @@ const signinHandler = require('./lib/handlers/signinHandler');
 const callbackHandler = require('./lib/handlers/callbackHandler');
 const refreshHandler = require('./lib/handlers/refreshHandler');
 const authorizeHandler = require('./lib/handlers/authorizeHandler');
-const setupSchemaHandler = require('./lib/storage/faunaUser').setupSchemaHandler;
+const setupSchemaHandler = require('./lib/storage/fauna/faunaUser').setupSchemaHandler;
 
 module.exports.signin =
   (event, context) =>

@@ -2,6 +2,8 @@
 
 const AWS = require('aws-sdk');
 
+const log = require('../../helpers').log;
+
 const cognitoIdentityServiceProvider =
   new AWS.CognitoIdentityServiceProvider();
 
@@ -26,7 +28,7 @@ const getUserAttributes = (profile) => {
   ];
 
   return attributes.reduce((result, key) => {
-    if (profile.hasOwnProperty(key)) {
+    if (Object.prototype.hasOwnProperty.call(profile, key)) {
       result.push({ Name: key, Value: profile[key] });
     }
     return result;
@@ -34,7 +36,7 @@ const getUserAttributes = (profile) => {
 };
 
 const saveUser = (profile) => {
-  console.log('save user', profile.id);
+  log('save user', profile.id);
   const params = {
     UserPoolId: process.env.USER_POOL_ID,
     Username: profile.userId,
@@ -52,7 +54,7 @@ const saveUser = (profile) => {
 };
 
 const updateUser = (profile) => {
-  console.log('update user', profile.id);
+  log('update user', profile.id);
   const params = {
     UserAttributes: getUserAttributes(profile),
     UserPoolId: process.env.USER_POOL_ID,

@@ -3,9 +3,9 @@
 // Common
 const Promise = require('bluebird');
 
-const cognitoUser = require('./cognitoUser');
-const dynamoUser = require('./dynamoUser');
-const faunaUser = require('./faunaUser');
+// const cognitoUser = require('./cognito/cognitoUser');
+// const dynamoUser = require('./dynamo/dynamoUser');
+// const faunaUser = require('./fauna/faunaUser');
 
 const saveUser = (profile) => {
   if (!profile) {
@@ -15,6 +15,10 @@ const saveUser = (profile) => {
   // FaunaDB, AWS Cognito or where ever you wish,
   // just remove or replace unnecessary code
   // profile class: https://github.com/laardee/serverless-authentication/blob/master/src/profile.js
+
+  // when changing cache storage
+  // remember to uncomment
+  // require of user storage module
 
   // to enable FaunaDB as a user database enable
   // return faunaUser.saveUser(profile);
