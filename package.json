@@ -33,7 +33,10 @@
     "serverless-authentication": "^0.4.4"
   },
   "scripts": {
-    "lint": "./node_modules/.bin/eslint . || true",
+    "lint": "./node_modules/.bin/eslint .",
+    "install-dependencies": "npm run install-authentication && npm run install-test-token",
+    "install-authentication": "cd authentication && npm install",
+    "install-test-token": "cd test-token && npm install",
     "deploy-authentication": "cd authentication && serverless deploy",
     "deploy-test-token": "cd test-token && serverless deploy",
     "deploy": "npm run deploy-authentication && npm run deploy-test-token"
