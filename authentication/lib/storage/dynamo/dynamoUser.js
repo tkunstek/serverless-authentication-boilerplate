@@ -7,6 +7,7 @@ if (process.env.LOCAL_DDB_ENDPOINT) config.endpoint = process.env.LOCAL_DDB_ENDP
 
 // Common
 const AWS = require('aws-sdk');
+
 const dynamodb = new AWS.DynamoDB.DocumentClient(config);
 
 const saveUser = (profile) => {

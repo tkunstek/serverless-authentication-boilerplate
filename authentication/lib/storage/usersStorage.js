@@ -3,9 +3,9 @@
 // Common
 const Promise = require('bluebird');
 
-const cognitoUser = require('./cognitoUser');
-const dynamoUser = require('./dynamoUser');
-const faunaUser = require('./faunaUser');
+const cognitoUser = require('./cognito/cognitoUser');
+const dynamoUser = require('./dynamo/dynamoUser');
+const faunaUser = require('./fauna/faunaUser');
 
 const saveUser = (profile) => {
   if (!profile) {

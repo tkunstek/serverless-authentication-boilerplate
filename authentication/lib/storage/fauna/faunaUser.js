@@ -4,10 +4,11 @@ const userClassName = process.env.USERS_CLASS_NAME || 'users'; // should be shar
 const config = { secret: process.env.FAUNADB_SECRET };
 
 const faunadb = require('faunadb');
+
 const q = faunadb.query;
 const client = new faunadb.Client(config);
 
-const saveUser = profile => {
+const saveUser = (profile) => {
   // profile class: https://github.com/laardee/serverless-authentication/blob/master/src/profile.js
   if (!(profile && profile.userId)) {
     return Promise.reject('Invalid profile');
@@ -43,8 +44,8 @@ const setupSchema = () => client.query(q.CreateClass({ name: 'auth_cache' }))
   })));
 
 const setupSchemaHandler = (event, callback) => setupSchema()
-  .then((result) => callback(null, result))
-  .catch((error) => callback(new Error(JSON.stringify(error))));
+  .then(result => callback(null, result))
+  .catch(error => callback(new Error(JSON.stringify(error))));
 
 module.exports = {
   saveUser, setupSchemaHandler

@@ -1,4 +1,15 @@
 {
+  "settings": {
+    "import/core-modules": [
+      "chai",
+      "dirty-chai",
+      "serverless-authentication",
+      "nock",
+      "js-yaml",
+      "aws-sdk",
+      "async"
+    ]
+  },
   "env": {
     "node": true,
     "mocha": true

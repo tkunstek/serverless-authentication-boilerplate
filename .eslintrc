@@ -1,11 +1,17 @@
 {
   "extends": "airbnb",
   "plugins": [],
+  "settings": {
+    "import/core-modules": [
+      "aws-sdk"
+    ]
+  },
   "rules": {
     "func-names": "off",
     "comma-dangle": 0,
     "camelcase": "off",
-    "new-cap" : "off",
+    "new-cap": "off",
+    "no-multi-assign": "off",
     "max-len": [
       "error",
       100,

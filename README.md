@@ -2,6 +2,8 @@
 
 [![serverless](http://public.serverless.com/badges/v3.svg)](http://www.serverless.com)
 
+[![Build Status](https://travis-ci.org/laardee/serverless-authentication-boilerplate.svg?branch=master)](https://travis-ci.org/laardee/serverless-authentication-boilerplate)
+
 This project is aimed to be a generic authentication boilerplate for the [Serverless framework](http://www.serverless.com).
 
 This boilerplate is compatible with the Serverless v.1.0.0, to install Serverless framework run `npm install -g serverless`.

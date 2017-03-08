@@ -2,6 +2,7 @@
 
 const userClassName = process.env.USERS_CLASS_NAME || 'users'; // shared with authentication service
 const faunadb = require('faunadb');
+
 const q = faunadb.query;
 
 const createResponse = (statusCode, payload) => ({

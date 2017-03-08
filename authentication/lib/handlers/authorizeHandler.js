@@ -2,12 +2,13 @@
 
 // Config
 const slsAuth = require('serverless-authentication');
+
 const config = slsAuth.config;
 const utils = slsAuth.utils;
 
 const policyContext = (data) => {
   const context = {};
-  Object.keys(data).forEach(k => {
+  Object.keys(data).forEach((k) => {
     if (k !== 'id' && ['boolean', 'number', 'string'].indexOf(typeof data[k]) !== -1) {
       context[k] = data[k];
     }
