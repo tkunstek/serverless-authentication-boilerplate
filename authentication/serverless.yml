@@ -74,6 +74,9 @@ functions:
   schema:
     handler: handler.schema
 
+plugins:
+  - deployment-info
+
 resources:
   Description: ${self:provider.environment.SERVICE} [${self:provider.environment.STAGE}] template
   Resources:

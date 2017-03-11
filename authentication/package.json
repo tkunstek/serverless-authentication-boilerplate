@@ -11,5 +11,9 @@
     "serverless-authentication-facebook": "^0.3.2",
     "serverless-authentication-google": "^0.3.2",
     "serverless-authentication-microsoft": "^0.3.2"
+  },
+  "devDependencies": {
+    "chalk": "^1.1.3",
+    "lodash": "^4.17.4"
   }
 }
