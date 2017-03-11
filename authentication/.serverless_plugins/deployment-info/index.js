@@ -27,6 +27,7 @@ class Deploy {
     this.hooks = {
       'authentication:info:info': this.info.bind(this),
       'after:info:info': this.info.bind(this),
+      'after:deploy:deploy': this.info.bind(this),
     };
   }
 
