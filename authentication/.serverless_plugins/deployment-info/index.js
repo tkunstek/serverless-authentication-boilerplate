@@ -68,10 +68,15 @@ class Deploy {
         let message = '';
         message += `${chalk.yellow.underline('\nAuthentication Service Information')}\n`;
         message += `${chalk.yellow('Authorizer function:')} ${resources.authorizerFunction}\n`;
-        message += `${chalk.yellow('Callback endpoints:\n')}`;
+        message += `${chalk.yellow('Signin endpoints:\n')}`;
         message +=
           providers.map((provider) => {
-            return `${resources.serviceEndpoint}/callback/${provider}`;
+            return `${resources.serviceEndpoint}/authentication/signin/${provider}`;
+          }).join('\n');
+        message += `\n${chalk.yellow('Callback endpoints:\n')}`;
+        message +=
+          providers.map((provider) => {
+            return `${resources.serviceEndpoint}/authentication/callback/${provider}`;
           }).join('\n');
         this.serverless.cli.consoleLog(message);
       });
