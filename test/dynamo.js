@@ -1,9 +1,9 @@
 'use strict';
 
 const endpoint = process.env.LOCAL_DDB_ENDPOINT;
-const project = process.env.SERVERLESS_PROJECT;
-const stage = process.env.SERVERLESS_STAGE;
-const region = process.env.SERVERLESS_REGION;
+const project = process.env.PROJECT;
+const stage = process.env.STAGE;
+const region = process.env.REGION;
 const table = [stage, project, 'cache'].join('-');
 
 const fs = require('fs');
@@ -20,7 +20,7 @@ const db = new DynamoDB({ endpoint, region });
 let ready = false;
 
 function init(cb) {
-  resources.Dynamo.Properties.TableName = table;
+  resources.CacheTable.Properties.TableName = table;
   async.waterfall([
     (callback) => {
       db.listTables({}, callback);
@@ -28,7 +28,7 @@ function init(cb) {
     (data, callback) => {
       const tables = data.TableNames;
       if (tables.indexOf(table) < 0) {
-        db.createTable(resources.Dynamo.Properties, (err, created) => {
+        db.createTable(resources.CacheTable.Properties, (err, created) => {
           if (!err) {
             callback(null, `table ${created.TableDescription.TableName} created`);
           } else {

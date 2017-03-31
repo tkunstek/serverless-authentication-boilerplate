@@ -34,6 +34,7 @@
   },
   "scripts": {
     "lint": "./node_modules/.bin/eslint .",
+    "test": "./run-tests.sh",
     "install-dependencies": "npm run install-authentication && npm run install-test-token",
     "install-authentication": "cd authentication && npm install",
     "install-test-token": "cd test-token && npm install",

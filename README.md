@@ -126,4 +126,4 @@ To use Cognito User Pool as user database:
 
 * Install Docker and Docker Compose
 * Run `npm install` in project root directory
-* Run ./specs-docker.sh
+* Run ./run-tests.sh

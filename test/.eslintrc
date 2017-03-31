@@ -2,13 +2,15 @@
   "settings": {
     "import/core-modules": [
       "chai",
-      "dirty-chai",
       "serverless-authentication",
       "nock",
       "js-yaml",
       "aws-sdk",
       "async"
     ]
+  },
+  "rules": {
+    "no-unused-expressions": "off"
   },
   "env": {
     "node": true,

@@ -20,7 +20,7 @@ describe('Authorization', () => {
       };
 
       authorize(event, (error, data) => {
-        expect(error).to.be.null();
+        expect(error).to.be.null;
         expect(data.principalId).to.be.equal(payload.id);
         done(error);
       });
