@@ -6,6 +6,7 @@ const Promise = require('bluebird');
 const cognitoUser = require('./cognito/cognitoUser');
 const dynamoUser = require('./dynamo/dynamoUser');
 const faunaUser = require('./fauna/faunaUser');
+const mongoUser = require('./mongo/mongoUser');
 
 const saveUser = (profile) => {
   if (!profile) {
@@ -25,6 +26,9 @@ const saveUser = (profile) => {
   // to use cognito user pool as user database enable
   // return cognitoUser.saveOrUpdateUser(profile);
 
+  // to use mongo user database enable
+  // return mongoUser.saveUser(profile);
+  
   return Promise.resolve(true);
 };
 
